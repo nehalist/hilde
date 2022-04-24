@@ -4,16 +4,25 @@ import prisma from "../lib/prisma";
 import { Match } from "@prisma/client";
 import MatchTable from "../components/match-table";
 import { Card } from "../components/card";
+import { useMemo, useState } from "react";
 
 interface MatchesProps {
   matches: Match[];
 }
 
 const Matches: NextPage<MatchesProps> = ({ matches }) => {
+  const [deleted, setDeleted] = useState<number[]>([]);
+  const filteredMatches = useMemo(() => {
+    return matches.filter(match => !deleted.includes(match.id));
+  }, [matches, deleted]);
+
   return (
     <Layout>
       <Card>
-        <MatchTable matches={matches} />
+        <MatchTable
+          matches={filteredMatches}
+          onDelete={match => setDeleted([...deleted, match.id])}
+        />
       </Card>
     </Layout>
   );

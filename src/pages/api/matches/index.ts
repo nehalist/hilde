@@ -50,7 +50,7 @@ const handler = nc()
   })
   .post(async (req: NextApiRequest, res: NextApiResponse) => {
     const { team1, team2, score1, score2, comment } = req.body;
-    if (!team1 || !team2 || !score1 || !score2) {
+    if (!team1 || !team2 || +score1 < 0 || +score2 < 0) {
       res.status(400).json({
         error: "Bad Request",
         message: "team1, team2, score1, score2 are required",
