@@ -1,10 +1,10 @@
 import { FunctionComponent } from "react";
 import { Match } from "@prisma/client";
-import { formatDistance } from "date-fns";
 import RatingChange from "../rating-change";
 import { TiDeleteOutline } from "react-icons/ti";
-import {useMutation, useQueryClient} from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { toast } from "react-toastify";
+import TimeDistance from "../time-distance";
 
 const MatchTable: FunctionComponent<{
   matches: Match[];
@@ -51,11 +51,13 @@ const MatchTable: FunctionComponent<{
             className={`${index % 2 === 0 ? "bg-gray-50" : ""} group`}
           >
             <td className={`p-3`}>
-              {match.team1} {match.score1 > match.score2 ? "🏆" : ""}{match.score1 === 0 ? '🪡' : ''}{" "}
+              {match.team1} {match.score1 > match.score2 ? "🏆" : ""}
+              {match.score1 === 0 ? "🪡" : ""}{" "}
               <RatingChange rating={match.rating1} />
             </td>
             <td className={`p-3`}>
-              {match.team2} {match.score2 > match.score1 ? "🏆" : ""}{match.score2 === 0 ? '🪡' : ''}{" "}
+              {match.team2} {match.score2 > match.score1 ? "🏆" : ""}
+              {match.score2 === 0 ? "🪡" : ""}{" "}
               <RatingChange rating={match.rating2} />
             </td>
             <td className="p-3">
@@ -65,9 +67,7 @@ const MatchTable: FunctionComponent<{
               )}
             </td>
             <td className="p-3">
-              {formatDistance(new Date(match.createdAt), new Date(), {
-                addSuffix: true,
-              })}
+              <TimeDistance date={new Date(match.createdAt)} />
               <button
                 className="group-hover:opacity-100 opacity-0 transition-opacity mx-3 text-red-500"
                 onClick={() => {
