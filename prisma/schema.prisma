@@ -17,8 +17,21 @@ model Match {
   team2     String
   score1    Int
   score2    Int
+  rating1   Float
+  rating2   Float
   comment   String
   game      String
 
   @@map("match")
+}
+
+model Team {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  name      String
+  rating    Float
+  game      String
+
+  @@unique([name, game])
+  @@map("team")
 }

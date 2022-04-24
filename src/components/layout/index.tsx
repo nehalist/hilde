@@ -28,6 +28,11 @@ const Layout: FunctionComponent<{ children: ReactNode }> = ({ children }) => (
                 <a className="hover:underline">History</a>
               </Link>
             </li>
+            <li className="inline mr-4">
+              <Link href="/teams">
+                <a className="hover:underline">Teams</a>
+              </Link>
+            </li>
             <li className="inline">
               <Link href="/stats">
                 <a className="hover:underline">Statistics</a>

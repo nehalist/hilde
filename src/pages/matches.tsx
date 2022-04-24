@@ -3,7 +3,7 @@ import Layout from "../components/layout";
 import prisma from "../lib/prisma";
 import { Match } from "@prisma/client";
 import MatchTable from "../components/match-table";
-import {Card} from '../components/card';
+import { Card } from "../components/card";
 
 interface MatchesProps {
   matches: Match[];
