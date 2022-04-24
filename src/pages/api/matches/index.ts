@@ -4,15 +4,14 @@ import nc from "next-connect";
 import { getExpectedRating, calculateRating } from "../../../lib/elo";
 import { Team } from "@prisma/client";
 import { getTeamSize } from "../../../lib/helper";
-
-const game = "wuzzeln";
+import config from "../../../../config.json";
 
 async function getTeam(name: string): Promise<Team> {
   return await prisma.team.upsert({
     where: {
       name_game: {
         name,
-        game,
+        game: config.defaultGame,
       },
     },
     update: {},
@@ -24,7 +23,7 @@ async function getTeam(name: string): Promise<Team> {
       matches: 0,
       wins: 0,
       goals: 0,
-      game,
+      game: config.defaultGame,
     },
   });
 }
@@ -100,7 +99,7 @@ const handler = nc()
         score1: +score1,
         score2: +score2,
         comment,
-        game,
+        game: config.defaultGame,
         rating1: +Number(ratingDiff2).toFixed(2),
         rating2: +Number(ratingDiff1).toFixed(2),
         teamsize: getTeamSize(team1),
