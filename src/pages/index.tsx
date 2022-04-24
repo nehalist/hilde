@@ -17,7 +17,9 @@ const Home: NextPage = () => {
   return (
     <Layout>
       <Form />
-      {data && <MatchTable matches={data} />}
+      <div className="mt-12">
+        {data && <MatchTable matches={data} />}
+      </div>
     </Layout>
   );
 };

@@ -4,6 +4,9 @@ import { useMutation, useQueryClient } from "react-query";
 import { Card } from "../card";
 import Input from "../input";
 import { Match } from "@prisma/client";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import LoadingIndicator from "../loading-indicator";
 
 interface FormValues {
   team1: string;
@@ -14,7 +17,12 @@ interface FormValues {
 }
 
 const Form = () => {
-  const { control, handleSubmit, reset } = useForm<FormValues>({
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { isValid },
+  } = useForm<FormValues>({
     defaultValues: {
       team1: "",
       team2: "",
@@ -22,6 +30,16 @@ const Form = () => {
       score2: "",
       comment: "",
     },
+    resolver: yupResolver(
+      yup.object().shape({
+        team1: yup.string().required(),
+        team2: yup.string().required(),
+        score1: yup.number().required(),
+        score2: yup.number().required(),
+        comment: yup.string(),
+      }),
+    ),
+    mode: "all",
   });
   const ref = useRef<HTMLInputElement>(null);
 
@@ -149,9 +167,10 @@ const Form = () => {
           />
           <button
             type="submit"
-            className="px-6 py-1 bg-blue-500 hover:bg-blue-600 rounded-lg font-semibold text-white"
+            className="px-6 py-1 bg-blue-500 hover:bg-blue-600 rounded-lg font-semibold text-white disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={!isValid}
           >
-            Save
+            {mutation.isLoading ? <LoadingIndicator /> : "Save"}
           </button>
         </div>
       </Card>

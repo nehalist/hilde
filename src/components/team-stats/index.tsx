@@ -41,23 +41,23 @@ const TeamStats: FunctionComponent<{ stats: Statistic }> = ({stats}) => {
           <table className="table-auto w-full mb-1">
             <thead className="bg-gray-200 text-left text-sm">
             <tr>
-              <th className="p-3 pl-6 w-1/6"></th>
-              <th className="p-3 w-1/6">W</th>
-              <th className="p-3 w-1/6">L</th>
-              <th className="p-3 w-1/6">G</th>
-              <th className="p-3 w-1/6">Ø</th>
-              <th className="p-3 pr-6 w-1/6">WR</th>
+              <th className="py-1 pl-6 w-1/6"></th>
+              <th className="py-1 w-1/6">W</th>
+              <th className="py-1 w-1/6">L</th>
+              <th className="py-1 w-1/6">G</th>
+              <th className="py-1 w-1/6">Ø</th>
+              <th className="py-1 pr-6 w-1/6">WR</th>
             </tr>
             </thead>
             <tbody className={`text-left`}>
             {team.opponents.map(opponent => (
-              <tr key={opponent.name} className={`${opponent.wins > opponent.losses ? 'bg-green-50' : ''}`}>
-                <td className="p-3 pl-6 w-1/6">{opponent.name}</td>
-                <td className="p-3 w-1/6">{opponent.wins}</td>
-                <td className="p-3 w-1/6">{opponent.losses}</td>
-                <td className="p-3 w-1/6">{opponent.goals}</td>
-                <td className="p-3 w-1/6">{opponent.avgGoals}</td>
-                <td className="p-3 pr-6 w-1/6">{opponent.winrate * 100}%</td>
+              <tr key={opponent.name} className={`${opponent.wins > opponent.losses ? 'bg-green-50' : ''} border-b`}>
+                <td className="py-2 pl-6 w-1/6">{opponent.name}</td>
+                <td className="py-2 w-1/6">{opponent.wins}</td>
+                <td className="py-2 w-1/6">{opponent.losses}</td>
+                <td className="py-2 w-1/6">{opponent.goals}</td>
+                <td className="py-2 w-1/6">{opponent.avgGoals}</td>
+                <td className="py-2 pr-6 w-1/6">{opponent.winrate * 100}%</td>
               </tr>
             ))}
             </tbody>
