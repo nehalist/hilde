@@ -69,11 +69,11 @@ const OverallStats: FunctionComponent<{ stats: Statistic }> = ({ stats }) => {
     <Card>
       <div className="p-6 flex justify-between">
         <div>
-          Total Games: <b>{stats.total}</b>
+          Total Matches: <b>{stats.total}</b>
         </div>
         {stats.total > 0 && (
           <div>
-            ~<b>{Math.round(stats.total / (monthDays + 1))}</b> games per day
+            ~<b>{Math.round(stats.total / (monthDays + 1))}</b> matches per day
           </div>
         )}
       </div>

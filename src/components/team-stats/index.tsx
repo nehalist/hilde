@@ -13,8 +13,8 @@ const TeamStats: FunctionComponent<{ stats: Statistic }> = ({stats}) => {
           <div className="px-6 py-3">
             <div className="grid grid-cols-3 gap-3">
               <div>
-                <h3 className="font-semibold">{team.games}</h3>
-                <p className="text-sm">Games</p>
+                <h3 className="font-semibold">{team.matches}</h3>
+                <p className="text-sm">Matches</p>
               </div>
               <div>
                 <h3 className="font-semibold">{team.wins}</h3>

@@ -34,6 +34,10 @@ const MatchTable: FunctionComponent<{
     },
   );
 
+  if (matches.length === 0) {
+    return null;
+  }
+
   return (
     <table className="w-full rounded-lg">
       <thead className="text-left">

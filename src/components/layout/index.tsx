@@ -25,17 +25,17 @@ const Layout: FunctionComponent<{ children: ReactNode }> = ({ children }) => (
           <ul>
             <li className="inline mr-4">
               <Link href="/matches">
-                <a className="hover:underline">History</a>
+                <a className="hover:border-b-2 border-blue-500">History</a>
               </Link>
             </li>
             <li className="inline mr-4">
               <Link href="/teams">
-                <a className="hover:underline">Teams</a>
+                <a className="hover:border-b-2 border-blue-500">Teams</a>
               </Link>
             </li>
             <li className="inline">
               <Link href="/stats">
-                <a className="hover:underline">Statistics</a>
+                <a className="hover:border-b-2 border-blue-500">Statistics</a>
               </Link>
             </li>
           </ul>

@@ -3,6 +3,7 @@ import prisma from "../../../lib/prisma";
 import nc from "next-connect";
 import { getExpectedRating, calculateRating } from "../../../lib/elo";
 import { Team } from "@prisma/client";
+import { getTeamSize } from "../../../lib/helper";
 
 const game = "wuzzeln";
 
@@ -19,21 +20,30 @@ async function getTeam(name: string): Promise<Team> {
       name: name,
       createdAt: new Date(),
       rating: 1000,
+      teamsize: getTeamSize(name),
+      matches: 0,
+      wins: 0,
+      goals: 0,
       game,
     },
   });
 }
 
-async function updateTeamRating(name: string, rating: number): Promise<Team> {
+async function updateTeam(name: string, rating: number, win: boolean, goals: number): Promise<Team> {
   const team = await getTeam(name);
-  return await prisma.team.update({
-    where: {
-      id: team.id,
+  return await prisma.team.update(
+    {
+      where: {
+        id: team.id,
+      },
+      data: {
+        rating: +Number(rating).toFixed(2),
+        matches: team.matches + 1,
+        wins: win ? team.wins + 1 : team.wins,
+        goals: team.goals + goals,
+      },
     },
-    data: {
-      rating: +Number(rating).toFixed(2),
-    },
-  });
+  );
 }
 
 const handler = nc()
@@ -80,8 +90,8 @@ const handler = nc()
     );
     const ratingDiff2 = teamRating2 - rating2;
 
-    await updateTeamRating(team1, rating1);
-    await updateTeamRating(team2, rating2);
+    await updateTeam(team1, rating1, score1 > score2, score1);
+    await updateTeam(team2, rating2, score1 < score2, score2);
 
     const match = await prisma.match.create({
       data: {
@@ -93,8 +103,10 @@ const handler = nc()
         game,
         rating1: +Number(ratingDiff2).toFixed(2),
         rating2: +Number(ratingDiff1).toFixed(2),
+        teamsize: getTeamSize(team1),
       },
     });
+
     res.status(200).json(match);
   });
 

@@ -2,7 +2,7 @@ export interface Statistic {
   total: number;
   teams: Array<{
     name: string;
-    games: number;
+    matches: number;
     wins: number;
     losses: number;
     goals: number;
@@ -10,7 +10,7 @@ export interface Statistic {
     winrate: number;
     opponents: Array<{
       name: string;
-      games: number;
+      matches: number;
       wins: number;
       losses: number;
       goals: number;

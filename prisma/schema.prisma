@@ -21,6 +21,7 @@ model Match {
   rating2   Float
   comment   String
   game      String
+  teamsize  Int
 
   @@map("match")
 }
@@ -31,6 +32,10 @@ model Team {
   name      String
   rating    Float
   game      String
+  matches   Int
+  wins      Int
+  goals     Int
+  teamsize  Int
 
   @@unique([name, game])
   @@map("team")
