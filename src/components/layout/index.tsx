@@ -22,9 +22,9 @@ const NavLink: FunctionComponent<{ label: string; href: string }> = ({
 
 const Layout: FunctionComponent<{ children: ReactNode }> = ({ children }) => {
   return (
-    <div className="container max-w-3xl mx-auto mt-20  flex flex-col py-4">
+    <div className="container max-w-3xl mx-auto mt-20  flex flex-col py-4 px-4">
       <div>
-        <div className="flex justify-between mb-1">
+        <div className="flex justify-between items-center mb-1">
           <Link href="/">
             <a>
               <h1

@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { ToastContainer } from "react-toastify";
 import "../styles/globals.css";
 import "react-toastify/dist/ReactToastify.css";
-import {DefaultSeo} from 'next-seo';
+import { DefaultSeo } from "next-seo";
 
 const queryClient = new QueryClient();
 
