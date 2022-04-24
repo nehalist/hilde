@@ -21,6 +21,7 @@
     "react-dom": "18.0.0",
     "react-hook-form": "^7.30.0",
     "react-query": "^3.38.0",
+    "react-toastify": "^8.2.0",
     "yup": "^0.32.11"
   },
   "devDependencies": {
