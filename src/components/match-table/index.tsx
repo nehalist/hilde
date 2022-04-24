@@ -3,13 +3,14 @@ import { Match } from "@prisma/client";
 import { formatDistance } from "date-fns";
 import RatingChange from "../rating-change";
 import { TiDeleteOutline } from "react-icons/ti";
-import { useMutation } from "react-query";
+import {useMutation, useQueryClient} from "react-query";
 import { toast } from "react-toastify";
 
 const MatchTable: FunctionComponent<{
   matches: Match[];
-  onDelete: (match: Match) => void;
+  onDelete?: (match: Match) => void;
 }> = ({ matches, onDelete }) => {
+  const queryClient = useQueryClient();
   const mutation = useMutation(
     async (id: number) => {
       return await fetch(`/api/matches/${id}`, {
@@ -21,7 +22,14 @@ const MatchTable: FunctionComponent<{
         toast("Its gone. Forever.", {
           type: "success",
         });
-        onDelete(match);
+        const existing = queryClient.getQueryData<Match[]>(["matches"]);
+        queryClient.setQueryData(
+          ["matches"],
+          existing?.filter(m => m.id !== match.id),
+        );
+        if (onDelete) {
+          onDelete(match);
+        }
       },
     },
   );

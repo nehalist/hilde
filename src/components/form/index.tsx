@@ -35,8 +35,8 @@ const Form = () => {
       yup.object().shape({
         team1: yup.string().required(),
         team2: yup.string().required(),
-        score1: yup.number().required(),
-        score2: yup.number().required(),
+        score1: yup.number().min(0).required(),
+        score2: yup.number().min(0).required(),
         comment: yup.string(),
       }),
     ),
@@ -112,6 +112,7 @@ const Form = () => {
                     name="score1"
                     render={({ field }) => (
                       <Input
+                        type="number"
                         placeholder="2"
                         label="Score"
                         value={field.value}
@@ -147,6 +148,7 @@ const Form = () => {
                     name="score2"
                     render={({ field }) => (
                       <Input
+                        type="number"
                         placeholder="3"
                         label="Score"
                         value={field.value}
