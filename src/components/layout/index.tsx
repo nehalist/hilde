@@ -57,11 +57,6 @@ const Layout: FunctionComponent<{ children: ReactNode }> = ({ children }) => {
         </div>
         {children}
       </div>
-      <div className="text-center text-gray-500 text-xs my-8">
-        <p>
-          Made because I can.
-        </p>
-      </div>
     </div>
   );
 };

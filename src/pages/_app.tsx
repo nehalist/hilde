@@ -13,7 +13,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       <DefaultSeo
         defaultTitle="Hilde"
         titleTemplate="%s - Hilde"
-        description="Hilde is a web developer and designer based in Berlin, Germany. She is currently working on a new project."
+        description="A better spreadsheet"
       />
       <Component {...pageProps} />
       <ToastContainer
