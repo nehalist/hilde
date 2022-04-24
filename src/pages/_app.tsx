@@ -3,12 +3,18 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { ToastContainer } from "react-toastify";
 import "../styles/globals.css";
 import "react-toastify/dist/ReactToastify.css";
+import {DefaultSeo} from 'next-seo';
 
 const queryClient = new QueryClient();
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <QueryClientProvider client={queryClient}>
+      <DefaultSeo
+        defaultTitle="Hilde"
+        titleTemplate="%s - Hilde"
+        description="Hilde is a web developer and designer based in Berlin, Germany. She is currently working on a new project."
+      />
       <Component {...pageProps} />
       <ToastContainer
         position="bottom-center"

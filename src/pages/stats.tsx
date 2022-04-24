@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Statistic } from "../model";
 import OverallStats from "../components/overall-stats";
 import TeamStats from "../components/team-stats";
+import { NextSeo } from "next-seo";
 
 const months = [
   "January",
@@ -42,6 +43,7 @@ const Stats: NextPage = () => {
 
   return (
     <Layout>
+      <NextSeo title="Statistics" />
       <div className="flex gap-3">
         <div>
           <Select

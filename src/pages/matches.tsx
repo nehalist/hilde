@@ -5,6 +5,7 @@ import { Match } from "@prisma/client";
 import MatchTable from "../components/match-table";
 import { Card } from "../components/card";
 import { useMemo, useState } from "react";
+import { NextSeo } from "next-seo";
 
 interface MatchesProps {
   matches: Match[];
@@ -18,6 +19,7 @@ const Matches: NextPage<MatchesProps> = ({ matches }) => {
 
   return (
     <Layout>
+      <NextSeo title="Matches" />
       <Card>
         <MatchTable
           matches={filteredMatches}
