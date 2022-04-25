@@ -3,7 +3,7 @@ import prisma from "../../../lib/prisma";
 import nc from "next-connect";
 
 const handler = nc().get(async (req: NextApiRequest, res: NextApiResponse) => {
-  let { teamsize } = req.query;
+  const { teamsize } = req.query;
 
   const teams = await prisma.team.findMany({
     where: {
