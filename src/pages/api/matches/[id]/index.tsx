@@ -8,6 +8,7 @@ async function updateTeam(
   rating: number,
   win: boolean,
 ) {
+  name = name.trim();
   const team = await prisma.team.findFirst({
     where: {
       name: name,

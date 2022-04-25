@@ -7,6 +7,7 @@ import { getTeamSize } from "../../../lib/helper";
 import config from "../../../../config.json";
 
 async function getTeam(name: string): Promise<Team> {
+  name = name.trim();
   return await prisma.team.upsert({
     where: {
       name_game: {
