@@ -77,17 +77,17 @@ const handler = nc()
     const expected1 = getExpectedRating(teamRating1, teamRating2);
     const expected2 = getExpectedRating(teamRating2, teamRating1);
 
-    const rating1 = score1 > score2 ? calculateRating(
+    const rating1 = calculateRating(
       expected1,
       score1 > score2 ? 1 : 0,
       teamRating1,
-    ) : team1Obj.rating;
+    );
     const ratingDiff1 = teamRating1 - rating1;
-    const rating2 = score1 < score2 ? calculateRating(
+    const rating2 = calculateRating(
       expected2,
       score1 < score2 ? 1 : 0,
       teamRating2,
-    ) : team2Obj.rating;
+    );
     const ratingDiff2 = teamRating2 - rating2;
 
     await updateTeam(team1, rating1, score1 > score2, score1);

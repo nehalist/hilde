@@ -44,7 +44,7 @@ const MatchTable: FunctionComponent<{
         <tr className="bg-gray-200 text-sm">
           <th className="p-3 w-1/4">Team 1</th>
           <th className="p-3 w-1/4">Team 2</th>
-          <th className="p-3 w-1/5">Result</th>
+          <th className="p-3 w-32">Result</th>
           <th className="p-3">Date</th>
         </tr>
       </thead>
@@ -56,12 +56,12 @@ const MatchTable: FunctionComponent<{
           >
             <td className={`p-3`}>
               {match.team1} {match.score1 > match.score2 ? "🏆" : ""}
-              {match.score1 === 0 ? "🪡" : ""}{" "}
+              {match.score1 === 0 ? "✂️" : ""}{" "}
               <RatingChange rating={match.rating1} />
             </td>
             <td className={`p-3`}>
               {match.team2} {match.score2 > match.score1 ? "🏆" : ""}
-              {match.score2 === 0 ? "🪡" : ""}{" "}
+              {match.score2 === 0 ? "✂️" : ""}{" "}
               <RatingChange rating={match.rating2} />
             </td>
             <td className="p-3">

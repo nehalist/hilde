@@ -7,7 +7,7 @@ import { Match } from "@prisma/client";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import LoadingIndicator from "../loading-indicator";
-import {toast} from 'react-toastify';
+import { toast } from "react-toastify";
 
 interface FormValues {
   team1: string;
@@ -35,8 +35,16 @@ const Form = () => {
       yup.object().shape({
         team1: yup.string().required(),
         team2: yup.string().required(),
-        score1: yup.number().min(0).required(),
-        score2: yup.number().min(0).required(),
+        score1: yup
+          .number()
+          .min(0)
+          .notOneOf([yup.ref("score2")])
+          .required(),
+        score2: yup
+          .number()
+          .min(0)
+          .notOneOf([yup.ref("score1")])
+          .required(),
         comment: yup.string(),
       }),
     ),
@@ -72,15 +80,15 @@ const Form = () => {
         );
         reset();
         ref.current?.focus();
-        toast('Successfully saved.', {
-          type: 'success'
+        toast("Successfully saved.", {
+          type: "success",
         });
       },
       onError: () => {
-        toast('Failed to save.', {
-          type: 'error'
+        toast("Failed to save.", {
+          type: "error",
         });
-      }
+      },
     },
   );
 
