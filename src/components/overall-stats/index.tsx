@@ -52,7 +52,7 @@ const WinnerRow: FunctionComponent<{
         <>{col(winrateCategory[position].name, (Math.round(winrateCategory[position].winrate * 100)) + '%', true)}</>
       ) : <td></td>}
       {lossesCategory[position] ? (
-        <>{col(lossesCategory[position].name, lossesCategory[position].goals)}</>
+        <>{col(lossesCategory[position].name, lossesCategory[position].losses)}</>
       ) : <td></td>}
     </tr>
   );
