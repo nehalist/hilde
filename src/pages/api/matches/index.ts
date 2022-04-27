@@ -68,8 +68,8 @@ const handler = nc()
       return;
     }
 
-    team1 = team1.split(",").map(t => t.toLowerCase()).sort().join(",");
-    team2 = team2.split(",").map(t => t.toLowerCase()).sort().join(",");
+    team1 = team1.split(",").map(t => t.toLowerCase().trim()).sort().join(",").trim();
+    team2 = team2.split(",").map(t => t.toLowerCase().trim()).sort().join(",").trim();
 
     const team1Obj = await getTeam(team1);
     const team2Obj = await getTeam(team2);

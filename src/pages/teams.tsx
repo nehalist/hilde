@@ -12,6 +12,7 @@ const Teams: NextPage = () => {
   const [teamsize, setTeamsize] = useState(1);
   const { data, isLoading } = useQuery(["teams", teamsize], () =>
     fetch(`/api/teams?teamsize=${teamsize}`).then(res => res.json()),
+    { keepPreviousData: true }
   );
 
   return (

@@ -39,6 +39,9 @@ const Stats: NextPage = () => {
       );
       return await response.json();
     },
+    {
+      keepPreviousData: true
+    }
   );
 
   return (
@@ -78,7 +81,6 @@ const Stats: NextPage = () => {
       </div>
       {data && (
         <>
-          <h2 className="font-semibold text-2xl my-3 text-gray-800">Overall</h2>
           <OverallStats stats={data} />
           <h2 className="font-semibold text-2xl my-3 mt-6 text-gray-800">
             Teams
