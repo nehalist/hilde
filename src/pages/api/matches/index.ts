@@ -1,9 +1,9 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import {NextApiRequest, NextApiResponse} from "next";
 import prisma from "../../../lib/prisma";
 import nc from "next-connect";
-import { getExpectedRating, calculateRating } from "../../../lib/elo";
-import { Team } from "@prisma/client";
-import { getTeamSize } from "../../../lib/helper";
+import {getExpectedRating, calculateRating} from "../../../lib/elo";
+import {Team} from "@prisma/client";
+import {getTeamSize} from "../../../lib/helper";
 import config from "../../../../config.json";
 
 async function getTeam(name: string): Promise<Team> {
@@ -59,7 +59,7 @@ const handler = nc()
     res.json(matches);
   })
   .post(async (req: NextApiRequest, res: NextApiResponse) => {
-    const { team1, team2, score1, score2, comment } = req.body;
+    let {team1, team2, score1, score2, comment} = req.body;
     if (!team1 || !team2 || +score1 < 0 || +score2 < 0) {
       res.status(400).json({
         error: "Bad Request",
@@ -67,6 +67,9 @@ const handler = nc()
       });
       return;
     }
+
+    team1 = team1.split(",").sort().join(",");
+    team2 = team2.split(",").sort().join(",");
 
     const team1Obj = await getTeam(team1);
     const team2Obj = await getTeam(team2);
@@ -95,8 +98,8 @@ const handler = nc()
 
     const match = await prisma.match.create({
       data: {
-        team1: team1.split(",").sort().join(","),
-        team2: team2.split(",").sort().join(","),
+        team1: team1,
+        team2: team2,
         score1: +score1,
         score2: +score2,
         comment,
