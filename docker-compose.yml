@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  node:
+    image: hilde_node:latest
+    build:
+      context: .
+    volumes:
+      - './prisma/:/app/prisma/db/'
+    ports:
+      - '127.0.0.1:3010:3000'
