@@ -8,15 +8,15 @@ const NavLink: FunctionComponent<{ label: string; href: string }> = ({
 }) => {
   const router = useRouter();
   return (
-    <Link href={href}>
-      <a
-        className={`opacity-50 transition-opacity hover:opacity-100 font-semibold ${
-          router.pathname === href ? "opacity-100" : ""
-        }`}
-      >
-        {label}
-      </a>
-    </Link>
+    (<Link
+      href={href}
+      className={`opacity-50 transition-opacity hover:opacity-100 font-semibold ${
+        router.pathname === href ? "opacity-100" : ""
+      }`}>
+
+      {label}
+
+    </Link>)
   );
 };
 
@@ -26,20 +26,18 @@ const Layout: FunctionComponent<{ children: ReactNode }> = ({ children }) => {
       <div>
         <div className="flex justify-between items-center mb-1">
           <Link href="/">
-            <a>
-              <h1
-                className="text-3xl font-bold hover:animate-pulse"
-                style={{
-                  backgroundImage:
-                    "linear-gradient(90deg, #0094d8 -20%, #9fc20a 50%)",
-                  backgroundClip: "text",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                }}
-              >
-                Hilde
-              </h1>
-            </a>
+            <h1
+              className="text-3xl font-bold hover:animate-pulse"
+              style={{
+                backgroundImage:
+                  "linear-gradient(90deg, #0094d8 -20%, #9fc20a 50%)",
+                backgroundClip: "text",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
+            >
+              Hilde
+            </h1>
           </Link>
           <div>
             <ul>
