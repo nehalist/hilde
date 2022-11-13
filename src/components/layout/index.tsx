@@ -8,15 +8,14 @@ const NavLink: FunctionComponent<{ label: string; href: string }> = ({
 }) => {
   const router = useRouter();
   return (
-    (<Link
+    <Link
       href={href}
       className={`opacity-50 transition-opacity hover:opacity-100 font-semibold ${
         router.pathname === href ? "opacity-100" : ""
-      }`}>
-
+      }`}
+    >
       {label}
-
-    </Link>)
+    </Link>
   );
 };
 
@@ -42,13 +41,13 @@ const Layout: FunctionComponent<{ children: ReactNode }> = ({ children }) => {
           <div>
             <ul>
               <li className="inline mr-4">
-                <NavLink label={"Matches"} href={"/matches"}/>
+                <NavLink label={"Matches"} href={"/matches"} />
               </li>
               <li className="inline mr-4">
-                <NavLink label={"Teams"} href={"/teams"}/>
+                <NavLink label={"Teams"} href={"/teams"} />
               </li>
               <li className="inline">
-                <NavLink label={"Statistics"} href={"/stats"}/>
+                <NavLink label={"Leaderboards"} href={"/leaderboards"} />
               </li>
             </ul>
           </div>
@@ -56,9 +55,7 @@ const Layout: FunctionComponent<{ children: ReactNode }> = ({ children }) => {
         {children}
       </div>
       <div className="text-center text-gray-500 text-xs my-8">
-        <p>
-          Made because I can.
-        </p>
+        <p>Made because I can.</p>
       </div>
     </div>
   );

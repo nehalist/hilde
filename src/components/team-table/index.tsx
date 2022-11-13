@@ -1,26 +1,25 @@
 import { FunctionComponent } from "react";
 import { Team } from "@prisma/client";
 import { TiDeleteOutline } from "react-icons/ti";
-import { useMutation, useQueryClient } from "react-query";
+import { useQueryClient } from "react-query";
 import { toast } from "react-toastify";
+import { trpc } from "~/utils/trpc";
 
 const TeamTable: FunctionComponent<{ teams: Team[] }> = ({ teams }) => {
   const queryClient = useQueryClient();
-  const mutation = useMutation(
-    async (id: number) => {
-      return await fetch(`/api/teams/${id}`, {
-        method: "DELETE",
-      }).then(res => res.json());
+  const mutation = trpc.teams.delete.useMutation({
+    onSuccess: async () => {
+      await queryClient.invalidateQueries();
+      toast("Its gone. Forever.", {
+        type: "success",
+      });
     },
-    {
-      onSuccess: async () => {
-        await queryClient.invalidateQueries();
-        toast("Its gone. Forever.", {
-          type: "success",
-        });
-      },
+    onError: () => {
+      toast("Failed to delete team.", {
+        type: "error",
+      });
     },
-  );
+  });
 
   return (
     <table className="w-full rounded-lg">
@@ -51,7 +50,7 @@ const TeamTable: FunctionComponent<{ teams: Team[] }> = ({ teams }) => {
                       `Are you really sure? Please enter "${team.name}" to confirm.`,
                     ) === team.name
                   ) {
-                    mutation.mutate(team.id);
+                    mutation.mutate({ id: team.id });
                   }
                 }}
               >
@@ -65,8 +64,8 @@ const TeamTable: FunctionComponent<{ teams: Team[] }> = ({ teams }) => {
               {team.goals}{" "}
               {team.matches > 0 && (
                 <span className="text-sm text-gray-500">
-                Ø {+Number(team.goals / team.matches).toFixed(2)}
-              </span>
+                  Ø {+Number(team.goals / team.matches).toFixed(2)}
+                </span>
               )}
             </td>
             <td className={`p-3`}>
@@ -74,7 +73,7 @@ const TeamTable: FunctionComponent<{ teams: Team[] }> = ({ teams }) => {
                 <>{(+Number(team.wins / team.matches) * 100).toFixed(2)}%</>
               )}
             </td>
-            <td className={`p-3`}>{+(team.rating).toFixed(2)}</td>
+            <td className={`p-3`}>{+team.rating.toFixed(2)}</td>
           </tr>
         ))}
       </tbody>

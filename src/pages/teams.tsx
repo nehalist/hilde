@@ -1,19 +1,15 @@
-import type { NextPage } from "next";
 import Layout from "../components/layout";
-import { Card } from "../components/card";
-import TeamTable from "../components/team-table";
-import { useQuery } from "react-query";
-import LoadingIndicator from "../components/loading-indicator";
-import Select from "../components/select";
+import { Card } from "~/components/card";
+import TeamTable from "~/components/team-table";
+import LoadingIndicator from "~/components/loading-indicator";
+import Select from "~/components/select";
 import { useState } from "react";
 import { NextSeo } from "next-seo";
+import { trpc } from "~/utils/trpc";
 
-const Teams: NextPage = () => {
+const Teams = () => {
   const [teamsize, setTeamsize] = useState(1);
-  const { data, isLoading } = useQuery(["teams", teamsize], () =>
-    fetch(`/api/teams?teamsize=${teamsize}`).then(res => res.json()),
-    { keepPreviousData: true }
-  );
+  const { data, isLoading } = trpc.teams.list.useQuery({ teamsize });
 
   return (
     <Layout>
@@ -31,7 +27,7 @@ const Teams: NextPage = () => {
         />
       </div>
       <Card>
-        {isLoading ? (
+        {isLoading || !data ? (
           <div className="flex justify-center">
             <LoadingIndicator />
           </div>

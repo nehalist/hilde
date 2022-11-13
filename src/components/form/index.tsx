@@ -1,19 +1,18 @@
 import { useEffect, useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { useMutation, useQueryClient } from "react-query";
 import { Card } from "../card";
 import Input from "../input";
-import { Match } from "@prisma/client";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
+import { zodResolver } from "@hookform/resolvers/zod";
 import LoadingIndicator from "../loading-indicator";
+import { trpc } from "~/utils/trpc";
+import { z } from "zod";
 import { toast } from "react-toastify";
 
 interface FormValues {
   team1: string;
   team2: string;
-  score1: string;
-  score2: string;
+  score1: number | string;
+  score2: number | string;
   comment: string;
 }
 
@@ -31,69 +30,54 @@ const Form = () => {
       score2: "",
       comment: "",
     },
-    resolver: yupResolver(
-      yup.object().shape({
-        team1: yup.string().required(),
-        team2: yup.string().required(),
-        score1: yup
-          .number()
-          .min(0)
-          .notOneOf([yup.ref("score2")])
-          .required(),
-        score2: yup
-          .number()
-          .min(0)
-          .notOneOf([yup.ref("score1")])
-          .required(),
-        comment: yup.string(),
+    resolver: zodResolver(
+      z.object({
+        team1: z.string().min(2),
+        team2: z.string().min(2),
+        score1: z.preprocess(
+          v => (v !== "" ? Number(v) : undefined),
+          z.number().min(0),
+        ),
+        score2: z.preprocess(
+          v => (v !== "" ? Number(v) : undefined),
+          z.number().min(0),
+        ),
+        comment: z.string().optional(),
       }),
     ),
     mode: "all",
   });
   const ref = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    if (!ref.current) {
-      return;
-    }
-    ref.current.focus();
-  }, []);
+  useEffect(() => ref.current?.focus(), []);
 
-  const queryClient = useQueryClient();
-  const mutation = useMutation(
-    async (values: FormValues) => {
-      const response = await fetch("/api/matches", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
+  const utils = trpc.useContext();
+  const mutation = trpc.matches.add.useMutation({
+    onSuccess: async () => {
+      await utils.matches.invalidate();
+      toast("Match saved.", {
+        type: "success",
       });
-      return response.json();
+      reset();
+      ref.current?.focus();
     },
-    {
-      onSuccess: async res => {
-        const cachedQueryData = queryClient.getQueryData<Match[]>(["matches"]);
-        queryClient.setQueryData(
-          ["matches"],
-          [res, ...(cachedQueryData || [])].splice(0, 5),
-        );
-        reset();
-        ref.current?.focus();
-        toast("Successfully saved.", {
-          type: "success",
-        });
-      },
-      onError: () => {
-        toast("Failed to save.", {
-          type: "error",
-        });
-      },
+    onError: () => {
+      toast("Failed to save match.", {
+        type: "error",
+      });
     },
-  );
+  });
 
   return (
-    <form onSubmit={handleSubmit(values => mutation.mutateAsync(values))}>
+    <form
+      onSubmit={handleSubmit(values =>
+        mutation.mutate({
+          ...values,
+          score1: +values.score1,
+          score2: +values.score2,
+        }),
+      )}
+    >
       <Card>
         <div className="p-6">
           <div className="grid grid-cols-12">
@@ -123,7 +107,7 @@ const Form = () => {
                         type="number"
                         placeholder="2"
                         label="Score"
-                        value={field.value}
+                        value={`${field.value}`}
                         onChange={field.onChange}
                       />
                     )}
@@ -159,7 +143,7 @@ const Form = () => {
                         type="number"
                         placeholder="3"
                         label="Score"
-                        value={field.value}
+                        value={`${field.value}`}
                         onChange={field.onChange}
                       />
                     )}

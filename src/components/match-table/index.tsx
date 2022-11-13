@@ -2,37 +2,22 @@ import { FunctionComponent } from "react";
 import { Match } from "@prisma/client";
 import RatingChange from "../rating-change";
 import { TiDeleteOutline } from "react-icons/ti";
-import { useMutation, useQueryClient } from "react-query";
 import { toast } from "react-toastify";
 import TimeDistance from "../time-distance";
+import { trpc } from "~/utils/trpc";
 
 const MatchTable: FunctionComponent<{
   matches: Match[];
-  onDelete?: (match: Match) => void;
-}> = ({ matches, onDelete }) => {
-  const queryClient = useQueryClient();
-  const mutation = useMutation(
-    async (id: number) => {
-      return await fetch(`/api/matches/${id}`, {
-        method: "DELETE",
-      }).then(res => res.json());
+}> = ({ matches }) => {
+  const utils = trpc.useContext();
+  const deleteMutation = trpc.matches.delete.useMutation({
+    onSuccess: async () => {
+      await utils.matches.invalidate();
+      toast("Its gone. Forever.", {
+        type: "success",
+      });
     },
-    {
-      onSuccess: match => {
-        toast("Its gone. Forever.", {
-          type: "success",
-        });
-        const existing = queryClient.getQueryData<Match[]>(["matches"]);
-        queryClient.setQueryData(
-          ["matches"],
-          existing?.filter(m => m.id !== match.id),
-        );
-        if (onDelete) {
-          onDelete(match);
-        }
-      },
-    },
-  );
+  });
 
   if (matches.length === 0) {
     return null;
@@ -80,7 +65,7 @@ const MatchTable: FunctionComponent<{
                       `Match ${match.team1} vs ${match.team2} resulting ${match.score1}:${match.score2} will be eradicated from existence - sure about that?`,
                     )
                   ) {
-                    mutation.mutate(match.id);
+                    deleteMutation.mutate({ id: match.id });
                   }
                 }}
               >
