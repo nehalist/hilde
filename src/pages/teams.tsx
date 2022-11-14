@@ -1,18 +1,15 @@
-import Layout from "../components/layout";
-import { Card } from "~/components/card";
-import TeamTable from "~/components/team-table";
-import LoadingIndicator from "~/components/loading-indicator";
-import Select from "~/components/select";
 import { useState } from "react";
 import { NextSeo } from "next-seo";
 import { trpc } from "~/utils/trpc";
+import { Select } from "~/components/Form";
+import { Card, LoadingIndicator, TeamTable } from "~/components/Elements";
 
 const Teams = () => {
   const [teamsize, setTeamsize] = useState(1);
   const { data, isLoading } = trpc.teams.list.useQuery({ teamsize });
 
   return (
-    <Layout>
+    <>
       <NextSeo title="Teams" />
       <div className="mb-3">
         <Select
@@ -35,7 +32,7 @@ const Teams = () => {
           <TeamTable teams={data} />
         )}
       </Card>
-    </Layout>
+    </>
   );
 };
 

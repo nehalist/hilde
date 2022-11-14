@@ -1,6 +1,6 @@
 import { ChangeEventHandler, FunctionComponent } from "react";
 
-const Select: FunctionComponent<{
+export const Select: FunctionComponent<{
   label: string;
   placeholder: string;
   options: Array<{ label: string; value: string }>;
@@ -23,5 +23,3 @@ const Select: FunctionComponent<{
     </select>
   </>
 );
-
-export default Select;

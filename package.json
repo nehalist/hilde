@@ -26,7 +26,6 @@
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.30.0",
     "react-icons": "^4.6.0",
-    "react-query": "^3.38.0",
     "react-toastify": "^9.1.1",
     "yup": "^0.32.11",
     "zod": "^3.19.1"

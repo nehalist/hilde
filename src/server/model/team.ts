@@ -1,7 +1,7 @@
 import { prisma } from "~/server/prisma";
 import config from "../../../config.json";
-import { getTeamSize } from "~/lib/helper";
 import { Team } from "@prisma/client";
+import { getTeamSize } from "~/utils/helper";
 
 export async function getOrCreateTeam(name: string) {
   return await prisma.team.upsert({

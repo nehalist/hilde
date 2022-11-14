@@ -3,7 +3,7 @@ import { differenceInHours, format, formatDistance } from "date-fns";
 
 const threshold = 24;
 
-const TimeDistance: FunctionComponent<{ date: Date }> = ({ date }) => {
+export const TimeDistance: FunctionComponent<{ date: Date }> = ({ date }) => {
   const [baseDate, setBaseDate] = useState(new Date());
   const distance = differenceInHours(date, baseDate) * -1;
   const formattedDate = format(date, "dd.LL.yyyy HH:mm");
@@ -28,5 +28,3 @@ const TimeDistance: FunctionComponent<{ date: Date }> = ({ date }) => {
     </time>
   );
 };
-
-export default TimeDistance;

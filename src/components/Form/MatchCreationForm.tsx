@@ -1,12 +1,11 @@
 import { useEffect, useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Card } from "../card";
-import Input from "../input";
 import { zodResolver } from "@hookform/resolvers/zod";
-import LoadingIndicator from "../loading-indicator";
 import { trpc } from "~/utils/trpc";
 import { z } from "zod";
 import { toast } from "react-toastify";
+import { Card, LoadingIndicator } from "~/components/Elements";
+import { Input } from "~/components/Form";
 
 interface FormValues {
   team1: string;
@@ -16,7 +15,7 @@ interface FormValues {
   comment: string;
 }
 
-const Form = () => {
+export const MatchCreationForm = () => {
   const {
     control,
     handleSubmit,
@@ -180,5 +179,3 @@ const Form = () => {
     </form>
   );
 };
-
-export default Form;

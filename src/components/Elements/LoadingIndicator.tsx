@@ -1,4 +1,4 @@
-const LoadingIndicator = () => (
+export const LoadingIndicator = () => (
   <svg
     role="status"
     className="mr-2 w-8 h-6 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
@@ -16,5 +16,3 @@ const LoadingIndicator = () => (
     />
   </svg>
 );
-
-export default LoadingIndicator;

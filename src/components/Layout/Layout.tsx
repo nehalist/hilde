@@ -19,7 +19,7 @@ const NavLink: FunctionComponent<{ label: string; href: string }> = ({
   );
 };
 
-const Layout: FunctionComponent<{ children: ReactNode }> = ({ children }) => {
+export const Layout: FunctionComponent<{ children: ReactNode }> = ({ children }) => {
   return (
     <div className="container max-w-3xl mx-auto mt-20  flex flex-col py-4 px-4">
       <div>

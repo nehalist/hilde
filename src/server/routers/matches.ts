@@ -2,8 +2,8 @@ import { publicProcedure, router } from "~/server/trpc";
 import { prisma } from "~/server/prisma";
 import { z } from "zod";
 import { getOrCreateTeam, updateTeam } from "~/server/model/team";
-import { calculateRating, getExpectedRating } from "~/lib/elo";
 import { createMatch } from "~/server/model/match";
+import { calculateRating, getExpectedRating } from "~/utils/elo";
 
 function normalizeTeamName(name: string) {
   return name

@@ -1,11 +1,11 @@
 import { FunctionComponent } from "react";
 import { Team } from "@prisma/client";
 import { TiDeleteOutline } from "react-icons/ti";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { trpc } from "~/utils/trpc";
 
-const TeamTable: FunctionComponent<{ teams: Team[] }> = ({ teams }) => {
+export const TeamTable: FunctionComponent<{ teams: Team[] }> = ({ teams }) => {
   const queryClient = useQueryClient();
   const mutation = trpc.teams.delete.useMutation({
     onSuccess: async () => {
@@ -80,5 +80,3 @@ const TeamTable: FunctionComponent<{ teams: Team[] }> = ({ teams }) => {
     </table>
   );
 };
-
-export default TeamTable;

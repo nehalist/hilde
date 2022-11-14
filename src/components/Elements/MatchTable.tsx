@@ -1,12 +1,11 @@
 import { FunctionComponent } from "react";
 import { Match } from "@prisma/client";
-import RatingChange from "../rating-change";
 import { TiDeleteOutline } from "react-icons/ti";
 import { toast } from "react-toastify";
-import TimeDistance from "../time-distance";
 import { trpc } from "~/utils/trpc";
+import { RatingChange, TimeDistance } from "~/components/Elements";
 
-const MatchTable: FunctionComponent<{
+export const MatchTable: FunctionComponent<{
   matches: Match[];
 }> = ({ matches }) => {
   const utils = trpc.useContext();
@@ -78,5 +77,3 @@ const MatchTable: FunctionComponent<{
     </table>
   );
 };
-
-export default MatchTable;

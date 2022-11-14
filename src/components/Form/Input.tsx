@@ -1,6 +1,6 @@
 import { ChangeEventHandler, FunctionComponent, LegacyRef } from "react";
 
-const Input: FunctionComponent<{
+export const Input: FunctionComponent<{
   type?: string;
   label: string;
   placeholder: string;
@@ -20,5 +20,3 @@ const Input: FunctionComponent<{
     />
   </>
 );
-
-export default Input;

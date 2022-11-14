@@ -1,16 +1,14 @@
 import type { AppProps } from "next/app";
-import { QueryClient, QueryClientProvider } from "react-query";
 import { ToastContainer } from "react-toastify";
 import "../styles/globals.css";
 import "react-toastify/dist/ReactToastify.css";
 import { DefaultSeo } from "next-seo";
 import { trpc } from "~/utils/trpc";
-
-const queryClient = new QueryClient();
+import { Layout } from "~/components/Layout";
 
 function App({ Component, pageProps }: AppProps) {
   return (
-    <QueryClientProvider client={queryClient}>
+    <Layout>
       <DefaultSeo
         defaultTitle="Hilde"
         titleTemplate="%s - Hilde"
@@ -25,7 +23,7 @@ function App({ Component, pageProps }: AppProps) {
         pauseOnFocusLoss={true}
         pauseOnHover={false}
       />
-    </QueryClientProvider>
+    </Layout>
   );
 }
 

@@ -1,6 +1,6 @@
 import { prisma } from "~/server/prisma";
 import config from "../../../config.json";
-import { getTeamSize } from "~/lib/helper";
+import { getTeamSize } from "~/utils/helper";
 
 export async function createMatch(
   team1: string,
