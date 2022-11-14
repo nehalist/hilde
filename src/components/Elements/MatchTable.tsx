@@ -1,13 +1,17 @@
-import { FunctionComponent } from "react";
+import { FunctionComponent, useEffect } from "react";
 import { Match } from "@prisma/client";
 import { TiDeleteOutline } from "react-icons/ti";
 import { toast } from "react-toastify";
 import { trpc } from "~/utils/trpc";
 import { RatingChange, TimeDistance } from "~/components/Elements";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 export const MatchTable: FunctionComponent<{
   matches: Match[];
-}> = ({ matches }) => {
+  animated?: boolean;
+}> = ({ matches, animated = true }) => {
+  const [parent, enable] = useAutoAnimate<HTMLTableSectionElement>();
+  useEffect(() => enable(animated), [animated, enable]);
   const utils = trpc.useContext();
   const deleteMutation = trpc.matches.delete.useMutation({
     onSuccess: async () => {
@@ -32,7 +36,7 @@ export const MatchTable: FunctionComponent<{
           <th className="p-3">Date</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody ref={parent}>
         {matches.map((match, index) => (
           <tr
             key={match.id}
@@ -49,7 +53,12 @@ export const MatchTable: FunctionComponent<{
               <RatingChange rating={match.rating2} />
             </td>
             <td className="p-3">
-              {match.score1}:{match.score2}
+              <span className="border rounded p-1 bg-gray-50 font-extralight mr-1">
+                {match.score1}
+              </span>{" "}:{" "}
+              <span className="border rounded p-1 bg-gray-50 font-extralight mr-1">
+                {match.score2}
+              </span>
               {match.comment !== "" && (
                 <div className="text-xs text-gray-500">{match.comment}</div>
               )}
