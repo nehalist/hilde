@@ -16,7 +16,7 @@ const Home = () => {
             Recent Matches
           </h3>
         </div>
-        {matches.data && <MatchTable matches={matches.data} />}
+        {matches.data && <MatchTable matches={matches.data || []} />}
       </div>
     </>
   );

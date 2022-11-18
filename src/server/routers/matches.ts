@@ -18,16 +18,92 @@ export const matchesRouter = router({
   list: publicProcedure
     .input(
       z.object({
-        limit: z.number().optional(),
+        limit: z.number().min(1).max(100).default(50),
       }),
     )
     .query(async ({ input }) => {
       return await prisma.match.findMany({
+        take: input.limit + 1,
         orderBy: {
           createdAt: "desc",
         },
-        take: input.limit,
       });
+    }),
+
+  infiniteList: publicProcedure
+    .input(
+      z.object({
+        limit: z.number().min(1).max(100).default(50),
+        cursor: z.number().nullish(),
+        team1: z.string().optional(),
+        team2: z.string().optional(),
+        exact: z.boolean().optional(),
+      }),
+    )
+    .query(async ({ input }) => {
+      let where = {};
+      if (input.team1 && !input.team2) {
+        where = {
+          OR: [
+            {
+              team1: input.exact ? input.team1 : { contains: input.team1 }
+            },
+            {
+              team2: input.exact ? input.team1 : { contains: input.team1 }
+            }
+          ]
+        };
+      }
+      if (input.team1 && input.team2) {
+        where = {
+          OR: [
+            {
+              team1: input.exact
+                ? input.team1
+                : {
+                    contains: input.team1,
+                  },
+              team2: input.exact
+                ? input.team2
+                : {
+                    contains: input.team2,
+                  },
+            },
+            {
+              team1: input.exact
+                ? input.team2
+                : {
+                    contains: input.team2,
+                  },
+              team2: input.exact
+                ? input.team1
+                : {
+                    contains: input.team1,
+                  },
+            },
+          ],
+        };
+      }
+
+      const items = await prisma.match.findMany({
+        take: input.limit + 1,
+        where,
+        cursor: input.cursor ? { id: input.cursor } : undefined,
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+
+      let nextCursor: typeof input.cursor | undefined = undefined;
+      if (items.length > input.limit) {
+        const nextItem = items.pop();
+        nextCursor = nextItem!.id;
+      }
+
+      return {
+        items,
+        nextCursor,
+      };
     }),
 
   add: publicProcedure

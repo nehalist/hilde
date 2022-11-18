@@ -2,7 +2,7 @@ import { ChangeEventHandler, FunctionComponent } from "react";
 
 export const Select: FunctionComponent<{
   label: string;
-  placeholder: string;
+  placeholder?: string;
   options: Array<{ label: string; value: string }>;
   selectedValue: string;
   onChange: ChangeEventHandler<HTMLSelectElement>;
