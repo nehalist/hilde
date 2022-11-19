@@ -4,3 +4,4 @@ export * from "./TeamTable";
 export * from "./MatchTable";
 export * from "./RatingChange";
 export * from "./TeamDistance";
+export * from "./Score";

@@ -152,15 +152,14 @@ export const MatchCreationForm = () => {
             </div>
           </div>
         </div>
-        <hr />
-        <div className="px-6 py-3 flex justify-between">
+        <div className="px-6 py-3 flex justify-between border-t dark:border-gray-500">
           <Controller
             control={control}
             name="comment"
             render={({ field }) => (
               <input
                 type="text"
-                className="border-0 text-sm focus:outline-none"
+                className="border-0 text-sm focus:outline-none bg-transparent"
                 placeholder="Comment"
                 value={field.value}
                 onChange={field.onChange}

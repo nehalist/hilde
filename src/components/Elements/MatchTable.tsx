@@ -3,8 +3,12 @@ import { Match } from "@prisma/client";
 import { TiDeleteOutline } from "react-icons/ti";
 import { toast } from "react-toastify";
 import { trpc } from "~/utils/trpc";
-import { RatingChange, TimeDistance } from "~/components/Elements";
+import { RatingChange, Score, TimeDistance } from "~/components/Elements";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
+import dynamic from "next/dynamic";
+import { BiCommentDetail } from "react-icons/bi";
+
+const ReactTooltip = dynamic(() => import("react-tooltip"), { ssr: false });
 
 export const MatchTable: FunctionComponent<{
   matches: Match[];
@@ -27,9 +31,9 @@ export const MatchTable: FunctionComponent<{
   }
 
   return (
-    <table className="w-full rounded-lg">
+    <table className="w-full rounded-lg dark:bg-gray-700">
       <thead className="text-left">
-        <tr className="bg-gray-200 text-sm">
+        <tr className="bg-gray-200 dark:bg-gray-600 text-sm">
           <th className="p-3 w-1/4">Team 1</th>
           <th className="p-3 w-1/4">Team 2</th>
           <th className="p-3 w-32">Result</th>
@@ -40,7 +44,9 @@ export const MatchTable: FunctionComponent<{
         {matches.map((match, index) => (
           <tr
             key={match.id}
-            className={`${index % 2 === 0 ? "bg-gray-50" : ""} group`}
+            className={`${
+              index % 2 === 0 ? "bg-gray-50 dark:bg-gray-800" : ""
+            } group`}
           >
             <td className={`p-3`}>
               {match.team1} {match.score1 > match.score2 ? "🏆" : ""}
@@ -52,15 +58,22 @@ export const MatchTable: FunctionComponent<{
               {match.score2 === 0 ? "✂️" : ""}{" "}
               <RatingChange rating={match.rating2} />
             </td>
-            <td className="p-3">
-              <span className="border rounded p-1 bg-gray-50 font-extralight mr-1">
-                {match.score1}
-              </span>{" "}:{" "}
-              <span className="border rounded p-1 bg-gray-50 font-extralight mr-1">
-                {match.score2}
-              </span>
+            <td className="p-3 flex gap-1 items-center">
+              <Score score={match.score1} /> : <Score score={match.score2} />
               {match.comment !== "" && (
-                <div className="text-xs text-gray-500">{match.comment}</div>
+                <>
+                  <button
+                    className="text-gray-600 hover:text-gray-900 dark:hover:text-gray-400 transition"
+                    data-tip={match.comment}
+                    data-for={`comment-${match.id}`}
+                  >
+                    <BiCommentDetail />
+                  </button>
+                  <ReactTooltip
+                    id={`comment-${match.id}`}
+                    globalEventOff="click"
+                  />
+                </>
               )}
             </td>
             <td className="p-3">

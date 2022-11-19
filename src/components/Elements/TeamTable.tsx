@@ -22,9 +22,9 @@ export const TeamTable: FunctionComponent<{ teams: Team[] }> = ({ teams }) => {
   });
 
   return (
-    <table className="w-full rounded-lg">
+    <table className="w-full rounded-lg dark:bg-gray-700">
       <thead className="text-left">
-        <tr className="bg-gray-200 text-sm">
+        <tr className="bg-gray-200 dark:bg-gray-600 text-sm">
           <th className="p-3">Name</th>
           <th className="p-3">Matches</th>
           <th className="p-3">Wins</th>
@@ -38,7 +38,7 @@ export const TeamTable: FunctionComponent<{ teams: Team[] }> = ({ teams }) => {
         {teams.map((team, index) => (
           <tr
             key={team.id}
-            className={`${index % 2 === 0 ? "bg-gray-50" : ""} border-b group`}
+            className={`${index % 2 === 0 ? "bg-gray-50 dark:bg-gray-800" : ""} group`}
           >
             <td className={`p-3`}>
               {team.name}

@@ -11,7 +11,7 @@ const Teams = () => {
   return (
     <>
       <NextSeo title="Teams" />
-      <div className="mb-3">
+      <div className="my-2">
         <Select
           label={"Team Size"}
           placeholder={"Single"}
