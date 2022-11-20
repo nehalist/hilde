@@ -6,7 +6,10 @@ import { Card, LoadingIndicator, TeamTable } from "~/components/Elements";
 
 const Teams = () => {
   const [teamsize, setTeamsize] = useState(1);
-  const { data, isLoading } = trpc.teams.list.useQuery({ teamsize });
+  const { data, isLoading } = trpc.teams.list.useQuery(
+    { teamsize },
+    { keepPreviousData: true },
+  );
 
   return (
     <>
@@ -16,8 +19,10 @@ const Teams = () => {
           label={"Team Size"}
           placeholder={"Single"}
           options={[
-            { label: "Single", value: "1" },
-            { label: "Double", value: "2" },
+            { label: "1", value: "1" },
+            { label: "2", value: "2" },
+            { label: "3", value: "3" },
+            { label: "4", value: "4" },
           ]}
           selectedValue={`${teamsize}`}
           onChange={e => setTeamsize(parseInt(e.target.value))}

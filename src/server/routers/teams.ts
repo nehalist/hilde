@@ -50,4 +50,18 @@ export const teamsRouter = router({
 
       return team;
     }),
+
+  byId: publicProcedure
+    .input(
+      z.object({
+        name: z.string(),
+      }),
+    )
+    .query(async ({ input }) => {
+      return await prisma.team.findUnique({
+        where: {
+          name: input.name,
+        },
+      });
+    }),
 });

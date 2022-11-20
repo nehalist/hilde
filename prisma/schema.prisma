@@ -11,17 +11,20 @@ datasource db {
 }
 
 model Match {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  team1     String
-  team2     String
-  score1    Int
-  score2    Int
-  rating1   Float
-  rating2   Float
-  comment   String
-  game      String
-  teamsize  Int
+  id                Int      @id @default(autoincrement())
+  createdAt         DateTime @default(now())
+  team1             String
+  team2             String
+  score1            Int
+  score2            Int
+  team1RatingChange Float    @default(0)
+  team2RatingChange Float    @default(0)
+  team1Rating       Float    @default(0)
+  team2Rating       Float    @default(0)
+  comment           String
+  game              String
+  teamsize          Int
+  meta              String   @default("{}")
 
   @@map("match")
 }
@@ -31,12 +34,9 @@ model Team {
   createdAt DateTime @default(now())
   name      String
   rating    Float
-  game      String
-  matches   Int
-  wins      Int
-  goals     Int
   teamsize  Int
+  meta      String   @default("{}")
 
-  @@unique([name, game])
+  @@unique(name)
   @@map("team")
 }

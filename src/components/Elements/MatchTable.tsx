@@ -51,12 +51,12 @@ export const MatchTable: FunctionComponent<{
             <td className={`p-3`}>
               {match.team1} {match.score1 > match.score2 ? "🏆" : ""}
               {match.score1 === 0 ? "✂️" : ""}{" "}
-              <RatingChange rating={match.rating1} />
+              <RatingChange rating={match.team1RatingChange} />
             </td>
             <td className={`p-3`}>
               {match.team2} {match.score2 > match.score1 ? "🏆" : ""}
               {match.score2 === 0 ? "✂️" : ""}{" "}
-              <RatingChange rating={match.rating2} />
+              <RatingChange rating={match.team2RatingChange} />
             </td>
             <td className="p-3 flex gap-1 items-center">
               <Score score={match.score1} /> : <Score score={match.score2} />

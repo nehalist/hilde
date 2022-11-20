@@ -1,9 +1,8 @@
 import { publicProcedure, router } from "~/server/trpc";
 import { prisma } from "~/server/prisma";
 import { z } from "zod";
-import { getOrCreateTeam, updateTeam } from "~/server/model/team";
+import { getOrCreateTeam } from "~/server/model/team";
 import { createMatch } from "~/server/model/match";
-import { calculateRating, getExpectedRating } from "~/utils/elo";
 
 function normalizeTeamName(name: string) {
   return name
@@ -46,12 +45,12 @@ export const matchesRouter = router({
         where = {
           OR: [
             {
-              team1: input.exact ? input.team1 : { contains: input.team1 }
+              team1: input.exact ? input.team1 : { contains: input.team1 },
             },
             {
-              team2: input.exact ? input.team1 : { contains: input.team1 }
-            }
-          ]
+              team2: input.exact ? input.team1 : { contains: input.team1 },
+            },
+          ],
         };
       }
       if (input.team1 && input.team2) {
@@ -120,46 +119,12 @@ export const matchesRouter = router({
       const team1 = await getOrCreateTeam(input.team1);
       const team2 = await getOrCreateTeam(input.team2);
 
-      const teamRating1 = team1.rating;
-      const teamRating2 = team2.rating;
-
-      const expected1 = getExpectedRating(teamRating1, teamRating2);
-      const expected2 = getExpectedRating(teamRating2, teamRating1);
-
-      const rating1 = calculateRating(
-        expected1,
-        input.score1 > input.score2 ? 1 : 0,
-        teamRating1,
-      );
-      const ratingDiff1 = teamRating1 - rating1;
-      const rating2 = calculateRating(
-        expected2,
-        input.score1 < input.score2 ? 1 : 0,
-        teamRating2,
-      );
-      const ratingDiff2 = teamRating2 - rating2;
-
-      await updateTeam(
-        team1,
-        rating1,
-        input.score1 > input.score2,
-        input.score1,
-      );
-      await updateTeam(
-        team2,
-        rating2,
-        input.score1 < input.score2,
-        input.score2,
-      );
-
       return await createMatch(
-        input.team1,
-        input.team2,
+        team1,
+        team2,
         input.score1,
         input.score2,
         input.comment,
-        ratingDiff1,
-        ratingDiff2,
       );
     }),
 
