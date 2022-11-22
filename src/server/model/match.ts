@@ -1,7 +1,7 @@
 import { prisma } from "~/server/prisma";
 import { getTeamSize } from "~/model/team";
 import { Team } from "@prisma/client";
-import { addMatchToTeam } from "~/server/model/team";
+import { addMatchToTeam, setAchievements } from "~/server/model/team";
 
 export async function createMatch(
   team1: Team,
@@ -24,7 +24,8 @@ export async function createMatch(
     score2,
     new Date(),
   );
-  return await prisma.match.create({
+
+  const match = await prisma.match.create({
     data: {
       team1: team1.name,
       team2: team2.name,
@@ -39,4 +40,8 @@ export async function createMatch(
       teamsize: getTeamSize(team1.name),
     },
   });
+
+  await setAchievements(updatedTeam1.team, updatedTeam2.team, match);
+
+  return match;
 }

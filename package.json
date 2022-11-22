@@ -12,6 +12,8 @@
   "dependencies": {
     "@formkit/auto-animate": "^1.0.0-beta.3",
     "@hookform/resolvers": "^2.9.10",
+    "@nivo/core": "^0.80.0",
+    "@nivo/line": "^0.80.0",
     "@prisma/client": "^4.6.1",
     "@tanstack/react-query": "^4.15.1",
     "@trpc/client": "^10.0.0-rc.5",

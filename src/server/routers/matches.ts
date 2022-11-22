@@ -17,15 +17,19 @@ export const matchesRouter = router({
   list: publicProcedure
     .input(
       z.object({
-        limit: z.number().min(1).max(100).default(50),
+        limit: z.number().min(0).max(100).default(50),
+        team: z.string().optional(),
       }),
     )
     .query(async ({ input }) => {
       return await prisma.match.findMany({
-        take: input.limit + 1,
+        take: input.limit > 0 ? input.limit : undefined,
         orderBy: {
           createdAt: "desc",
         },
+        where: input.team
+          ? { OR: [{ team1: input.team }, { team2: input.team }] }
+          : undefined,
       });
     }),
 

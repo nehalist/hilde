@@ -30,12 +30,13 @@ model Match {
 }
 
 model Team {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  name      String
-  rating    Float
-  teamsize  Int
-  meta      String   @default("{}")
+  id                Int      @id @default(autoincrement())
+  createdAt         DateTime @default(now())
+  name              String
+  rating            Float
+  teamsize          Int
+  achievementPoints Int      @default(0)
+  meta              String   @default("{}")
 
   @@unique(name)
   @@map("team")

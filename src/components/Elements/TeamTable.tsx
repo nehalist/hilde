@@ -5,6 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { trpc } from "~/utils/trpc";
 import { getTeamMeta } from "~/model/team";
+import { TeamLink } from "~/components/Elements/TeamLink";
 
 type TeamOrder =
   | "name"
@@ -117,7 +118,7 @@ export const TeamTable: FunctionComponent<{ teams: Team[] }> = ({ teams }) => {
               } group`}
             >
               <td className={`p-3`}>
-                {team.name}
+                <TeamLink team={team.name} />
                 <button
                   className="group-hover:opacity-100 opacity-0 transition-opacity mx-3 text-red-500"
                   onClick={() => {

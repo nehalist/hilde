@@ -1,8 +1,10 @@
 import { prisma } from "~/server/prisma";
-import { Team } from "@prisma/client";
+import { Match, Team } from "@prisma/client";
 import { calculateRating, defaultRating, getExpectedRating } from "~/utils/elo";
 import { format } from "date-fns";
 import { getTeamMeta, getTeamSize, TeamMeta } from "~/model/team";
+import { Achievement, checkAchievements } from "~/utils/achievements";
+import { getMatchMeta } from "~/model/match";
 
 export async function getOrCreateTeam(name: string) {
   return await prisma.team.upsert({
@@ -53,7 +55,7 @@ export async function addMatchToTeam(
             meta.total.highestLosingStreak,
             meta.current.losingStreak + 1,
           )
-        : meta.total.highestWinStreak,
+        : meta.total.highestLosingStreak,
       score: meta.total.score + score,
       avgScore: (meta.total.score + score) / (meta.total.matches + 1),
       highestRating: Math.max(meta.total.highestRating, rating),
@@ -96,5 +98,63 @@ export async function addMatchToTeam(
     }),
     rating,
     diff: currentRating - rating,
-  }
+  };
+}
+
+export async function grantAchievements(
+  team: Team,
+  achievements: Achievement[],
+  match: Match,
+) {
+  const teamMeta = getTeamMeta(team);
+  const matchMeta = getMatchMeta(match);
+  const matchTeam = match.team1 === team.name ? "team1" : "team2";
+
+  const updatedMatch = await prisma.match.update({
+    where: {
+      id: match.id,
+    },
+    data: {
+      meta: JSON.stringify({
+        ...matchMeta,
+        achievements: {
+          ...matchMeta.achievements,
+          [matchTeam]: achievements.map(a => a.id),
+        },
+      }),
+    },
+  });
+
+  return {
+    team: await prisma.team.update({
+      where: {
+        id: team.id,
+      },
+      data: {
+        achievementPoints:
+          team.achievementPoints +
+          achievements.reduce((a, b) => a + b.points, 0),
+        meta: JSON.stringify({
+          ...teamMeta,
+          achievements: achievements.map(a => ({
+            id: a.id,
+            earnedAt: match.createdAt,
+            matchId: match.id,
+          })),
+        }),
+      },
+    }),
+    match: updatedMatch,
+  };
+}
+
+export async function setAchievements(team1: Team, team2: Team, match: Match) {
+  const achievements1 = checkAchievements(team1, team2, match);
+  const achievements2 = checkAchievements(team2, team1, match);
+  const { match: updatedMatch } = await grantAchievements(team1, achievements1, match);
+  await grantAchievements(team2, achievements2, updatedMatch);
+  return {
+    achievements1,
+    achievements2,
+  };
 }

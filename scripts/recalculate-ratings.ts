@@ -1,7 +1,11 @@
 require("dotenv").config();
 import { defaultRating, k } from "~/utils/elo";
 import { prisma } from "~/server/prisma";
-import { addMatchToTeam, getOrCreateTeam } from "~/server/model/team";
+import {
+  addMatchToTeam,
+  getOrCreateTeam,
+  setAchievements,
+} from "~/server/model/team";
 
 (async () => {
   console.log(`Recalculating using k=${k}, defaultRating=${defaultRating}`);
@@ -18,6 +22,7 @@ import { addMatchToTeam, getOrCreateTeam } from "~/server/model/team";
     data: {
       meta: JSON.stringify({}),
       rating: defaultRating,
+      achievementPoints: 0,
     },
   });
 
@@ -52,6 +57,8 @@ import { addMatchToTeam, getOrCreateTeam } from "~/server/model/team";
         team2RatingChange: updatedTeam1.diff,
       },
     });
+
+    await setAchievements(updatedTeam1.team, updatedTeam2.team, match);
 
     i++;
     if (i % 100 === 0) {

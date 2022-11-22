@@ -28,6 +28,11 @@ export interface TeamMeta {
     losingStreak: number;
   };
   version: number;
+  achievements: Array<{
+    id: string;
+    earnedAt: Date;
+    matchId: number;
+  }>;
 }
 
 export function getTeamMeta(team: Team): TeamMeta {
@@ -58,6 +63,7 @@ export function getTeamMeta(team: Team): TeamMeta {
       winStreak: meta?.current?.winStreak || 0,
       losingStreak: meta?.current?.losingStreak || 0,
     },
+    achievements: meta?.achievements || [],
     version: 1,
   };
 }
