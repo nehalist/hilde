@@ -429,7 +429,7 @@ export const achievements: Achievement[] = [
     id: "daily-o-clock",
     condition: (team, opponent, match) => {
       return (
-        match.createdAt.getHours() >= 10 && match.createdAt.getHours() <= 11
+        match.createdAt.getHours() >= 10 && match.createdAt.getHours() <= 11  // TODO
       );
     },
     title: "No daily today?",

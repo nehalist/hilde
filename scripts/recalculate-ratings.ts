@@ -25,6 +25,11 @@ import {
       achievementPoints: 0,
     },
   });
+  await prisma.match.updateMany({
+    data: {
+      meta: JSON.stringify({}),
+    },
+  });
 
   let i = 0;
   for await (const match of matches) {

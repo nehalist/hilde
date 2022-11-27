@@ -106,6 +106,13 @@ export async function grantAchievements(
   achievements: Achievement[],
   match: Match,
 ) {
+  if (achievements.length === 0) {
+    return {
+      team,
+      match,
+    };
+  }
+
   const teamMeta = getTeamMeta(team);
   const matchMeta = getMatchMeta(match);
   const matchTeam = match.team1 === team.name ? "team1" : "team2";
@@ -136,11 +143,14 @@ export async function grantAchievements(
           achievements.reduce((a, b) => a + b.points, 0),
         meta: JSON.stringify({
           ...teamMeta,
-          achievements: achievements.map(a => ({
-            id: a.id,
-            earnedAt: match.createdAt,
-            matchId: match.id,
-          })),
+          achievements: [
+            ...teamMeta.achievements,
+            ...achievements.map(a => ({
+              id: a.id,
+              earnedAt: match.createdAt,
+              matchId: match.id,
+            })),
+          ],
         }),
       },
     }),
@@ -151,7 +161,11 @@ export async function grantAchievements(
 export async function setAchievements(team1: Team, team2: Team, match: Match) {
   const achievements1 = checkAchievements(team1, team2, match);
   const achievements2 = checkAchievements(team2, team1, match);
-  const { match: updatedMatch } = await grantAchievements(team1, achievements1, match);
+  const { match: updatedMatch } = await grantAchievements(
+    team1,
+    achievements1,
+    match,
+  );
   await grantAchievements(team2, achievements2, updatedMatch);
   return {
     achievements1,

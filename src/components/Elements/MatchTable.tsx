@@ -108,7 +108,7 @@ export const MatchTable: FunctionComponent<{
                 {match.comment !== "" && (
                   <>
                     <button
-                      className="text-gray-600 hover:text-gray-900 dark:hover:text-gray-400 transition"
+                      className="opacity-75 hover:opacity-100 transition"
                       data-tip={match.comment}
                       data-for={`comment-${match.id}`}
                     >

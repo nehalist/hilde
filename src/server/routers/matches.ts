@@ -18,18 +18,36 @@ export const matchesRouter = router({
     .input(
       z.object({
         limit: z.number().min(0).max(100).default(50),
-        team: z.string().optional(),
+        team1: z.string().optional(),
+        team2: z.string().optional(),
       }),
     )
     .query(async ({ input }) => {
+      let where = {};
+
+      if (input.team1) {
+        where = !input.team2
+          ? { OR: [{ team1: input.team1 }, { team2: input.team1 }] }
+          : {
+              OR: [
+                {
+                  team1: input.team1,
+                  team2: input.team2,
+                },
+                {
+                  team1: input.team2,
+                  team2: input.team1,
+                },
+              ],
+            };
+      }
+
       return await prisma.match.findMany({
         take: input.limit > 0 ? input.limit : undefined,
         orderBy: {
           createdAt: "desc",
         },
-        where: input.team
-          ? { OR: [{ team1: input.team }, { team2: input.team }] }
-          : undefined,
+        where,
       });
     }),
 

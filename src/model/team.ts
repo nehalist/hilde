@@ -4,7 +4,7 @@
  */
 import { Team } from "@prisma/client";
 
-interface TeamMetaDetails {
+export interface TeamMetaDetails {
   matches: number;
   wins: number;
   winRate: number;
