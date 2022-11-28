@@ -65,7 +65,7 @@ export const Profile: FunctionComponent<{
             {team.name}
           </h2>
           <div>
-            {versus && ("vs.")}
+            {versus && "vs."}
             <select
               className={`p-2 text-gray-800 bg-gray-300 dark:bg-gray-800 dark:text-gray-400 rounded-lg`}
               onChange={e => onVersusSelect(e.target.value)}
@@ -179,6 +179,12 @@ export const Profile: FunctionComponent<{
           )}
         </div>
         <div className="col-span-6 p-3">
+          <div className="my-5 text-2xl font-semibold text-center">
+            🏅 {team.achievementPoints}
+            <small className="opacity-50 ml-1">
+              {versus?.achievementPoints}
+            </small>
+          </div>
           <AchievementList team={team} versus={versus || undefined} />
         </div>
       </div>
