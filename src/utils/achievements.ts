@@ -1,6 +1,7 @@
 import { Match, Team } from "@prisma/client";
-import { getTeamMeta } from "~/model/team";
+import { getTeamMeta, getTeamSize } from "~/model/team";
 import { defaultRating } from "~/utils/elo";
+import { differenceInDays } from "date-fns";
 
 export interface Achievement {
   id: string;
@@ -429,14 +430,100 @@ export const achievements: Achievement[] = [
     id: "daily-o-clock",
     condition: (team, opponent, match) => {
       return (
-        match.createdAt.getHours() >= 10 && match.createdAt.getHours() <= 11  // TODO
+        match.createdAt.getHours() === 9 &&
+        match.createdAt.getMinutes() >= 0 &&
+        match.createdAt.getMinutes() <= 15
       );
     },
     title: "No daily today?",
     description: "Play a match between 09:00 and 09:15",
     points: 10,
   },
-  // TODO: diff-50, diff-max, diff-min
+  {
+    id: "threesome",
+    condition: (team, opponent) => {
+      return getTeamSize(team.name) === 1 && getTeamSize(opponent.name) === 2;
+    },
+    title: "Have a threesome",
+    description: "Play 1 vs 2",
+    points: 10,
+  },
+  {
+    id: "bad-threesome",
+    condition: (team, opponent) => {
+      return getTeamSize(team.name) === 2 && getTeamSize(opponent.name) === 1;
+    },
+    title: "The bad kind of threesome",
+    description: "Play 2 vs 1",
+    points: 10,
+  },
+  {
+    id: "leap-year",
+    condition: (team, opponent, match) => {
+      return (
+        match.createdAt.getMonth() === 1 && match.createdAt.getDate() === 29
+      );
+    },
+    title: "Take a leap",
+    description: "Play on 29.2",
+    points: 25,
+  },
+  {
+    id: "vacation",
+    condition: team => {
+      const meta = getTeamMeta(team);
+      if (!meta.daily.date) {
+        return false;
+      }
+      return differenceInDays(new Date(), meta.daily.date) > 14;
+    },
+    title: "Take a vacation",
+    description: "Don't play for 14 days",
+    points: 10,
+  },
+  {
+    id: "trick-or-treat",
+    condition: (team, opponent, match) => {
+      return (
+        match.createdAt.getMonth() === 9 && match.createdAt.getDate() === 31
+      );
+    },
+    title: "Trick or treat",
+    description: "Play on 31.10.",
+    points: 10,
+  },
+  {
+    id: "diff-50",
+    condition: (team, opponent, match) => {
+      const matchTeam = match.team1 === team.name ? "team1" : "team2";
+      const teamScore = matchTeam === "team1" ? match.score1 : match.score2;
+      const opponentScore = matchTeam === "team1" ? match.score2 : match.score1;
+      return teamScore / opponentScore >= 0.5;
+    },
+    title: "Dominator",
+    description: "Win while your opponent score is at least 50% lower than yours",
+    points: 10,
+  },
+  {
+    id: "diff-max",
+    condition: (team, opponent, match) => {
+      const matchTeam = match.team1 === team.name ? "team1" : "team2";
+      return matchTeam === "team1" ? match.score2 === 0 : match.score1 === 0;
+    },
+    title: "Player of the match",
+    description: "Win while your opponent score is 0",
+    points: 10,
+  },
+  {
+    id: "diff-min",
+    condition: (team, opponent, match) => {
+      const matchTeam = match.team1 === team.name ? "team1" : "team2";
+      return matchTeam === "team1" ? match.score1 === 0 : match.score2 === 0;
+    },
+    title: "Das tapfere Schneiderlein",
+    description: "Lose with 0 points",
+    points: 10,
+  },
 ];
 
 export function checkAchievements(
