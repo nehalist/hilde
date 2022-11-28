@@ -1,5 +1,5 @@
 require("dotenv").config();
-import { defaultRating, k } from "~/utils/elo";
+import { defaultRating } from "~/utils/elo";
 import { prisma } from "~/server/prisma";
 import {
   addMatchToTeam,
@@ -8,7 +8,7 @@ import {
 } from "~/server/model/team";
 
 (async () => {
-  console.log(`Recalculating using k=${k}, defaultRating=${defaultRating}`);
+  console.log(`Recalculating, defaultRating=${defaultRating}`);
 
   const matches = await prisma.match.findMany({
     orderBy: {

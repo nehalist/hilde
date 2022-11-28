@@ -1,4 +1,3 @@
-export const k = 32;
 export const defaultRating = 1000;
 
 export function getExpectedRating(ratingA: number, ratingB: number): number {
@@ -6,5 +5,13 @@ export function getExpectedRating(ratingA: number, ratingB: number): number {
 }
 
 export function calculateRating(expected: number, actual: number, current: number): number {
+  let k;
+  if (current < defaultRating + 200) {
+    k = 32;
+  } else if (current < defaultRating + 400) {
+    k = 24;
+  } else {
+    k = 16;
+  }
   return current + k * (actual - expected);
 }
