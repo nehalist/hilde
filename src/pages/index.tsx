@@ -10,14 +10,16 @@ const Home = () => {
     <>
       <NextSeo title={undefined} />
       <MatchCreationForm />
-      <div className="mt-12">
-        <div className="text-center">
-          <h3 className="text-gray-400 uppercase text-sm my-2">
-            Recent Matches
-          </h3>
+      {matches.data && matches.data.length > 0 && (
+        <div className="mt-12">
+          <div className="text-center">
+            <h3 className="text-gray-400 uppercase text-sm my-2">
+              Recent Matches
+            </h3>
+          </div>
+          <MatchTable matches={matches.data} />
         </div>
-        {matches.data && <MatchTable matches={matches.data || []} />}
-      </div>
+      )}
     </>
   );
 };

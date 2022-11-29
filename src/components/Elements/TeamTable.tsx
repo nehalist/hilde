@@ -4,7 +4,7 @@ import { TiDeleteOutline } from "react-icons/ti";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { trpc } from "~/utils/trpc";
-import { getTeamMeta } from "~/model/team";
+import { getCurrentSeasonMeta } from "~/model/team";
 import { TeamLink } from "~/components/Elements/TeamLink";
 
 type TeamOrder =
@@ -36,8 +36,8 @@ export const TeamTable: FunctionComponent<{ teams: Team[] }> = ({ teams }) => {
 
   const orderedTeams = useMemo(() => {
     const ordered = teams.sort((team1, team2) => {
-      const meta1 = getTeamMeta(team1);
-      const meta2 = getTeamMeta(team2);
+      const meta1 = getCurrentSeasonMeta(team1);
+      const meta2 = getCurrentSeasonMeta(team2);
 
       switch (orderBy) {
         case "name":
@@ -54,7 +54,7 @@ export const TeamTable: FunctionComponent<{ teams: Team[] }> = ({ teams }) => {
           return meta2.total.winRate - meta1.total.winRate;
         default:
         case "rating":
-          return team2.rating - team1.rating;
+          return meta2.rating - meta1.rating;
       }
     });
 
@@ -109,7 +109,7 @@ export const TeamTable: FunctionComponent<{ teams: Team[] }> = ({ teams }) => {
       </thead>
       <tbody>
         {orderedTeams
-          .map(t => ({ ...t, meta: getTeamMeta(t) }))
+          .map(t => ({ ...t, meta: getCurrentSeasonMeta(t) }))
           .map((team, index) => (
             <tr
               key={team.id}
@@ -150,7 +150,7 @@ export const TeamTable: FunctionComponent<{ teams: Team[] }> = ({ teams }) => {
                   <>{(team.meta.total.winRate * 100).toFixed(2)}%</>
                 )}
               </td>
-              <td className={`p-3`}>{+team.rating.toFixed(2)}</td>
+              <td className={`p-3`}>{+team.meta.rating.toFixed(2)}</td>
             </tr>
           ))}
       </tbody>

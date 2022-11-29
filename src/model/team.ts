@@ -3,6 +3,8 @@
  * can be imported client-side as well.
  */
 import { Team } from "@prisma/client";
+import { getCurrentSeason } from "~/utils/season";
+import { defaultRating } from "~/utils/elo";
 
 export interface TeamMetaDetails {
   matches: number;
@@ -20,6 +22,8 @@ export interface TeamMeta {
     highestWinStreak: number;
     highestLosingStreak: number;
   };
+  rating: number;
+  achievementPoints: number;
   daily: TeamMetaDetails & {
     date: Date | null;
   };
@@ -27,7 +31,6 @@ export interface TeamMeta {
     winStreak: number;
     losingStreak: number;
   };
-  version: number;
   achievements: Array<{
     id: string;
     earnedAt: Date;
@@ -35,37 +38,71 @@ export interface TeamMeta {
   }>;
 }
 
-export function getTeamMeta(team: Team): TeamMeta {
-  const meta = JSON.parse(team.meta) as Partial<TeamMeta> | undefined;
+export function getDefaultTeamMeta() {
   return {
     total: {
-      matches: meta?.total?.matches || 0,
-      wins: meta?.total?.wins || 0,
-      winRate: meta?.total?.winRate || 0,
-      highestWinStreak: meta?.total?.highestWinStreak || 0,
-      losses: meta?.total?.losses || 0,
-      highestLosingStreak: meta?.total?.highestLosingStreak || 0,
-      score: meta?.total?.score || 0,
-      avgScore: meta?.total?.avgScore || 0,
-      highestRating: meta?.total?.highestRating || team.rating,
-      lowestRating: meta?.total?.lowestRating || team.rating,
+      matches: 0,
+      wins: 0,
+      winRate: 0,
+      losses: 0,
+      score: 0,
+      avgScore: 0,
+      highestRating: defaultRating,
+      lowestRating: defaultRating,
+      highestWinStreak: 0,
+      highestLosingStreak: 0,
     },
+    rating: defaultRating,
+    achievementPoints: 0,
     daily: {
-      matches: meta?.daily?.matches || 0,
-      wins: meta?.daily?.wins || 0,
-      winRate: meta?.daily?.winRate || 0,
-      losses: meta?.daily?.losses || 0,
-      score: meta?.daily?.score || 0,
-      avgScore: meta?.daily?.avgScore || 0,
-      date: meta?.daily?.date ? new Date(meta.daily.date) : null,
+      matches: 0,
+      wins: 0,
+      winRate: 0,
+      losses: 0,
+      score: 0,
+      avgScore: 0,
+      date: null,
     },
     current: {
-      winStreak: meta?.current?.winStreak || 0,
-      losingStreak: meta?.current?.losingStreak || 0,
+      winStreak: 0,
+      losingStreak: 0,
     },
-    achievements: meta?.achievements || [],
-    version: 1,
+    achievements: [],
   };
+}
+
+export function getTeamMeta(team?: Team) {
+  const currentSeason = getCurrentSeason();
+
+  if (!team) {
+    return {
+      version: 1,
+      [currentSeason]: getDefaultTeamMeta(),
+    };
+  }
+
+  const meta = JSON.parse(team.meta) as TeamMeta | undefined;
+
+  if (!meta) {
+    return {
+      version: 1,
+      [currentSeason]: getDefaultTeamMeta(),
+    };
+  }
+
+  return {
+    ...meta,
+    [currentSeason]: meta[currentSeason] || getDefaultTeamMeta(),
+  };
+}
+
+export function getSeasonMeta(team: Team, season: number) {
+  const meta = getTeamMeta(team);
+  return meta[season];
+}
+
+export function getCurrentSeasonMeta(team: Team) {
+  return getSeasonMeta(team, getCurrentSeason());
 }
 
 export function getTeamSize(teamName: string) {

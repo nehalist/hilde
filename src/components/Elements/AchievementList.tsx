@@ -1,6 +1,6 @@
-import {Fragment, FunctionComponent} from "react";
+import { Fragment, FunctionComponent } from "react";
 import { Team } from "@prisma/client";
-import { getTeamMeta } from "~/model/team";
+import { getCurrentSeasonMeta } from "~/model/team";
 import { Achievement, achievements } from "~/utils/achievements";
 import { TimeDistance } from "~/components/Elements/TeamDistance";
 
@@ -28,8 +28,8 @@ const AchievementCard: FunctionComponent<{
           <span
             className={`rounded-full font-semibold p-2 ${bgColor} shadow-xl`}
           >
-          {achievement.points}
-        </span>
+            {achievement.points}
+          </span>
         </div>
       </div>
       <div className={`p-2 w-full`}>
@@ -63,18 +63,20 @@ export const AchievementList: FunctionComponent<{
   team: Team;
   versus?: Team;
 }> = ({ team, versus }) => {
-  const meta = getTeamMeta(team);
+  const meta = getCurrentSeasonMeta(team);
   const teamAchievements = achievements.filter(achievement =>
     meta.achievements.find(a => a.id === achievement.id),
   );
-  const versusMeta = versus ? getTeamMeta(versus) : undefined;
+  const versusMeta = versus ? getCurrentSeasonMeta(versus) : undefined;
   const versusAchievements = versusMeta
     ? achievements.filter(achievement =>
         versusMeta.achievements.find(a => a.id === achievement.id),
       )
     : [];
 
-  const uniqueAchievements = [...new Set([...teamAchievements, ...versusAchievements])];
+  const uniqueAchievements = [
+    ...new Set([...teamAchievements, ...versusAchievements]),
+  ];
 
   return (
     <div className="grid grid-cols-2 gap-3">

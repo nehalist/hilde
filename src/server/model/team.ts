@@ -1,10 +1,17 @@
 import { prisma } from "~/server/prisma";
 import { Match, Team } from "@prisma/client";
-import { calculateRating, defaultRating, getExpectedRating } from "~/utils/elo";
+import { calculateRating, getExpectedRating } from "~/utils/elo";
 import { format } from "date-fns";
-import { getTeamMeta, getTeamSize, TeamMeta } from "~/model/team";
+import {
+  getCurrentSeasonMeta,
+  getSeasonMeta,
+  getTeamMeta,
+  getTeamSize,
+  TeamMeta,
+} from "~/model/team";
 import { Achievement, checkAchievements } from "~/utils/achievements";
 import { getMatchMeta } from "~/model/match";
+import { getCurrentSeason } from "~/utils/season";
 
 export async function getOrCreateTeam(name: string) {
   return await prisma.team.upsert({
@@ -15,7 +22,6 @@ export async function getOrCreateTeam(name: string) {
     create: {
       name: name,
       createdAt: new Date(),
-      rating: defaultRating,
       teamsize: getTeamSize(name),
     },
   });
@@ -27,39 +33,51 @@ export async function addMatchToTeam(
   win: boolean,
   score: number,
   date: Date,
+  season = getCurrentSeason(),
 ) {
   const meta = getTeamMeta(team);
+  const seasonMeta = getSeasonMeta(team, season);
+  const opponentSeasonMeta = getSeasonMeta(opponent, season);
   const newDaily =
-    !meta.daily.date ||
-    format(date, "yyyy-MM-dd") > format(meta.daily.date, "yyyy-MM-dd");
+    !seasonMeta.daily.date ||
+    format(date, "yyyy-MM-dd") >
+      format(new Date(seasonMeta.daily.date), "yyyy-MM-dd");
 
-  const currentRating = team.rating;
-  const opponentRating = opponent.rating;
+  const currentRating = seasonMeta.rating;
+  const opponentRating = opponentSeasonMeta.rating;
 
   const expectedRating = getExpectedRating(currentRating, opponentRating);
   const rating = calculateRating(expectedRating, win ? 1 : 0, currentRating);
 
-  const newMeta: TeamMeta = {
-    ...meta,
+  const newSeasonMeta: TeamMeta = {
+    rating,
+    achievementPoints: seasonMeta.achievementPoints,
+    achievements: seasonMeta.achievements,
     total: {
-      ...meta.total,
-      matches: meta.total.matches + 1,
-      wins: meta.total.wins + (win ? 1 : 0),
-      winRate: (meta.total.wins + (win ? 1 : 0)) / (meta.total.matches + 1),
+      ...seasonMeta.total,
+      matches: seasonMeta.total.matches + 1,
+      wins: seasonMeta.total.wins + (win ? 1 : 0),
+      winRate:
+        (seasonMeta.total.wins + (win ? 1 : 0)) /
+        (seasonMeta.total.matches + 1),
       highestWinStreak: win
-        ? Math.max(meta.total.highestWinStreak, meta.current.winStreak + 1)
-        : meta.total.highestWinStreak,
-      losses: meta.total.losses + (win ? 0 : 1),
+        ? Math.max(
+            seasonMeta.total.highestWinStreak,
+            seasonMeta.current.winStreak + 1,
+          )
+        : seasonMeta.total.highestWinStreak,
+      losses: seasonMeta.total.losses + (win ? 0 : 1),
       highestLosingStreak: !win
         ? Math.max(
-            meta.total.highestLosingStreak,
-            meta.current.losingStreak + 1,
+            seasonMeta.total.highestLosingStreak,
+            seasonMeta.current.losingStreak + 1,
           )
-        : meta.total.highestLosingStreak,
-      score: meta.total.score + score,
-      avgScore: (meta.total.score + score) / (meta.total.matches + 1),
-      highestRating: Math.max(meta.total.highestRating, rating),
-      lowestRating: Math.min(meta.total.lowestRating, rating),
+        : seasonMeta.total.highestLosingStreak,
+      score: seasonMeta.total.score + score,
+      avgScore:
+        (seasonMeta.total.score + score) / (seasonMeta.total.matches + 1),
+      highestRating: Math.max(seasonMeta.total.highestRating, rating),
+      lowestRating: Math.min(seasonMeta.total.lowestRating, rating),
     },
     daily: newDaily
       ? {
@@ -72,17 +90,20 @@ export async function addMatchToTeam(
           date,
         }
       : {
-          matches: meta.daily.matches + 1,
-          wins: meta.daily.wins + (win ? 1 : 0),
-          winRate: (meta.daily.wins + (win ? 1 : 0)) / (meta.daily.matches + 1),
-          losses: meta.daily.losses + (win ? 0 : 1),
-          score: meta.daily.score + score,
-          avgScore: (meta.daily.score + score) / (meta.daily.matches + 1),
-          date: meta.daily.date,
+          matches: seasonMeta.daily.matches + 1,
+          wins: seasonMeta.daily.wins + (win ? 1 : 0),
+          winRate:
+            (seasonMeta.daily.wins + (win ? 1 : 0)) /
+            (seasonMeta.daily.matches + 1),
+          losses: seasonMeta.daily.losses + (win ? 0 : 1),
+          score: seasonMeta.daily.score + score,
+          avgScore:
+            (seasonMeta.daily.score + score) / (seasonMeta.daily.matches + 1),
+          date: seasonMeta.daily.date,
         },
     current: {
-      winStreak: win ? meta.current.winStreak + 1 : 0,
-      losingStreak: win ? 0 : meta.current.losingStreak + 1,
+      winStreak: win ? seasonMeta.current.winStreak + 1 : 0,
+      losingStreak: win ? 0 : seasonMeta.current.losingStreak + 1,
     },
   };
 
@@ -92,8 +113,10 @@ export async function addMatchToTeam(
         id: team.id,
       },
       data: {
-        rating: +Number(rating).toFixed(2),
-        meta: JSON.stringify(newMeta),
+        meta: JSON.stringify({
+          ...meta,
+          [season]: newSeasonMeta,
+        }),
       },
     }),
     rating,
@@ -114,6 +137,7 @@ export async function grantAchievements(
   }
 
   const teamMeta = getTeamMeta(team);
+  const teamSeasonMeta = getCurrentSeasonMeta(team);
   const matchMeta = getMatchMeta(match);
   const matchTeam = match.team1 === team.name ? "team1" : "team2";
 
@@ -138,19 +162,22 @@ export async function grantAchievements(
         id: team.id,
       },
       data: {
-        achievementPoints:
-          team.achievementPoints +
-          achievements.reduce((a, b) => a + b.points, 0),
         meta: JSON.stringify({
           ...teamMeta,
-          achievements: [
-            ...teamMeta.achievements,
-            ...achievements.map(a => ({
-              id: a.id,
-              earnedAt: match.createdAt,
-              matchId: match.id,
-            })),
-          ],
+          [getCurrentSeason()]: {
+            ...teamSeasonMeta,
+            achievementPoints:
+              teamSeasonMeta.achievementPoints +
+              achievements.reduce((a, b) => a + b.points, 0),
+            achievements: [
+              ...teamSeasonMeta.achievements,
+              ...achievements.map(a => ({
+                id: a.id,
+                earnedAt: match.createdAt,
+                matchId: match.id,
+              })),
+            ],
+          },
         }),
       },
     }),

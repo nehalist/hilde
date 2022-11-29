@@ -1,5 +1,5 @@
 import { Match, Team } from "@prisma/client";
-import { getTeamMeta, getTeamSize } from "~/model/team";
+import { getCurrentSeasonMeta, getTeamSize } from "~/model/team";
 import { defaultRating } from "~/utils/elo";
 import { differenceInDays } from "date-fns";
 
@@ -15,7 +15,7 @@ export const achievements: Achievement[] = [
   {
     id: "wins-1",
     condition: team => {
-      const meta = getTeamMeta(team);
+      const meta = getCurrentSeasonMeta(team);
       return meta.total.wins >= 1;
     },
     title: "First Win",
@@ -25,7 +25,7 @@ export const achievements: Achievement[] = [
   {
     id: "wins-10",
     condition: team => {
-      const meta = getTeamMeta(team);
+      const meta = getCurrentSeasonMeta(team);
       return meta.total.wins >= 10;
     },
     title: "10 Wins",
@@ -35,7 +35,7 @@ export const achievements: Achievement[] = [
   {
     id: "wins-50",
     condition: team => {
-      const meta = getTeamMeta(team);
+      const meta = getCurrentSeasonMeta(team);
       return meta.total.wins >= 50;
     },
     title: "50 Wins",
@@ -45,7 +45,7 @@ export const achievements: Achievement[] = [
   {
     id: "wins-100",
     condition: team => {
-      const meta = getTeamMeta(team);
+      const meta = getCurrentSeasonMeta(team);
       return meta.total.wins >= 100;
     },
     title: "100 Wins",
@@ -55,7 +55,7 @@ export const achievements: Achievement[] = [
   {
     id: "wins-500",
     condition: team => {
-      const meta = getTeamMeta(team);
+      const meta = getCurrentSeasonMeta(team);
       return meta.total.wins >= 500;
     },
     title: "500 Wins",
@@ -65,7 +65,7 @@ export const achievements: Achievement[] = [
   {
     id: "wins-1000",
     condition: team => {
-      const meta = getTeamMeta(team);
+      const meta = getCurrentSeasonMeta(team);
       return meta.total.wins >= 1000;
     },
     title: "Winning is my hobby",
@@ -75,7 +75,7 @@ export const achievements: Achievement[] = [
   {
     id: "elo-range",
     condition: team => {
-      const meta = getTeamMeta(team);
+      const meta = getCurrentSeasonMeta(team);
       return (
         meta.total.lowestRating <= defaultRating - 300 &&
         meta.total.highestRating >= defaultRating + 300
@@ -90,7 +90,7 @@ export const achievements: Achievement[] = [
   {
     id: "elo-minus300",
     condition: team => {
-      const meta = getTeamMeta(team);
+      const meta = getCurrentSeasonMeta(team);
       return meta.total.lowestRating <= defaultRating - 300;
     },
     title: "It's evolving, just backwards!",
@@ -100,7 +100,7 @@ export const achievements: Achievement[] = [
   {
     id: "elo-100",
     condition: team => {
-      const meta = getTeamMeta(team);
+      const meta = getCurrentSeasonMeta(team);
       return meta.total.highestRating >= defaultRating + 100;
     },
     title: "I'm getting better!",
@@ -110,7 +110,7 @@ export const achievements: Achievement[] = [
   {
     id: "elo-200",
     condition: team => {
-      const meta = getTeamMeta(team);
+      const meta = getCurrentSeasonMeta(team);
       return meta.total.highestRating >= defaultRating + 200;
     },
     title: "Look mom, no hands!",
@@ -120,7 +120,7 @@ export const achievements: Achievement[] = [
   {
     id: "elo-300",
     condition: team => {
-      const meta = getTeamMeta(team);
+      const meta = getCurrentSeasonMeta(team);
       return meta.total.highestRating >= defaultRating + 300;
     },
     title: "Whenever I need expert advice, I talk to myself",
@@ -130,7 +130,7 @@ export const achievements: Achievement[] = [
   {
     id: "elo-400",
     condition: team => {
-      const meta = getTeamMeta(team);
+      const meta = getCurrentSeasonMeta(team);
       return meta.total.highestRating >= defaultRating + 400;
     },
     title: "Call me Magnus Carlsen",
@@ -140,7 +140,7 @@ export const achievements: Achievement[] = [
   {
     id: "elo-500",
     condition: team => {
-      const meta = getTeamMeta(team);
+      const meta = getCurrentSeasonMeta(team);
       return meta.total.highestRating >= defaultRating + 500;
     },
     title: "Kneel before me, mortals!",
@@ -150,7 +150,7 @@ export const achievements: Achievement[] = [
   {
     id: "consecutive-wins-5",
     condition: team => {
-      const meta = getTeamMeta(team);
+      const meta = getCurrentSeasonMeta(team);
       return meta.total.highestWinStreak >= 5;
     },
     title: "I am inevitable",
@@ -160,7 +160,7 @@ export const achievements: Achievement[] = [
   {
     id: "consecutive-wins-10",
     condition: team => {
-      const meta = getTeamMeta(team);
+      const meta = getCurrentSeasonMeta(team);
       return meta.total.highestWinStreak >= 10;
     },
     title: "Behold!",
@@ -170,7 +170,7 @@ export const achievements: Achievement[] = [
   {
     id: "consecutive-losses-10",
     condition: team => {
-      const meta = getTeamMeta(team);
+      const meta = getCurrentSeasonMeta(team);
       return meta.total.highestLosingStreak >= 10;
     },
     title: "Are you even trying?",
@@ -180,7 +180,7 @@ export const achievements: Achievement[] = [
   {
     id: "matches-1",
     condition: team => {
-      const meta = getTeamMeta(team);
+      const meta = getCurrentSeasonMeta(team);
       return meta.total.matches >= 1;
     },
     title: "First match",
@@ -190,7 +190,7 @@ export const achievements: Achievement[] = [
   {
     id: "matches-10",
     condition: team => {
-      const meta = getTeamMeta(team);
+      const meta = getCurrentSeasonMeta(team);
       return meta.total.matches >= 10;
     },
     title: "10 Matches",
@@ -200,7 +200,7 @@ export const achievements: Achievement[] = [
   {
     id: "matches-50",
     condition: team => {
-      const meta = getTeamMeta(team);
+      const meta = getCurrentSeasonMeta(team);
       return meta.total.matches >= 50;
     },
     title: "50 Matches",
@@ -210,7 +210,7 @@ export const achievements: Achievement[] = [
   {
     id: "matches-100",
     condition: team => {
-      const meta = getTeamMeta(team);
+      const meta = getCurrentSeasonMeta(team);
       return meta.total.matches >= 100;
     },
     title: "100 Matches",
@@ -220,7 +220,7 @@ export const achievements: Achievement[] = [
   {
     id: "matches-500",
     condition: team => {
-      const meta = getTeamMeta(team);
+      const meta = getCurrentSeasonMeta(team);
       return meta.total.matches >= 500;
     },
     title: "500 Matches",
@@ -230,7 +230,7 @@ export const achievements: Achievement[] = [
   {
     id: "matches-1000",
     condition: team => {
-      const meta = getTeamMeta(team);
+      const meta = getCurrentSeasonMeta(team);
       return meta.total.matches >= 1000;
     },
     title: "I haven't left this place for years",
@@ -240,7 +240,7 @@ export const achievements: Achievement[] = [
   {
     id: "score-1",
     condition: team => {
-      const meta = getTeamMeta(team);
+      const meta = getCurrentSeasonMeta(team);
       return meta.total.score >= 1;
     },
     title: "First point",
@@ -250,7 +250,7 @@ export const achievements: Achievement[] = [
   {
     id: "score-10",
     condition: team => {
-      const meta = getTeamMeta(team);
+      const meta = getCurrentSeasonMeta(team);
       return meta.total.score >= 10;
     },
     title: "10 Points",
@@ -260,7 +260,7 @@ export const achievements: Achievement[] = [
   {
     id: "score-100",
     condition: team => {
-      const meta = getTeamMeta(team);
+      const meta = getCurrentSeasonMeta(team);
       return meta.total.score >= 100;
     },
     title: "100 Points", // TODO
@@ -270,7 +270,7 @@ export const achievements: Achievement[] = [
   {
     id: "score-1000",
     condition: team => {
-      const meta = getTeamMeta(team);
+      const meta = getCurrentSeasonMeta(team);
       return meta.total.score >= 1000;
     },
     title: "1000 Points", // TODO
@@ -280,7 +280,7 @@ export const achievements: Achievement[] = [
   {
     id: "score-2500",
     condition: team => {
-      const meta = getTeamMeta(team);
+      const meta = getCurrentSeasonMeta(team);
       return meta.total.score >= 2500;
     },
     title: "2500 Points", // TODO
@@ -290,7 +290,7 @@ export const achievements: Achievement[] = [
   {
     id: "score-5000",
     condition: team => {
-      const meta = getTeamMeta(team);
+      const meta = getCurrentSeasonMeta(team);
       return meta.total.score >= 2500;
     },
     title: "score 5000", // TODO
@@ -300,7 +300,9 @@ export const achievements: Achievement[] = [
   {
     id: "underdog",
     condition: (team, opponent) => {
-      return opponent.rating - 100 >= team.rating;
+      const meta = getCurrentSeasonMeta(team);
+      const opponentMeta = getCurrentSeasonMeta(opponent);
+      return meta.rating - 100 >= opponentMeta.rating;
     },
     title: "Underdog",
     description:
@@ -310,7 +312,9 @@ export const achievements: Achievement[] = [
   {
     id: "badday",
     condition: (team, opponent) => {
-      return opponent.rating - team.rating >= 100;
+      const meta = getCurrentSeasonMeta(team);
+      const opponentMeta = getCurrentSeasonMeta(opponent);
+      return opponentMeta.rating - meta.rating >= 100;
     },
     title: "Bad days happen",
     description:
@@ -320,7 +324,9 @@ export const achievements: Achievement[] = [
   {
     id: "david",
     condition: (team, opponent) => {
-      return opponent.rating - 250 >= team.rating;
+      const meta = getCurrentSeasonMeta(team);
+      const opponentMeta = getCurrentSeasonMeta(opponent);
+      return opponentMeta.rating - 250 >= meta.rating;
     },
     title: "David",
     description:
@@ -330,7 +336,9 @@ export const achievements: Achievement[] = [
   {
     id: "goliath",
     condition: (team, opponent) => {
-      return opponent.rating - team.rating >= 250;
+      const meta = getCurrentSeasonMeta(team);
+      const opponentMeta = getCurrentSeasonMeta(opponent);
+      return opponentMeta.rating - meta.rating >= 250;
     },
     title: "Goliath",
     description:
@@ -371,7 +379,7 @@ export const achievements: Achievement[] = [
   {
     id: "daily-matches-5",
     condition: team => {
-      const meta = getTeamMeta(team);
+      const meta = getCurrentSeasonMeta(team);
       return meta.daily.matches >= 5;
     },
     title: "No-stress-day",
@@ -381,7 +389,7 @@ export const achievements: Achievement[] = [
   {
     id: "daily-matches-10",
     condition: team => {
-      const meta = getTeamMeta(team);
+      const meta = getCurrentSeasonMeta(team);
       return meta.daily.matches >= 10;
     },
     title: "Are you even working?",
@@ -391,7 +399,7 @@ export const achievements: Achievement[] = [
   {
     id: "daily-wins-5",
     condition: team => {
-      const meta = getTeamMeta(team);
+      const meta = getCurrentSeasonMeta(team);
       return meta.daily.wins >= 5;
     },
     title: "Probably getting paid for this",
@@ -401,7 +409,7 @@ export const achievements: Achievement[] = [
   {
     id: "daily-wins-10",
     condition: team => {
-      const meta = getTeamMeta(team);
+      const meta = getCurrentSeasonMeta(team);
       return meta.daily.wins >= 10;
     },
     title: "Suffering from success",
@@ -471,11 +479,11 @@ export const achievements: Achievement[] = [
   {
     id: "vacation",
     condition: team => {
-      const meta = getTeamMeta(team);
+      const meta = getCurrentSeasonMeta(team);
       if (!meta.daily.date) {
         return false;
       }
-      return differenceInDays(new Date(), meta.daily.date) > 14;
+      return differenceInDays(new Date(), new Date(meta.daily.date)) > 14;
     },
     title: "Take a vacation",
     description: "Don't play for 14 days",
@@ -501,7 +509,8 @@ export const achievements: Achievement[] = [
       return teamScore / opponentScore >= 0.5;
     },
     title: "Dominator",
-    description: "Win while your opponent score is at least 50% lower than yours",
+    description:
+      "Win while your opponent score is at least 50% lower than yours",
     points: 10,
   },
   {
@@ -531,7 +540,7 @@ export function checkAchievements(
   opponent: Team,
   match: Match,
 ): Achievement[] {
-  const teamAchievements = getTeamMeta(team).achievements;
+  const teamAchievements = getCurrentSeasonMeta(team).achievements;
   return achievements.filter(achievement => {
     if (teamAchievements.find(a => a.id === achievement.id)) {
       return false;

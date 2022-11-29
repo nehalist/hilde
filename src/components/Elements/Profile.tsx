@@ -3,7 +3,7 @@ import { Card } from "~/components/Elements/Card";
 import { EloHistory } from "~/components/Elements/EloHistory";
 import { AchievementList } from "~/components/Elements/AchievementList";
 import { Match, Team } from "@prisma/client";
-import { getTeamMeta, TeamMetaDetails } from "~/model/team";
+import { getCurrentSeasonMeta, TeamMetaDetails } from "~/model/team";
 
 export const Profile: FunctionComponent<{
   team: Team;
@@ -12,8 +12,8 @@ export const Profile: FunctionComponent<{
   onVersusSelect: (teamName: string) => void;
   versusOptions: Team[];
 }> = ({ team, versus, matches, onVersusSelect, versusOptions }) => {
-  const meta = getTeamMeta(team);
-  const vsMeta = versus ? getTeamMeta(versus) : undefined;
+  const meta = getCurrentSeasonMeta(team);
+  const vsMeta = versus ? getCurrentSeasonMeta(versus) : undefined;
 
   const versusStats = useMemo((): TeamMetaDetails | null => {
     if (!matches || !versus) {
@@ -86,9 +86,9 @@ export const Profile: FunctionComponent<{
           <div className="grid grid-cols-3 gap-3 p-3">
             <div>
               <h3 className="font-semibold">
-                {team.rating.toFixed(2)}
+                {meta.rating.toFixed(2)}
                 <small className="opacity-50 ml-1">
-                  {versus?.rating.toFixed(2)}
+                  {vsMeta?.rating.toFixed(2)}
                 </small>
               </h3>
               <p className="text-sm">Current Rating</p>
@@ -180,9 +180,9 @@ export const Profile: FunctionComponent<{
         </div>
         <div className="col-span-6 p-3">
           <div className="my-5 text-2xl font-semibold text-center">
-            🏅 {team.achievementPoints}
+            🏅 {meta.achievementPoints}
             <small className="opacity-50 ml-1">
-              {versus?.achievementPoints}
+              {vsMeta?.achievementPoints}
             </small>
           </div>
           <AchievementList team={team} versus={versus || undefined} />

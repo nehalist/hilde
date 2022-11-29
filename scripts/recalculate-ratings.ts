@@ -1,35 +1,43 @@
 require("dotenv").config();
+import { getDefaultTeamMeta, getTeamMeta } from "~/model/team";
+import { getCurrentSeason } from "~/utils/season";
 import { defaultRating } from "~/utils/elo";
 import { prisma } from "~/server/prisma";
-import {
-  addMatchToTeam,
-  getOrCreateTeam,
-  setAchievements,
-} from "~/server/model/team";
+import { addMatchToTeam, getOrCreateTeam } from "~/server/model/team";
+import { getArgument } from "./helper";
 
 (async () => {
-  console.log(`Recalculating, defaultRating=${defaultRating}`);
+  const season = +getArgument("season") || getCurrentSeason();
+  console.log(
+    `Recalculating ratings for season ${season} (defaultRating=${defaultRating})`,
+  );
 
   const matches = await prisma.match.findMany({
     orderBy: {
       createdAt: "asc",
     },
+    where: {
+      season,
+    },
   });
 
   console.log(`Found ${matches.length} matches`);
 
-  await prisma.team.updateMany({
-    data: {
-      meta: JSON.stringify({}),
-      rating: defaultRating,
-      achievementPoints: 0,
-    },
-  });
-  await prisma.match.updateMany({
-    data: {
-      meta: JSON.stringify({}),
-    },
-  });
+  const teams = await prisma.team.findMany({});
+  for await (const team of teams) {
+    const meta = getTeamMeta(team);
+    await prisma.team.update({
+      where: {
+        id: team.id,
+      },
+      data: {
+        meta: JSON.stringify({
+          ...meta,
+          [season]: getDefaultTeamMeta(),
+        }),
+      },
+    });
+  }
 
   let i = 0;
   for await (const match of matches) {
@@ -42,6 +50,7 @@ import {
       match.score1 > match.score2,
       match.score1,
       match.createdAt,
+      season,
     );
     const updatedTeam2 = await addMatchToTeam(
       team2,
@@ -49,6 +58,7 @@ import {
       match.score2 > match.score1,
       match.score2,
       match.createdAt,
+      season,
     );
 
     await prisma.match.update({
@@ -63,7 +73,7 @@ import {
       },
     });
 
-    await setAchievements(updatedTeam1.team, updatedTeam2.team, match);
+    // await setAchievements(updatedTeam1.team, updatedTeam2.team, match);
 
     i++;
     if (i % 100 === 0) {

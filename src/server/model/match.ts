@@ -2,6 +2,7 @@ import { prisma } from "~/server/prisma";
 import { getTeamSize } from "~/model/team";
 import { Team } from "@prisma/client";
 import { addMatchToTeam, setAchievements } from "~/server/model/team";
+import { getCurrentSeason } from "~/utils/season";
 
 export async function createMatch(
   team1: Team,
@@ -38,6 +39,7 @@ export async function createMatch(
       team1RatingChange: updatedTeam2.diff,
       team2RatingChange: updatedTeam1.diff,
       teamsize: getTeamSize(team1.name),
+      season: getCurrentSeason(),
     },
   });
 

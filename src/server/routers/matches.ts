@@ -3,6 +3,7 @@ import { prisma } from "~/server/prisma";
 import { z } from "zod";
 import { getOrCreateTeam } from "~/server/model/team";
 import { createMatch } from "~/server/model/match";
+import { getCurrentSeason } from "~/utils/season";
 
 function normalizeTeamName(name: string) {
   return name
@@ -47,7 +48,10 @@ export const matchesRouter = router({
         orderBy: {
           createdAt: "desc",
         },
-        where,
+        where: {
+          ...where,
+          season: getCurrentSeason(),
+        },
       });
     }),
 
@@ -108,7 +112,10 @@ export const matchesRouter = router({
 
       const items = await prisma.match.findMany({
         take: input.limit + 1,
-        where,
+        where: {
+          ...where,
+          season: getCurrentSeason(),
+        },
         cursor: input.cursor ? { id: input.cursor } : undefined,
         orderBy: {
           createdAt: "desc",

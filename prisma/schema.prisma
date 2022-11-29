@@ -25,6 +25,7 @@ model Match {
   game              String
   teamsize          Int
   meta              String   @default("{}")
+  season            Int      @default(1)
 
   @@map("match")
 }
@@ -33,9 +34,7 @@ model Team {
   id                Int      @id @default(autoincrement())
   createdAt         DateTime @default(now())
   name              String
-  rating            Float
   teamsize          Int
-  achievementPoints Int      @default(0)
   meta              String   @default("{}")
 
   @@unique(name)

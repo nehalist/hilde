@@ -14,11 +14,6 @@ export const teamsRouter = router({
         where: {
           teamsize: input.teamsize,
         },
-        orderBy: [
-          {
-            rating: "desc",
-          },
-        ],
       });
     }),
 
