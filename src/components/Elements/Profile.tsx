@@ -1,13 +1,13 @@
 import { FunctionComponent, useMemo } from "react";
 import { Card } from "~/components/Elements/Card";
 import { EloHistory } from "~/components/Elements/EloHistory";
-import { AchievementList } from "~/components/Elements/AchievementList";
 import { Match, Team } from "@prisma/client";
 import { getCurrentSeasonMeta, TeamMetaDetails } from "~/model/team";
+import { TeamWithMeta } from "~/server/model/team";
 
 export const Profile: FunctionComponent<{
-  team: Team;
-  versus?: Team | null;
+  team: TeamWithMeta;
+  versus?: TeamWithMeta | null;
   matches?: Match[];
   onVersusSelect: (teamName: string) => void;
   versusOptions: Team[];
@@ -41,7 +41,7 @@ export const Profile: FunctionComponent<{
   }, [team, versus, matches]);
 
   const stat = (stat: keyof TeamMetaDetails, float = false) => {
-    let value = versus && versusStats ? versusStats[stat] : meta.total[stat];
+    let value = versus && versusStats ? versusStats[stat] : 0; // todo
     if (!value) {
       return 0;
     }
@@ -56,6 +56,10 @@ export const Profile: FunctionComponent<{
     }
     return value;
   };
+
+  if (!meta) {
+    return null;
+  }
 
   return (
     <Card>
@@ -95,18 +99,18 @@ export const Profile: FunctionComponent<{
             </div>
             <div>
               <h3 className="font-semibold">
-                {meta.total.highestRating.toFixed(2)}
+                {meta.totalHighestRating.toFixed(2)}
                 <small className="opacity-50 ml-1">
-                  {vsMeta?.total.highestRating.toFixed(2)}
+                  {/*{vsMeta?.total.highestRating.toFixed(2)}*/}
                 </small>
               </h3>
               <p className="text-sm">Highest Rating</p>
             </div>
             <div>
               <h3 className="font-semibold">
-                {meta.total.lowestRating.toFixed(2)}
+                {meta.totalLowestRating.toFixed(2)}
                 <small className="opacity-50 ml-1">
-                  {vsMeta?.total.lowestRating.toFixed(2)}
+                  {/*{vsMeta?.total.lowestRating.toFixed(2)}*/}
                 </small>
               </h3>
               <p className="text-sm">Lowest Rating</p>
@@ -139,27 +143,27 @@ export const Profile: FunctionComponent<{
             <div className="col-span-3 border-b -mx-3 my-2 dark:border-gray-600" />
             <div>
               <h3 className="font-semibold">
-                {meta.current.winStreak}
+                {meta.currentWinStreak}
                 <small className="opacity-50 ml-1">
-                  {vsMeta?.current.winStreak}
+                  {/*{vsMeta?.current.winStreak}*/}
                 </small>
               </h3>
               <p className="text-sm">Current winstreak</p>
             </div>
             <div>
               <h3 className="font-semibold">
-                {meta.total.highestWinStreak}
+                {meta.totalHighestWinStreak}
                 <small className="opacity-50 ml-1">
-                  {vsMeta?.total.highestWinStreak}
+                  {/*{vsMeta?.total.highestWinStreak}*/}
                 </small>
               </h3>
               <p className="text-sm">Highest winstreak</p>
             </div>
             <div>
               <h3 className="font-semibold">
-                {meta.total.highestLosingStreak}
+                {meta.totalHighestLosingStreak}
                 <small className="opacity-50 ml-1">
-                  {vsMeta?.total.highestLosingStreak}
+                  {/*{vsMeta?.total.highestLosingStreak}*/}
                 </small>
               </h3>
               <p className="text-sm">Highest losing streak</p>
@@ -185,7 +189,7 @@ export const Profile: FunctionComponent<{
               {vsMeta?.achievementPoints}
             </small>
           </div>
-          <AchievementList team={team} versus={versus || undefined} />
+          {/*<AchievementList team={team} versus={versus || undefined} />*/}
         </div>
       </div>
     </Card>

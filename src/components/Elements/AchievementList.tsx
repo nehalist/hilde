@@ -1,8 +1,9 @@
 import { Fragment, FunctionComponent } from "react";
 import { Team } from "@prisma/client";
 import { getCurrentSeasonMeta } from "~/model/team";
-import { Achievement, achievements } from "~/utils/achievements";
+import { Achievement } from "~/utils/achievements";
 import { TimeDistance } from "~/components/Elements/TeamDistance";
+import { TeamWithMetaAndAchievements } from "~/server/model/team";
 
 const AchievementCard: FunctionComponent<{
   achievement: Achievement;
@@ -60,52 +61,53 @@ const AchievementCard: FunctionComponent<{
 };
 
 export const AchievementList: FunctionComponent<{
-  team: Team;
+  team: TeamWithMetaAndAchievements;
   versus?: Team;
 }> = ({ team, versus }) => {
   const meta = getCurrentSeasonMeta(team);
-  const teamAchievements = achievements.filter(achievement =>
-    meta.achievements.find(a => a.id === achievement.id),
-  );
-  const versusMeta = versus ? getCurrentSeasonMeta(versus) : undefined;
-  const versusAchievements = versusMeta
-    ? achievements.filter(achievement =>
-        versusMeta.achievements.find(a => a.id === achievement.id),
-      )
-    : [];
-
-  const uniqueAchievements = [
-    ...new Set([...teamAchievements, ...versusAchievements]),
-  ];
-
-  return (
-    <div className="grid grid-cols-2 gap-3">
-      {uniqueAchievements.map(achievement => (
-        <AchievementCard
-          key={achievement.id}
-          achievement={achievement}
-          earned={[
-            ...teamAchievements
-              .filter(a => a.id === achievement.id)
-              .map(() => ({
-                teamName: team.name,
-                date: meta.achievements.find(a => a.id === achievement.id)!
-                  .earnedAt,
-                cssClasses: "bg-lime-600 text-white",
-              })),
-            ...versusAchievements
-              .filter(a => a.id === achievement.id)
-              .map(() => ({
-                teamName: versus!.name,
-                date: versusMeta!.achievements.find(
-                  a => a.id === achievement.id,
-                )!.earnedAt,
-                cssClasses: "bg-cyan-600 text-white",
-              })),
-          ]}
-          display={versus ? "versus" : "single"}
-        />
-      ))}
-    </div>
-  );
+  return null;
+  // const teamAchievements = achievements.filter(achievement =>
+  //   meta.achievements.find(a => a.id === achievement.id),
+  // );
+  // const versusMeta = versus ? getCurrentSeasonMeta(versus) : undefined;
+  // const versusAchievements = versusMeta
+  //   ? achievements.filter(achievement =>
+  //       versusMeta.achievements.find(a => a.id === achievement.id),
+  //     )
+  //   : [];
+  //
+  // const uniqueAchievements = [
+  //   ...new Set([...teamAchievements, ...versusAchievements]),
+  // ];
+  //
+  // return (
+  //   <div className="grid grid-cols-2 gap-3">
+  //     {uniqueAchievements.map(achievement => (
+  //       <AchievementCard
+  //         key={achievement.id}
+  //         achievement={achievement}
+  //         earned={[
+  //           ...teamAchievements
+  //             .filter(a => a.id === achievement.id)
+  //             .map(() => ({
+  //               teamName: team.name,
+  //               date: meta.achievements.find(a => a.id === achievement.id)!
+  //                 .earnedAt,
+  //               cssClasses: "bg-lime-600 text-white",
+  //             })),
+  //           ...versusAchievements
+  //             .filter(a => a.id === achievement.id)
+  //             .map(() => ({
+  //               teamName: versus!.name,
+  //               date: versusMeta!.achievements.find(
+  //                 a => a.id === achievement.id,
+  //               )!.earnedAt,
+  //               cssClasses: "bg-cyan-600 text-white",
+  //             })),
+  //         ]}
+  //         display={versus ? "versus" : "single"}
+  //       />
+  //     ))}
+  //   </div>
+  // );
 };

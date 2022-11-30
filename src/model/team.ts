@@ -5,6 +5,7 @@
 import { Team } from "@prisma/client";
 import { getCurrentSeason } from "~/utils/season";
 import { defaultRating } from "~/utils/elo";
+import {TeamWithMeta} from '~/server/model/team';
 
 export interface TeamMetaDetails {
   matches: number;
@@ -96,12 +97,11 @@ export function getTeamMeta(team?: Team) {
   };
 }
 
-export function getSeasonMeta(team: Team, season: number) {
-  const meta = getTeamMeta(team);
-  return meta[season];
+export function getSeasonMeta(team: TeamWithMeta, season: number) {
+  return team.meta.find(m => m.season === season);
 }
 
-export function getCurrentSeasonMeta(team: Team) {
+export function getCurrentSeasonMeta(team: TeamWithMeta) {
   return getSeasonMeta(team, getCurrentSeason());
 }
 

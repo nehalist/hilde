@@ -54,6 +54,10 @@ export const teamsRouter = router({
     )
     .query(async ({ input }) => {
       return await prisma.team.findUnique({
+        include: {
+          meta: true,
+          achievements: true,
+        },
         where: {
           name: input.name,
         },

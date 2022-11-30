@@ -12,11 +12,10 @@ export interface MatchMeta {
 }
 
 export function getMatchMeta(match: Match): MatchMeta {
-  const meta = JSON.parse(match.meta) as Partial<MatchMeta> | undefined;
   return {
     achievements: {
-      team1: meta?.achievements?.team1 || [],
-      team2: meta?.achievements?.team2 || [],
+      team1: [],
+      team2: [],
     },
   };
 }
