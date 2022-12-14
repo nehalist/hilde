@@ -1,6 +1,6 @@
 import { prisma } from "~/server/prisma";
 import { Match, Prisma, Team } from "@prisma/client";
-import {getCurrentSeasonMeta, getDefaultTeamMeta, getSeasonMeta, getTeamSize} from "~/model/team";
+import { getDefaultTeamMeta, getSeasonMeta, getTeamSize } from "~/model/team";
 import { Achievement, checkAchievements } from "~/utils/achievements";
 import { getCurrentSeason } from "~/utils/season";
 import { calculateRating, defaultRating, getExpectedRating } from "~/utils/elo";
@@ -26,11 +26,8 @@ export type TeamWithAchievements = Prisma.TeamGetPayload<
 
 export type TeamWithMetaAndAchievements = TeamWithMeta & TeamWithAchievements;
 
-export async function getOrCreateTeam(
-  name: string,
-  season = getCurrentSeason(),
-) {
-  const team = await prisma.team.upsert({
+export async function getOrCreateTeam(name: string) {
+  return await prisma.team.upsert({
     where: {
       name,
     },
@@ -43,27 +40,8 @@ export async function getOrCreateTeam(
       name,
       createdAt: new Date(),
       teamsize: getTeamSize(name),
-      // meta: {
-      //   create: {
-      //     season,
-      //     rating: defaultRating,
-      //   },
-      // },
     },
   });
-
-  // if (!(team.meta.find(m => m.season === season))) {
-  //   const meta = await prisma.teamMeta.create({
-  //     data: {
-  //       teamId: team.id,
-  //       season,
-  //       rating: defaultRating,
-  //     },
-  //   });
-  //   team.meta.push(meta);
-  // }
-
-  return team;
 }
 
 export async function addMatchToTeam(
@@ -119,7 +97,7 @@ export async function addMatchToTeam(
       totalAvgScore:
         (teamSeasonMeta.totalScore + score) / (teamSeasonMeta.totalMatches + 1),
       totalHighestRating: Math.max(teamSeasonMeta.totalHighestRating, rating),
-      totalLowestRating: Math.max(teamSeasonMeta.totalLowestRating, rating),
+      totalLowestRating: Math.min(teamSeasonMeta.totalLowestRating, rating),
       ...(newDaily
         ? {
             dailyMatches: 1,
@@ -205,6 +183,7 @@ export async function grantAchievements(
     await prisma.teamAchievement.create({
       data: {
         season,
+        createdAt: match.createdAt,
         team: {
           connect: {
             id: team.id,
@@ -236,7 +215,7 @@ export async function setMatchAchievements(
   team1: TeamWithMetaAndAchievements,
   team2: TeamWithMetaAndAchievements,
   match: Match,
-  season = getCurrentSeason()
+  season = getCurrentSeason(),
 ) {
   const achievements1 = checkAchievements(team1, team2, match);
   const achievements2 = checkAchievements(team2, team1, match);
