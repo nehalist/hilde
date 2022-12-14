@@ -7,8 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "recalculate-ratings": "ts-node -r tsconfig-paths/register ./scripts/recalculate-ratings",
-    "reset-team-meta": "ts-node -r tsconfig-paths/register ./scripts/reset-team-meta"
+    "recalculate-ratings": "ts-node -r tsconfig-paths/register ./scripts/recalculate-ratings"
   },
   "dependencies": {
     "@formkit/auto-animate": "^1.0.0-beta.3",
@@ -17,15 +16,14 @@
     "@nivo/line": "^0.80.0",
     "@prisma/client": "^4.6.1",
     "@tanstack/react-query": "^4.15.1",
-    "@trpc/client": "^10.0.0-rc.5",
-    "@trpc/next": "^10.0.0-rc.5",
-    "@trpc/react-query": "^10.0.0-rc.5",
-    "@trpc/server": "^10.0.0-rc.5",
+    "@trpc/client": "^10.5.0",
+    "@trpc/next": "^10.5.0",
+    "@trpc/react-query": "^10.5.0",
+    "@trpc/server": "^10.5.0",
     "babel-plugin-superjson-next": "^0.4.4",
     "date-fns": "^2.29.3",
     "dotenv": "^16.0.3",
     "next": "^13.0.3",
-    "next-connect": "^0.12.2",
     "next-seo": "^5.4.0",
     "next-themes": "^0.2.1",
     "prettier": "^2.6.2",
@@ -36,7 +34,6 @@
     "react-toastify": "^9.1.1",
     "react-tooltip": "^4.5.0",
     "tsconfig-paths": "^4.1.0",
-    "yup": "^0.32.11",
     "zod": "^3.19.1"
   },
   "devDependencies": {
