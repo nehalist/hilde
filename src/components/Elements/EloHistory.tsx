@@ -61,12 +61,13 @@ export const EloHistory: FunctionComponent<{
               }
             : {}
         }
-        curve="cardinal"
+        curve="linear"
         axisTop={null}
         axisRight={null}
-        enablePoints={false}
+        enablePoints={matches.length < 100}
         axisBottom={null}
         useMesh={true}
+        enableGridX={matches.length < 100}
       />
     </div>
   );

@@ -77,11 +77,12 @@ model TeamMeta {
 model TeamAchievement {
   id          Int      @id @default(autoincrement())
   createdAt   DateTime @default(now())
-  team        Team     @relation(fields: [teamId], references: [id])
+  team        Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  teamName    String
   teamId      Int
   achievement String
   season      Int      @default(1)
-  match       Match    @relation(fields: [matchId], references: [id])
+  match       Match    @relation(fields: [matchId], references: [id], onDelete: Cascade)
   matchId     Int
 
   @@map("team_achievement")

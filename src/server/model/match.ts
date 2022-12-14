@@ -1,7 +1,11 @@
 import { prisma } from "~/server/prisma";
 import { getTeamSize } from "~/model/team";
 import { Prisma } from "@prisma/client";
-import { addMatchToTeam, TeamWithMeta } from "~/server/model/team";
+import {
+  addMatchToTeam,
+  setMatchAchievements,
+  TeamWithMeta, TeamWithMetaAndAchievements,
+} from "~/server/model/team";
 import { getCurrentSeason } from "~/utils/season";
 
 export const matchWithAchievements = Prisma.validator<Prisma.MatchArgs>()({
@@ -15,8 +19,8 @@ export type MatchWithAchievements = Prisma.MatchGetPayload<
 >;
 
 export async function createMatch(
-  team1: TeamWithMeta,
-  team2: TeamWithMeta,
+  team1: TeamWithMetaAndAchievements,
+  team2: TeamWithMetaAndAchievements,
   score1: number,
   score2: number,
   comment: string,
@@ -53,7 +57,7 @@ export async function createMatch(
     },
   });
 
-  // await setAchievements(updatedTeam1.team, updatedTeam2.team, match);
+  await setMatchAchievements(updatedTeam1.team, updatedTeam2.team, match);
 
   return match;
 }

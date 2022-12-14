@@ -1,13 +1,14 @@
 import { FunctionComponent, useMemo } from "react";
 import { Card } from "~/components/Elements/Card";
 import { EloHistory } from "~/components/Elements/EloHistory";
-import { Match, Team } from "@prisma/client";
-import { getCurrentSeasonMeta, TeamMetaDetails } from "~/model/team";
-import { TeamWithMeta } from "~/server/model/team";
+import { Match, Team, TeamMeta } from "@prisma/client";
+import { getCurrentSeasonMeta } from "~/model/team";
+import { TeamWithMetaAndAchievements } from "~/server/model/team";
+import { AchievementList } from "~/components/Elements/AchievementList";
 
 export const Profile: FunctionComponent<{
-  team: TeamWithMeta;
-  versus?: TeamWithMeta | null;
+  team: TeamWithMetaAndAchievements;
+  versus?: TeamWithMetaAndAchievements | null;
   matches?: Match[];
   onVersusSelect: (teamName: string) => void;
   versusOptions: Team[];
@@ -15,7 +16,7 @@ export const Profile: FunctionComponent<{
   const meta = getCurrentSeasonMeta(team);
   const vsMeta = versus ? getCurrentSeasonMeta(versus) : undefined;
 
-  const versusStats = useMemo((): TeamMetaDetails | null => {
+  const versusStats = useMemo((): Partial<TeamMeta> | null => {
     if (!matches || !versus) {
       return null;
     }
@@ -31,21 +32,22 @@ export const Profile: FunctionComponent<{
       return acc + (m.team1 === team.name ? m.score1 : m.score2);
     }, 0);
     return {
-      matches: playedMatches.length,
-      wins,
-      winRate: playedMatches.length === 0 ? 0 : wins / playedMatches.length,
-      losses: playedMatches.length - wins,
-      score,
-      avgScore: score / playedMatches.length,
+      totalMatches: playedMatches.length,
+      totalWins: wins,
+      totalWinRate:
+        playedMatches.length === 0 ? 0 : wins / playedMatches.length,
+      totalLosses: playedMatches.length - wins,
+      totalScore: score,
+      totalAvgScore: score / playedMatches.length,
     };
   }, [team, versus, matches]);
 
-  const stat = (stat: keyof TeamMetaDetails, float = false) => {
-    let value = versus && versusStats ? versusStats[stat] : 0; // todo
+  const stat = (stat: keyof TeamMeta, float = false) => {
+    let value = versus && versusStats ? versusStats[stat] : meta[stat];
     if (!value) {
       return 0;
     }
-    if (stat === "winRate") {
+    if (stat === "totalWinRate") {
       value *= 100;
     }
     if (float) {
@@ -101,7 +103,7 @@ export const Profile: FunctionComponent<{
               <h3 className="font-semibold">
                 {meta.totalHighestRating.toFixed(2)}
                 <small className="opacity-50 ml-1">
-                  {/*{vsMeta?.total.highestRating.toFixed(2)}*/}
+                  {vsMeta?.totalHighestRating.toFixed(2)}
                 </small>
               </h3>
               <p className="text-sm">Highest Rating</p>
@@ -110,34 +112,34 @@ export const Profile: FunctionComponent<{
               <h3 className="font-semibold">
                 {meta.totalLowestRating.toFixed(2)}
                 <small className="opacity-50 ml-1">
-                  {/*{vsMeta?.total.lowestRating.toFixed(2)}*/}
+                  {vsMeta?.totalLowestRating.toFixed(2)}
                 </small>
               </h3>
               <p className="text-sm">Lowest Rating</p>
             </div>
             <div className="col-span-3 border-b -m-3 my-2 dark:border-gray-600" />
             <div>
-              <h3 className="font-semibold">{stat("matches")}</h3>
+              <h3 className="font-semibold">{stat("totalMatches")}</h3>
               <p className="text-sm">Matches</p>
             </div>
             <div>
-              <h3 className="font-semibold">{stat("wins")}</h3>
+              <h3 className="font-semibold">{stat("totalWins")}</h3>
               <p className="text-sm">Wins</p>
             </div>
             <div>
-              <h3 className="font-semibold">{stat("losses")}</h3>
+              <h3 className="font-semibold">{stat("totalLosses")}</h3>
               <p className="text-sm">Losses</p>
             </div>
             <div>
-              <h3 className="font-semibold">{stat("score")}</h3>
+              <h3 className="font-semibold">{stat("totalScore")}</h3>
               <p className="text-sm">Total score</p>
             </div>
             <div>
-              <h3 className="font-semibold">{stat("avgScore", true)}</h3>
+              <h3 className="font-semibold">{stat("totalAvgScore", true)}</h3>
               <p className="text-sm">Average score</p>
             </div>
             <div>
-              <h3 className="font-semibold">{stat("winRate", true)}%</h3>
+              <h3 className="font-semibold">{stat("totalWinRate", true)}%</h3>
               <p className="text-sm">Winrate</p>
             </div>
             <div className="col-span-3 border-b -mx-3 my-2 dark:border-gray-600" />
@@ -145,7 +147,7 @@ export const Profile: FunctionComponent<{
               <h3 className="font-semibold">
                 {meta.currentWinStreak}
                 <small className="opacity-50 ml-1">
-                  {/*{vsMeta?.current.winStreak}*/}
+                  {vsMeta?.currentWinStreak}
                 </small>
               </h3>
               <p className="text-sm">Current winstreak</p>
@@ -154,7 +156,7 @@ export const Profile: FunctionComponent<{
               <h3 className="font-semibold">
                 {meta.totalHighestWinStreak}
                 <small className="opacity-50 ml-1">
-                  {/*{vsMeta?.total.highestWinStreak}*/}
+                  {vsMeta?.totalHighestWinStreak}
                 </small>
               </h3>
               <p className="text-sm">Highest winstreak</p>
@@ -163,7 +165,7 @@ export const Profile: FunctionComponent<{
               <h3 className="font-semibold">
                 {meta.totalHighestLosingStreak}
                 <small className="opacity-50 ml-1">
-                  {/*{vsMeta?.total.highestLosingStreak}*/}
+                  {vsMeta?.totalHighestLosingStreak}
                 </small>
               </h3>
               <p className="text-sm">Highest losing streak</p>
@@ -189,7 +191,7 @@ export const Profile: FunctionComponent<{
               {vsMeta?.achievementPoints}
             </small>
           </div>
-          {/*<AchievementList team={team} versus={versus || undefined} />*/}
+          <AchievementList team={team} versus={versus || undefined} />
         </div>
       </div>
     </Card>

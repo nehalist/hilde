@@ -48,6 +48,9 @@ export const matchesRouter = router({
         orderBy: {
           createdAt: "desc",
         },
+        include: {
+          achievements: true,
+        },
         where: {
           ...where,
           season: getCurrentSeason(),
@@ -115,6 +118,9 @@ export const matchesRouter = router({
         where: {
           ...where,
           season: getCurrentSeason(),
+        },
+        include: {
+          achievements: true,
         },
         cursor: input.cursor ? { id: input.cursor } : undefined,
         orderBy: {

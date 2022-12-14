@@ -1,6 +1,7 @@
 import { publicProcedure, router } from "~/server/trpc";
 import { z } from "zod";
 import { prisma } from "~/server/prisma";
+import { createTeamMeta } from "~/server/model/team";
 
 export const teamsRouter = router({
   list: publicProcedure
@@ -11,6 +12,9 @@ export const teamsRouter = router({
     )
     .query(async ({ input }) => {
       return await prisma.team.findMany({
+        include: {
+          meta: true,
+        },
         where: {
           teamsize: input.teamsize,
         },
@@ -53,7 +57,7 @@ export const teamsRouter = router({
       }),
     )
     .query(async ({ input }) => {
-      return await prisma.team.findUnique({
+      const team = await prisma.team.findUnique({
         include: {
           meta: true,
           achievements: true,
@@ -62,5 +66,15 @@ export const teamsRouter = router({
           name: input.name,
         },
       });
+
+      if (!team) {
+        return null;
+      }
+
+      if (team.meta.length === 0) {
+        team.meta = [await createTeamMeta(team)];
+      }
+
+      return team;
     }),
 });
