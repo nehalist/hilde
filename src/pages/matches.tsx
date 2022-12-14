@@ -7,7 +7,7 @@ import { Select } from "~/components/Form";
 const Matches = () => {
   const [team1Filter, setTeam1Filter] = useState<string>("");
   const [team2Filter, setTeam2Filter] = useState<string>("");
-  const [exact, setExact] = useState(true);
+  const [team, setTeam] = useState(true);
 
   const {
     data: matches,
@@ -18,7 +18,7 @@ const Matches = () => {
       limit: 25,
       team1: team1Filter,
       team2: team2Filter,
-      exact,
+      exact: !team,
     },
     {
       getNextPageParam: lastPage => lastPage.nextCursor,
@@ -67,14 +67,14 @@ const Matches = () => {
             >
               <input
                 type="checkbox"
-                checked={exact}
+                checked={team}
                 id="exact-toggle"
                 className="sr-only peer"
-                onChange={() => setExact(!exact)}
+                onChange={() => setTeam(!team)}
               />
               <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-lime-500"></div>
               <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">
-                Exact
+                Team
               </span>
             </label>
           )}
