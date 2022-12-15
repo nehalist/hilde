@@ -3,7 +3,7 @@ import { TiDeleteOutline } from "react-icons/ti";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { trpc } from "~/utils/trpc";
-import { getCurrentSeasonMeta } from "~/model/team";
+import { getCurrentSeasonMeta } from "~/model";
 import { TeamLink } from "~/components/Elements/TeamLink";
 import { TeamWithMeta } from "~/server/model/team";
 

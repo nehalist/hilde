@@ -57,8 +57,8 @@ import { getArgument } from "./helper";
 
   let i = 0;
   for await (const match of matches) {
-    const team1 = await getOrCreateTeam(match.team1, season);
-    const team2 = await getOrCreateTeam(match.team2, season);
+    const team1 = await getOrCreateTeam(match.team1);
+    const team2 = await getOrCreateTeam(match.team2);
 
     const updatedTeam1 = await addMatchToTeam(
       team1,

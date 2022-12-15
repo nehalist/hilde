@@ -2,7 +2,7 @@ import { FunctionComponent, useMemo } from "react";
 import { Card } from "~/components/Elements/Card";
 import { EloHistory } from "~/components/Elements/EloHistory";
 import { Match, Team, TeamMeta } from "@prisma/client";
-import { getCurrentSeasonMeta } from "~/model/team";
+import { getCurrentSeasonMeta } from "~/model";
 import { TeamWithMetaAndAchievements } from "~/server/model/team";
 import { AchievementList } from "~/components/Elements/AchievementList";
 

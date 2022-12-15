@@ -1,6 +1,6 @@
 import { prisma } from "~/server/prisma";
 import { Match, Prisma, Team } from "@prisma/client";
-import { getDefaultTeamMeta, getSeasonMeta, getTeamSize } from "~/model/team";
+import { getDefaultTeamMeta, getSeasonMeta, getTeamSize } from "~/model";
 import { Achievement, checkAchievements } from "~/utils/achievements";
 import { getCurrentSeason } from "~/utils/season";
 import { calculateRating, defaultRating, getExpectedRating } from "~/utils/elo";

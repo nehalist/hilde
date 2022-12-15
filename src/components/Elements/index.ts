@@ -6,3 +6,4 @@ export * from "./RatingChange";
 export * from "./TeamDistance";
 export * from "./Score";
 export * from "./AchievementList";
+export * from "./LeaderboardsTable";

@@ -1,10 +1,10 @@
 import { prisma } from "~/server/prisma";
-import { getTeamSize } from "~/model/team";
+import { getTeamSize } from "~/model";
 import { Prisma } from "@prisma/client";
 import {
   addMatchToTeam,
   setMatchAchievements,
-  TeamWithMeta, TeamWithMetaAndAchievements,
+  TeamWithMetaAndAchievements,
 } from "~/server/model/team";
 import { getCurrentSeason } from "~/utils/season";
 
