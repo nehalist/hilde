@@ -8,5 +8,9 @@ export const TeamLink: FunctionComponent<{ team: Team | string }> = ({
   if (typeof team === "object") {
     team = team.name;
   }
-  return <Link href={`/teams/${team}`} className="hover:underline">{team}</Link>;
+  return (
+    <Link href={`/teams/${team}`} className="hover:underline">
+      {team}
+    </Link>
+  );
 };

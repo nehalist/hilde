@@ -4,7 +4,11 @@ export function getExpectedRating(ratingA: number, ratingB: number): number {
   return 1 / (1 + Math.pow(10, (ratingB - ratingA) / 400));
 }
 
-export function calculateRating(expected: number, actual: number, current: number): number {
+export function calculateRating(
+  expected: number,
+  actual: number,
+  current: number,
+): number {
   let k;
   if (current < defaultRating + 200) {
     k = 32;

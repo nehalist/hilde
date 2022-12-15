@@ -8,7 +8,9 @@ export const Select: FunctionComponent<{
   onChange: ChangeEventHandler<HTMLSelectElement>;
 }> = ({ label, placeholder, selectedValue, onChange, options }) => (
   <>
-    <label className="text-sm mb-1 text-gray-900 block dark:text-gray-200">{label}</label>
+    <label className="text-sm mb-1 text-gray-900 block dark:text-gray-200">
+      {label}
+    </label>
     <select
       placeholder={placeholder}
       defaultValue={selectedValue}

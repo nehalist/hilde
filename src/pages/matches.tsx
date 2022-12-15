@@ -92,7 +92,12 @@ const Matches = () => {
         />
         {hasNextPage && (
           <div className="border-t text-center p-2">
-            <button onClick={() => fetchNextPage()} className="text-sm uppercase block w-full text-center">Load more</button>
+            <button
+              onClick={() => fetchNextPage()}
+              className="text-sm uppercase block w-full text-center"
+            >
+              Load more
+            </button>
           </div>
         )}
       </Card>

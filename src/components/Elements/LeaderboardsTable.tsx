@@ -24,7 +24,6 @@ const LeaderboardsRow: FunctionComponent<{
         p => p.place === place && p.category === category,
       );
       if (!entry) {
-        console.log(leaderboards, place, category);
         return null;
       }
       return (
@@ -40,7 +39,7 @@ const LeaderboardsRow: FunctionComponent<{
   );
 
   return (
-    <tr className="border-b dark:border-b-gray-600 last:border-b-0">
+    <tr className={`border-b dark:border-b-gray-600 last:border-b-0`}>
       <td className="text-center py-6">
         <PlaceIcon place={place} />
       </td>
@@ -66,7 +65,7 @@ export const LeaderboardsTable: FunctionComponent<{
 
   return (
     <Card>
-      <div className="p-6 flex justify-between">
+      <div className="px-4 py-3 text-sm flex justify-between">
         <div>
           Total Matches: <b>{leaderboards.totalMatches.total}</b>
         </div>

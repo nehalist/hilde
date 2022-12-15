@@ -444,7 +444,7 @@ export const achievements: Achievement[] = [
     id: "daily-o-clock",
     condition: (team, opponent, match) => {
       return (
-        match.createdAt.getHours() === 9 &&
+        match.createdAt.getHours() === 8 &&
         match.createdAt.getMinutes() >= 0 &&
         match.createdAt.getMinutes() <= 15
       );

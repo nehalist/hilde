@@ -11,7 +11,9 @@ const Team = () => {
   const { data: team, isLoading } = trpc.teams.byId.useQuery({
     name: teamName,
   });
-  const { data: teams } = trpc.teams.list.useQuery({ teamsize: team?.teamsize || 1 });
+  const { data: teams } = trpc.teams.list.useQuery({
+    teamsize: team?.teamsize || 1,
+  });
   const { data: versusTeam } = trpc.teams.byId.useQuery(
     {
       name: versus || "",

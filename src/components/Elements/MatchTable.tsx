@@ -82,7 +82,7 @@ export const MatchTable: FunctionComponent<{
               <TeamLink team={match.team2} />{" "}
               {match.score2 > match.score1 ? "🏆" : ""}{" "}
               {match.achievements.filter(a => a.teamName === match.team2)
-                  .length > 0 && (
+                .length > 0 && (
                 <>
                   <span
                     data-tip={achievements

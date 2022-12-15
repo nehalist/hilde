@@ -4,7 +4,8 @@ import { getCurrentSeason } from "~/utils/season";
 import { defaultRating } from "~/utils/elo";
 import { prisma } from "~/server/prisma";
 import {
-  addMatchToTeam, createTeamMeta,
+  addMatchToTeam,
+  createTeamMeta,
   getOrCreateTeam,
   setMatchAchievements,
 } from "~/server/model/team";
@@ -90,7 +91,12 @@ import { getArgument } from "./helper";
     });
 
     if (achievements) {
-      await setMatchAchievements(updatedTeam1.team, updatedTeam2.team, match, season);
+      await setMatchAchievements(
+        updatedTeam1.team,
+        updatedTeam2.team,
+        match,
+        season,
+      );
     }
 
     i++;
