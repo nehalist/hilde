@@ -2,10 +2,11 @@ version: '3'
 
 services:
   database:
+    container_name: hilde_db
     image: mysql:8.0
     environment:
       - MYSQL_DATABASE=hilde
-      - MYSQL_ROOT_PASSWORD=hilde
+      - MYSQL_ROOT_PASSWORD=hildepw
     ports:
       - "3309:3306"
     volumes:
