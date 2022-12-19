@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
@@ -45,7 +45,7 @@ model Team {
 model TeamMeta {
   id                       Int      @id @default(autoincrement())
   createdAt                DateTime @default(now())
-  team                     Team     @relation(fields: [teamId], references: [id])
+  team                     Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
   season                   Int      @default(1)
   teamId                   Int
   rating                   Float    @default(0)

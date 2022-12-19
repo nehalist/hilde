@@ -24,20 +24,23 @@ export async function createMatch(
   score1: number,
   score2: number,
   comment: string,
+  date = new Date(),
+  season = getCurrentSeason(),
+  achievements = true
 ) {
   const updatedTeam1 = await addMatchToTeam(
     team1,
     team2,
     score1 > score2,
     score1,
-    new Date(),
+    date,
   );
   const updatedTeam2 = await addMatchToTeam(
     team2,
     team1,
     score2 > score1,
     score2,
-    new Date(),
+    date,
   );
 
   const match = await prisma.match.create({
@@ -53,11 +56,13 @@ export async function createMatch(
       team1RatingChange: updatedTeam2.diff,
       team2RatingChange: updatedTeam1.diff,
       teamsize: getTeamSize(team1.name),
-      season: getCurrentSeason(),
+      season,
     },
   });
 
-  await setMatchAchievements(updatedTeam1.team, updatedTeam2.team, match);
+  if (achievements) {
+    await setMatchAchievements(updatedTeam1.team, updatedTeam2.team, match);
+  }
 
   return match;
 }

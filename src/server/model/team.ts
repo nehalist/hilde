@@ -40,6 +40,12 @@ export async function getOrCreateTeam(name: string) {
       name,
       createdAt: new Date(),
       teamsize: getTeamSize(name),
+      meta: {
+        create: {
+          ...getDefaultTeamMeta(),
+          season: getCurrentSeason(),
+        },
+      },
     },
   });
 }
