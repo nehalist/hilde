@@ -26,7 +26,7 @@ export async function createMatch(
   comment: string,
   date = new Date(),
   season = getCurrentSeason(),
-  achievements = true
+  achievements = true,
 ) {
   const updatedTeam1 = await addMatchToTeam(
     team1,
