@@ -4,8 +4,8 @@
 ![License](https://img.shields.io/github/license/nehalist/hilde)
 ![Docker Pulls](https://img.shields.io/docker/pulls/nehalist/hilde)
 
-You've got a foosball table or similar in your office and want to track your matches, player progress and compare yourself to your colleagues and see who's the best? You've come to the right place. *
-*Hilde** is a match tracking app for games like foosball, table tennis, air hockey, etc. with achievements, elo ratings, statistics and more. **Hilde** is easy to setup and can be used by everyone.
+You've got a foosball table or similar in your office and want to track your matches, player progress and compare yourself to your colleagues and see who's the best? You've come to the right place.
+**Hilde** is a match tracking app for games like foosball, table tennis, air hockey, etc. with achievements, elo ratings, statistics and more. **Hilde** is easy to setup and can be used by everyone.
 
 A public **demo** is available at [demo.hilde.gg](https://demo.hilde.gg).
 
