@@ -5,10 +5,18 @@ import { httpBatchLink } from "@trpc/client";
 
 export const trpc = createTRPCNext<AppRouter>({
   config() {
-    const url =
-      typeof window !== "undefined"
-        ? `/api/trpc`
-        : `${process.env.URL}/api/trpc`;
+    if (typeof window !== "undefined") {
+      return {
+        links: [
+          httpBatchLink({
+            url: '/api/trpc',
+          }),
+        ],
+      }
+    }
+    const url = process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}/api/trpc`
+      : `${process.env.URL}/api/trpc`;
 
     return {
       transformer: superjson,
