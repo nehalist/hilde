@@ -4,9 +4,8 @@
 ![License](https://img.shields.io/github/license/nehalist/hilde)
 ![Docker Pulls](https://img.shields.io/docker/pulls/nehalist/hilde)
 
-You've got a foosball table or similar in your office and want to track your matches, player progress and compare yourself to your colleagues and see who's the best? You've come to the right place. _
-_Hilde__ is a
-match tracking app for games like foosball, table tennis, air hockey, etc. with achievements, elo ratings, statistics and more. __Hilde__ is easy to setup and use and can be used by everyone.
+You've got a foosball table or similar in your office and want to track your matches, player progress and compare yourself to your colleagues and see who's the best? You've come to the right place. *
+*Hilde** is a match tracking app for games like foosball, table tennis, air hockey, etc. with achievements, elo ratings, statistics and more. **Hilde** is easy to setup and can be used by everyone.
 
 A public **demo** is available at [demo.hilde.gg](https://demo.hilde.gg).
 
@@ -92,7 +91,7 @@ After running `docker-compose up -d` Hilde is running on `localhost:3000`.
 
 1. Clone/fork the repository
 2. Run `npm ci` to install dependencies
-3. Run `docker-compose up -d` in order to start to database container (or adjust the `.env` file to use a different db)
+3. Run `docker-compose up -d` in order to start the database container (or adjust the `.env` file to use a different db)
 4. Run `npm run dev` to start the development server
 5. Add awesome features.
 
@@ -118,7 +117,7 @@ Hilde provides a set of utility terminal commands:
 | `npm run lint`                                                         | Lints files                                                                                                                     |
 | `npm run migrate`                                                      | Executes Prisma migrations                                                                                                      |
 | `npm run teams:recalculate-ratings [-- [--season=X] [--achievements]]` | Recalculates all team ratings. Use `season` argument to target a specific season and `achievements` to (re-)grant achievements. |
-| `npm run utils:migrate-sqlite`                                         | Imports matches from SQLite (used for migrating from Hilde `v0.1` to mySQL)                                                     |
+| `npm run utils:migrate-sqlite -- --file=X`                             | Imports matches from SQLite (used for migrating from Hilde `v0.1` to mySQL)                                                     |
 
 ### Configuration
 
@@ -149,13 +148,6 @@ PRs are highly appreciated 🥳
 
 If you like Hilde, please consider starring the repository. Thanks!
 
-## Contributors
-
-Developed by [nehalist.io](https://nehalist.io) with the help of these awesome folks:
-
-- [@danleeb](https://github.com/danleeb)
-- [@anniebananie92](https://github.com/anniebananie92)
-
 ## License
 
-This project is open source and licensed under the MIT license.
+Developed by [nehalist.io](https://nehalist.io). Licensed under the [MIT License](LICENSE).
