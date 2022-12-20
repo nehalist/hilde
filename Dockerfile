@@ -43,4 +43,4 @@ EXPOSE 3000
 
 ENV PORT 3000
 
-CMD ["npm", "run", "start:prod"]
+ENTRYPOINT ["/bin/sh", "-c", "npx prisma migrate deploy && node server.js"]

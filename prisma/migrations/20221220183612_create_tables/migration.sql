@@ -30,7 +30,7 @@ CREATE TABLE `team` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `team_meta` (
+CREATE TABLE `teamId` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `season` INTEGER NOT NULL DEFAULT 1,
@@ -57,7 +57,8 @@ CREATE TABLE `team_meta` (
     `currentLosingStreak` INTEGER NOT NULL DEFAULT 0,
     `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
-    UNIQUE INDEX `team_meta_season_teamId_key`(`season`, `teamId`),
+    INDEX `teamId_teamId_idx`(`teamId`),
+    UNIQUE INDEX `teamId_season_teamId_key`(`season`, `teamId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -71,14 +72,6 @@ CREATE TABLE `team_achievement` (
     `season` INTEGER NOT NULL DEFAULT 1,
     `matchId` INTEGER NOT NULL,
 
+    INDEX `team_achievement_matchId_teamId_idx`(`matchId`, `teamId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- AddForeignKey
-ALTER TABLE `team_meta` ADD CONSTRAINT `team_meta_teamId_fkey` FOREIGN KEY (`teamId`) REFERENCES `team`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `team_achievement` ADD CONSTRAINT `team_achievement_teamId_fkey` FOREIGN KEY (`teamId`) REFERENCES `team`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `team_achievement` ADD CONSTRAINT `team_achievement_matchId_fkey` FOREIGN KEY (`matchId`) REFERENCES `match`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

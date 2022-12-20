@@ -6,7 +6,6 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "start:prod": "npx prisma migrate deploy && next start",
     "lint": "next lint && prettier --check src",
     "teams:recalculate-ratings": "ts-node -r tsconfig-paths/register ./scripts/recalculate-ratings",
     "utils:migrate-sqlite": "ts-node -r tsconfig-paths/register ./scripts/migrate-sqlite"

@@ -6,8 +6,9 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 model Match {
@@ -71,7 +72,8 @@ model TeamMeta {
   updatedAt                DateTime @default(now())
 
   @@unique([season, teamId])
-  @@map("team_meta")
+  @@index([teamId])
+  @@map("teamId")
 }
 
 model TeamAchievement {
@@ -85,5 +87,6 @@ model TeamAchievement {
   match       Match    @relation(fields: [matchId], references: [id], onDelete: Cascade)
   matchId     Int
 
+  @@index([matchId, teamId])
   @@map("team_achievement")
 }
