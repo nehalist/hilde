@@ -57,6 +57,7 @@ export async function createMatch(
       team2RatingChange: updatedTeam1.diff,
       teamsize: getTeamSize(team1.name),
       season,
+      createdAt: date,
     },
   });
 
