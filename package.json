@@ -1,5 +1,5 @@
 {
-  "name": "hilde",
+  "name": "@nehalist/hilde",
   "version": "0.2.0",
   "private": true,
   "scripts": {
@@ -10,6 +10,13 @@
     "teams:recalculate-ratings": "ts-node -r tsconfig-paths/register ./scripts/recalculate-ratings",
     "utils:migrate-sqlite": "ts-node -r tsconfig-paths/register ./scripts/migrate-sqlite"
   },
+  "homepage": "https://hilde.gg",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nehalist/hilde"
+  },
+  "author": "Kevin Hirczy <kevin@nehalist.io> (https://nehalist.io)",
+  "license": "MIT",
   "dependencies": {
     "@formkit/auto-animate": "^1.0.0-beta.3",
     "@hookform/resolvers": "^2.9.10",
