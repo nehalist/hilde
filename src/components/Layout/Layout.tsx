@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import packageJson from "../../../package.json";
 import { MdDarkMode, MdLightMode } from "react-icons/md";
 import { useTheme } from "next-themes";
+import { getCurrentSeason } from "~/utils/season";
 
 const NavLink: FunctionComponent<{ label: string; href: string }> = ({
   label,
@@ -44,9 +45,9 @@ export const Layout: FunctionComponent<{ children: ReactNode }> = ({
             >
               Hilde
             </h1>
-            {/*<small className="opacity-50 text-xs leading-5 font-light uppercase">*/}
-            {/*  Season {getCurrentSeason()}*/}
-            {/*</small>*/}
+            <small className="opacity-50 text-xs leading-5 font-light uppercase">
+              Season {getCurrentSeason()}
+            </small>
           </Link>
           <div>
             <ul>
