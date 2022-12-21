@@ -12,9 +12,9 @@ FROM node:alpine3.16 AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+RUN npx next telemetry disable
 RUN npx prisma generate
-#RUN npx prisma migrate deploy
-RUN npm run build
+RUN NEXT_PUBLIC_SEASON=APP_NEXT_PUBLIC_SEASON npm run build
 
 # 3. Production image, copy all the files and run next
 FROM node:alpine3.16 AS runner
@@ -36,6 +36,7 @@ COPY --from=builder /app/package.json ./package.json
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
+COPY --from=builder --chown=nextjs:nodejs /app/entrypoint.sh ./entrypoint.sh
 
 USER nextjs
 
@@ -43,4 +44,4 @@ EXPOSE 3000
 
 ENV PORT 3000
 
-ENTRYPOINT ["/bin/sh", "-c", "npx prisma migrate deploy && node server.js"]
+ENTRYPOINT ["/app/entrypoint.sh"]

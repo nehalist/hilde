@@ -130,7 +130,7 @@ Hilde can be configured via environment variables in the `.env` file.
 
 | Variable             | Description                   | Default                                     |
 |----------------------|-------------------------------|---------------------------------------------|
-| `SEASON`             | The current season (int only) | `1`                                         |
+| `NEXT_PUBLIC_SEASON` | The current season (int only) | `1`                                         |
 | `URL`                | Deployed URL of Hilde         | `localhost:3000`                            |
 | `DATABASE_URL`       | Database connection string    | `mysql://root:hildepw@localhost:3309/hilde` |
 
