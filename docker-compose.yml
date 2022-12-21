@@ -8,7 +8,7 @@ services:
       - MYSQL_DATABASE=hilde
       - MYSQL_ROOT_PASSWORD=hildepw
     ports:
-      - "3309:3306"
+      - "127.0.0.1:3309:3306"
     volumes:
       - db:/var/lib/mysql
 
