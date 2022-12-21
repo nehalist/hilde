@@ -41,7 +41,7 @@ Hilde can be installed in a few minutes, either by deploying it to Vercel, using
 Requirements:
 
 - Node 14
-- mySQL (5.7+)
+- MySQL (5.7+)
 
 ### Free hosting with Vercel & Planetscale
 
@@ -64,9 +64,10 @@ services:
       - internal
     image: nehalist/hilde
     ports:
-      - '3000:3000'
+      - '127.0.0.1:3000:3000'
     environment:
       - DATABASE_URL=mysql://root:hildepw@database:3306/hilde
+      - NEXT_PUBLIC_SEASON=1
 
   database:
     networks:
@@ -99,7 +100,7 @@ After running `docker-compose up -d` Hilde is running on `localhost:3000`.
 
 The official Docker image of Hilde is available on [Docker Hub](https://hub.docker.com/repository/docker/nehalist/hilde). Run it locally via:
 
-1. Run `docker run -p 3000:3000 -e DATABASE_URL=mysql://<user>:<password>@<host>:<port>/<db> nehalist/hilde`
+1. Run `docker run -p 127.0.0.1:3000:3000 -e DATABASE_URL=mysql://<user>:<password>@<host>:<port>/<db> nehalist/hilde`
 2. Open `http://localhost:3000`
 3. Done.
 
