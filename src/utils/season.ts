@@ -1,3 +1,7 @@
 export function getCurrentSeason() {
-  return 2; //+(process.env.NEXT_PUBLIC_SEASON || 1);
+  const season = process.env.NEXT_PUBLIC_SEASON;
+  if (!season) {
+    return 1;
+  }
+  return parseInt(season, 10);
 }

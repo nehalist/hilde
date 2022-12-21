@@ -69,8 +69,14 @@ export async function addMatchToTeam(
   const expectedRating = getExpectedRating(currentRating, opponentRating);
   const rating = calculateRating(expectedRating, win ? 1 : 0, currentRating);
 
-  const updatedMeta = await prisma.teamMeta.update({
-    data: {
+  const { id, ...teamMeta } = getDefaultTeamMeta();
+
+  const updatedMeta = await prisma.teamMeta.upsert({
+    create: {
+      ...teamMeta,
+      teamId: team.id,
+    },
+    update: {
       updatedAt: date,
       rating,
       totalMatches: teamSeasonMeta.totalMatches + 1,

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FunctionComponent, ReactNode } from "react";
+import { FunctionComponent, ReactNode, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import packageJson from "../../../package.json";
 import { MdDarkMode, MdLightMode } from "react-icons/md";
@@ -27,6 +27,9 @@ export const Layout: FunctionComponent<{ children: ReactNode }> = ({
   children,
 }) => {
   const { theme, setTheme } = useTheme();
+  const [season, setSeason] = useState(1);
+
+  useEffect(() => setSeason(getCurrentSeason()), []);
 
   return (
     <div className="container max-w-3xl mx-auto mt-20  flex flex-col py-4 px-4">
@@ -46,7 +49,7 @@ export const Layout: FunctionComponent<{ children: ReactNode }> = ({
               Hilde
             </h1>
             <small className="opacity-50 text-xs leading-5 font-light uppercase">
-              Season {getCurrentSeason()}
+              Season {season}
             </small>
           </Link>
           <div>
