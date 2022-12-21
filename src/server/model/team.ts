@@ -69,73 +69,74 @@ export async function addMatchToTeam(
   const expectedRating = getExpectedRating(currentRating, opponentRating);
   const rating = calculateRating(expectedRating, win ? 1 : 0, currentRating);
 
-  const { id, ...teamMeta } = getDefaultTeamMeta();
-
+  const meta = {
+    updatedAt: date,
+    rating,
+    totalMatches: teamSeasonMeta.totalMatches + 1,
+    totalWins: teamSeasonMeta.totalWins + (win ? 1 : 0),
+    totalWinRate:
+      (teamSeasonMeta.totalWins + (win ? 1 : 0)) /
+      (teamSeasonMeta.totalMatches + 1),
+    totalHighestWinStreak: win
+      ? Math.max(
+          teamSeasonMeta.totalHighestWinStreak,
+          teamSeasonMeta.currentWinStreak + 1,
+        )
+      : teamSeasonMeta.totalHighestWinStreak,
+    totalLosses: teamSeasonMeta.totalLosses + (win ? 0 : 1),
+    totalHighestLosingStreak: !win
+      ? Math.max(
+          teamSeasonMeta.totalHighestLosingStreak,
+          teamSeasonMeta.currentLosingStreak + 1,
+        )
+      : teamSeasonMeta.totalHighestLosingStreak,
+    totalScore: teamSeasonMeta.totalScore + score,
+    totalAvgScore:
+      (teamSeasonMeta.totalScore + score) / (teamSeasonMeta.totalMatches + 1),
+    totalHighestRating: Math.max(teamSeasonMeta.totalHighestRating, rating),
+    totalLowestRating: Math.min(teamSeasonMeta.totalLowestRating, rating),
+    ...(newDaily
+      ? {
+          dailyMatches: 1,
+          dailyWins: win ? 1 : 0,
+          dailyWinRate: win ? 1 : 0,
+          dailyLosses: win ? 0 : 1,
+          dailyScore: score,
+          dailyAvgScore: score,
+        }
+      : {
+          dailyMatches: teamSeasonMeta.dailyMatches + 1,
+          dailyWins: teamSeasonMeta.dailyWins + (win ? 1 : 0),
+          dailyWinRate:
+            (teamSeasonMeta.dailyWins + (win ? 1 : 0)) /
+            (teamSeasonMeta.dailyMatches + 1),
+          dailyLosses: teamSeasonMeta.dailyLosses + (win ? 0 : 1),
+          dailyScore: teamSeasonMeta.dailyScore + score,
+          dailyAvgScore:
+            (teamSeasonMeta.dailyScore + score) /
+            (teamSeasonMeta.dailyMatches + 1),
+        }),
+    currentWinStreak: win ? teamSeasonMeta.currentWinStreak + 1 : 0,
+    currentLosingStreak: !win ? teamSeasonMeta.currentLosingStreak + 1 : 0,
+  };
   const updatedMeta = await prisma.teamMeta.upsert({
     create: {
-      ...teamMeta,
+      ...meta,
       teamId: team.id,
+      season,
     },
     update: {
-      updatedAt: date,
-      rating,
-      totalMatches: teamSeasonMeta.totalMatches + 1,
-      totalWins: teamSeasonMeta.totalWins + (win ? 1 : 0),
-      totalWinRate:
-        (teamSeasonMeta.totalWins + (win ? 1 : 0)) /
-        (teamSeasonMeta.totalMatches + 1),
-      totalHighestWinStreak: win
-        ? Math.max(
-            teamSeasonMeta.totalHighestWinStreak,
-            teamSeasonMeta.currentWinStreak + 1,
-          )
-        : teamSeasonMeta.totalHighestWinStreak,
-      totalLosses: teamSeasonMeta.totalLosses + (win ? 0 : 1),
-      totalHighestLosingStreak: !win
-        ? Math.max(
-            teamSeasonMeta.totalHighestLosingStreak,
-            teamSeasonMeta.currentLosingStreak + 1,
-          )
-        : teamSeasonMeta.totalHighestLosingStreak,
-      totalScore: teamSeasonMeta.totalScore + score,
-      totalAvgScore:
-        (teamSeasonMeta.totalScore + score) / (teamSeasonMeta.totalMatches + 1),
-      totalHighestRating: Math.max(teamSeasonMeta.totalHighestRating, rating),
-      totalLowestRating: Math.min(teamSeasonMeta.totalLowestRating, rating),
-      ...(newDaily
-        ? {
-            dailyMatches: 1,
-            dailyWins: win ? 1 : 0,
-            dailyWinRate: win ? 1 : 0,
-            dailyLosses: win ? 0 : 1,
-            dailyScore: score,
-            dailyAvgScore: score,
-          }
-        : {
-            dailyMatches: teamSeasonMeta.dailyMatches + 1,
-            dailyWins: teamSeasonMeta.dailyWins + (win ? 1 : 0),
-            dailyWinRate:
-              (teamSeasonMeta.dailyWins + (win ? 1 : 0)) /
-              (teamSeasonMeta.dailyMatches + 1),
-            dailyLosses: teamSeasonMeta.dailyLosses + (win ? 0 : 1),
-            dailyScore: teamSeasonMeta.dailyScore + score,
-            dailyAvgScore:
-              (teamSeasonMeta.dailyScore + score) /
-              (teamSeasonMeta.dailyMatches + 1),
-          }),
-      currentWinStreak: win ? teamSeasonMeta.currentWinStreak + 1 : 0,
-      currentLosingStreak: !win ? teamSeasonMeta.currentLosingStreak + 1 : 0,
+      ...meta,
     },
     where: {
       id: teamSeasonMeta.id,
     },
   });
-  team.meta = [...team.meta].map(meta => {
-    if (meta.id === updatedMeta.id) {
-      return updatedMeta;
-    }
-    return meta;
-  });
+  if (team.meta.find(m => m.id === updatedMeta.id)) {
+    team.meta = team.meta.map(m => (m.id === updatedMeta.id ? updatedMeta : m));
+  } else {
+    team.meta.push(updatedMeta);
+  }
 
   return {
     team,
