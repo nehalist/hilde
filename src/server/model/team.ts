@@ -53,26 +53,18 @@ export async function getOrCreateTeam(name: string) {
 export async function addMatchToTeam(
   team: TeamWithMetaAndAchievements,
   opponent: TeamWithMetaAndAchievements,
+  currentRating: number,
+  opponentRating: number,
   win: boolean,
   score: number,
   date: Date,
   season = getCurrentSeason(),
 ) {
-  let teamSeasonMeta = getSeasonMeta(team, season);
-  if (teamSeasonMeta.id === 0) {
-    teamSeasonMeta = await createTeamMeta(team, season);
-  }
-  let opponentSeasonMeta = getSeasonMeta(opponent, season);
-  if (opponentSeasonMeta.id === 0) {
-    opponentSeasonMeta = await createTeamMeta(opponent, season);
-  }
+  const teamSeasonMeta = getSeasonMeta(team, season);
   const newDaily =
     !teamSeasonMeta.updatedAt ||
     format(date, "yyyy-MM-dd") >
       format(new Date(teamSeasonMeta.updatedAt), "yyyy-MM-dd");
-
-  const currentRating = teamSeasonMeta.rating;
-  const opponentRating = opponentSeasonMeta.rating;
 
   const expectedRating = getExpectedRating(currentRating, opponentRating);
   const rating = calculateRating(expectedRating, win ? 1 : 0, currentRating);

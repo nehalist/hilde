@@ -1,5 +1,5 @@
 require("dotenv").config();
-import { getSeasonMeta } from "~/model/team";
+import {getCurrentSeasonMeta, getSeasonMeta} from "~/model/team";
 import { getCurrentSeason } from "~/utils/season";
 import { defaultRating } from "~/utils/elo";
 import { prisma } from "~/server/prisma";
@@ -60,10 +60,14 @@ import { getArgument } from "./helper";
   for await (const match of matches) {
     const team1 = await getOrCreateTeam(match.team1);
     const team2 = await getOrCreateTeam(match.team2);
+    const team1Rating = getCurrentSeasonMeta(team1).rating;
+    const team2Rating = getCurrentSeasonMeta(team2).rating;
 
     const updatedTeam1 = await addMatchToTeam(
       team1,
       team2,
+      team1Rating,
+      team2Rating,
       match.score1 > match.score2,
       match.score1,
       match.createdAt,
@@ -72,6 +76,8 @@ import { getArgument } from "./helper";
     const updatedTeam2 = await addMatchToTeam(
       team2,
       team1,
+      team2Rating,
+      team1Rating,
       match.score2 > match.score1,
       match.score2,
       match.createdAt,

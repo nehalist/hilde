@@ -1,5 +1,5 @@
 import { prisma } from "~/server/prisma";
-import { getTeamSize } from "~/model";
+import { getCurrentSeasonMeta, getTeamSize } from "~/model";
 import { Prisma } from "@prisma/client";
 import {
   addMatchToTeam,
@@ -28,9 +28,14 @@ export async function createMatch(
   season = getCurrentSeason(),
   achievements = true,
 ) {
+  const team1Rating = getCurrentSeasonMeta(team1).rating;
+  const team2Rating = getCurrentSeasonMeta(team2).rating;
+
   const updatedTeam1 = await addMatchToTeam(
     team1,
     team2,
+    team1Rating,
+    team2Rating,
     score1 > score2,
     score1,
     date,
@@ -38,6 +43,8 @@ export async function createMatch(
   const updatedTeam2 = await addMatchToTeam(
     team2,
     team1,
+    team2Rating,
+    team1Rating,
     score2 > score1,
     score2,
     date,
