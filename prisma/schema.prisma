@@ -73,7 +73,7 @@ model TeamMeta {
 
   @@unique([season, teamId])
   @@index([teamId])
-  @@map("teamId")
+  @@map("team_meta")
 }
 
 model TeamAchievement {

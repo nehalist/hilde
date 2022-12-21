@@ -30,7 +30,7 @@ CREATE TABLE `team` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `teamId` (
+CREATE TABLE `team_meta` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `season` INTEGER NOT NULL DEFAULT 1,
@@ -57,8 +57,8 @@ CREATE TABLE `teamId` (
     `currentLosingStreak` INTEGER NOT NULL DEFAULT 0,
     `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
-    INDEX `teamId_teamId_idx`(`teamId`),
-    UNIQUE INDEX `teamId_season_teamId_key`(`season`, `teamId`),
+    INDEX `team_meta_teamId_idx`(`teamId`),
+    UNIQUE INDEX `team_meta_season_teamId_key`(`season`, `teamId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
