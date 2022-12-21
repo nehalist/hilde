@@ -4,8 +4,10 @@
 ![License](https://img.shields.io/github/license/nehalist/hilde)
 ![Docker Pulls](https://img.shields.io/docker/pulls/nehalist/hilde)
 
-You've got a foosball table or similar in your office and want to track your matches, player progress and compare yourself to your colleagues and see who's the best? You've come to the right place.
-**Hilde** is a match tracking app for games like foosball, table tennis, air hockey, etc. with achievements, elo ratings, statistics and more. **Hilde** is easy to setup and can be used by everyone.
+You've got a foosball table or similar in your office and want to track your matches, player progress and compare yourself to your
+colleagues and see who's the best? You've come to the right place.
+**Hilde** is a match tracking app for games like foosball, table tennis, air hockey, etc. with achievements, elo ratings, statistics and
+more. **Hilde** is easy to setup and can be used by everyone.
 
 A public **demo** is available at [demo.hilde.gg](https://demo.hilde.gg).
 
@@ -45,7 +47,8 @@ Requirements:
 
 ### Free hosting with Vercel & Planetscale
 
-Hilde is designed in a way that it could easily be hosted for free, using [Vercel](https://vercel.com) for hosting and [Planetscale](https://planetscale.com) for the database.
+Hilde is designed in a way that it could easily be hosted for free, using [Vercel](https://vercel.com) for hosting
+and [Planetscale](https://planetscale.com) for the database.
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fnehalist%2Fhilde)
 
@@ -67,7 +70,7 @@ services:
       - '127.0.0.1:3000:3000'
     environment:
       - DATABASE_URL=mysql://root:hildepw@database:3306/hilde
-      - NEXT_PUBLIC_SEASON=1
+      - SEASON=1
 
   database:
     networks:
@@ -98,7 +101,8 @@ After running `docker-compose up -d` Hilde is running on `localhost:3000`.
 
 ### Docker
 
-The official Docker image of Hilde is available on [Docker Hub](https://hub.docker.com/repository/docker/nehalist/hilde). Run it locally via:
+The official Docker image of Hilde is available on [Docker Hub](https://hub.docker.com/repository/docker/nehalist/hilde). Run it locally
+via:
 
 1. Run `docker run -p 127.0.0.1:3000:3000 -e DATABASE_URL=mysql://<user>:<password>@<host>:<port>/<db> nehalist/hilde`
 2. Open `http://localhost:3000`
@@ -124,13 +128,13 @@ Hilde provides a set of utility terminal commands:
 
 Hilde can be configured via environment variables in the `.env` file.
 
-| Variable             | Description                | Default                                     |
-|----------------------|----------------------------|---------------------------------------------|
-| `NEXT_PUBLIC_SEASON` | The current season.        | `1`                                         |
-| `URL`                | Deployed URL of Hilde      | `localhost:3000`                            |
-| `DATABASE_URL`       | Database connection string | `mysql://root:hildepw@localhost:3309/hilde` |
-| `HTTP_AUTH_USER`     | HTTP auth username         | ``                                          |
-| `HTTP_AUTH_PASSWORD` | HTTP auth password         | ``                                          |
+| Variable             | Description                   | Default                                     |
+|----------------------|-------------------------------|---------------------------------------------|
+| `SEASON`             | The current season (int only) | `1`                                         |
+| `URL`                | Deployed URL of Hilde         | `localhost:3000`                            |
+| `DATABASE_URL`       | Database connection string    | `mysql://root:hildepw@localhost:3309/hilde` |
+| `HTTP_AUTH_USER`     | HTTP auth username            | ``                                          |
+| `HTTP_AUTH_PASSWORD` | HTTP auth password            | ``                                          |
 
 HTTP Auth only works if `HTTP_AUTH_USER` __and__ `HTTP_AUTH_PASSWORD` are set.
 

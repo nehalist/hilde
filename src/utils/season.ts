@@ -1,3 +1,6 @@
+import getConfig from "next/config";
+
 export function getCurrentSeason() {
-  return +(process.env.NEXT_PUBLIC_SEASON || 1);
+  const { publicRuntimeConfig } = getConfig();
+  return +publicRuntimeConfig.season;
 }
