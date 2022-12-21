@@ -133,10 +133,6 @@ Hilde can be configured via environment variables in the `.env` file.
 | `SEASON`             | The current season (int only) | `1`                                         |
 | `URL`                | Deployed URL of Hilde         | `localhost:3000`                            |
 | `DATABASE_URL`       | Database connection string    | `mysql://root:hildepw@localhost:3309/hilde` |
-| `HTTP_AUTH_USER`     | HTTP auth username            | ``                                          |
-| `HTTP_AUTH_PASSWORD` | HTTP auth password            | ``                                          |
-
-HTTP Auth only works if `HTTP_AUTH_USER` __and__ `HTTP_AUTH_PASSWORD` are set.
 
 ## 👐 Contributing
 
