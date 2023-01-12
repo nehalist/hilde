@@ -2,6 +2,7 @@ import { publicProcedure, router } from "~/server/trpc";
 import { z } from "zod";
 import { prisma } from "~/server/prisma";
 import { createTeamMeta } from "~/server/model/team";
+import { achievements } from "~/utils/achievements";
 
 export const teamsRouter = router({
   list: publicProcedure
@@ -76,5 +77,43 @@ export const teamsRouter = router({
       }
 
       return team;
+    }),
+
+  deleteAchievement: publicProcedure
+    .input(
+      z.object({
+        id: z.number(),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      const teamAchievement = await prisma.teamAchievement.delete({
+        where: {
+          id: input.id,
+        },
+      });
+      const team = await prisma.team.findUnique({
+        include: {
+          meta: true,
+        },
+        where: {
+          id: teamAchievement.teamId,
+        },
+      });
+      if (!teamAchievement || !team) {
+        return;
+      }
+      const achievement = achievements.find(
+        a => a.id === teamAchievement.achievement,
+      );
+      await prisma.teamMeta.update({
+        data: {
+          achievementPoints: {
+            decrement: achievement?.points || 0,
+          },
+        },
+        where: {
+          id: team.meta[0].id,
+        },
+      });
     }),
 });
