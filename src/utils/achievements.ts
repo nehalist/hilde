@@ -1,4 +1,4 @@
-import { Match } from "@prisma/client";
+import { Match, Team } from "@prisma/client";
 import { getCurrentSeasonMeta, getTeamSize } from "~/model";
 import { TeamWithMeta, TeamWithMetaAndAchievements } from "~/server/model/team";
 import { getCurrentSeason } from "~/utils/season";
@@ -17,10 +17,28 @@ export interface Achievement {
   points: number;
 }
 
+enum Result {
+  Loss,
+  Win,
+}
+
+function matchResult(team: Team, match: Match): Result {
+  if (match.team1 === team.name && match.score1 < match.score2) {
+    return Result.Loss;
+  }
+  if (match.team2 === team.name && match.score2 < match.score1) {
+    return Result.Loss;
+  }
+  return Result.Win;
+}
+
 export const achievements: Achievement[] = [
   {
     id: "wins-1",
-    condition: team => {
+    condition: (team, opponent, match) => {
+      if (matchResult(team, match) === Result.Loss) {
+        return false;
+      }
       const meta = getCurrentSeasonMeta(team);
       return meta.totalWins >= 1;
     },
@@ -30,7 +48,10 @@ export const achievements: Achievement[] = [
   },
   {
     id: "wins-10",
-    condition: team => {
+    condition: (team, opponent, match) => {
+      if (matchResult(team, match) === Result.Loss) {
+        return false;
+      }
       const meta = getCurrentSeasonMeta(team);
       return meta.totalWins >= 10;
     },
@@ -40,7 +61,10 @@ export const achievements: Achievement[] = [
   },
   {
     id: "wins-50",
-    condition: team => {
+    condition: (team, opponent, match) => {
+      if (matchResult(team, match) === Result.Loss) {
+        return false;
+      }
       const meta = getCurrentSeasonMeta(team);
       return meta.totalWins >= 50;
     },
@@ -50,7 +74,10 @@ export const achievements: Achievement[] = [
   },
   {
     id: "wins-100",
-    condition: team => {
+    condition: (team, opponent, match) => {
+      if (matchResult(team, match) === Result.Loss) {
+        return false;
+      }
       const meta = getCurrentSeasonMeta(team);
       return meta.totalWins >= 100;
     },
@@ -60,7 +87,10 @@ export const achievements: Achievement[] = [
   },
   {
     id: "wins-500",
-    condition: team => {
+    condition: (team, opponent, match) => {
+      if (matchResult(team, match) === Result.Loss) {
+        return false;
+      }
       const meta = getCurrentSeasonMeta(team);
       return meta.totalWins >= 500;
     },
@@ -70,7 +100,10 @@ export const achievements: Achievement[] = [
   },
   {
     id: "wins-1000",
-    condition: team => {
+    condition: (team, opponent, match) => {
+      if (matchResult(team, match) === Result.Loss) {
+        return false;
+      }
       const meta = getCurrentSeasonMeta(team);
       return meta.totalWins >= 1000;
     },
@@ -155,7 +188,10 @@ export const achievements: Achievement[] = [
   },
   {
     id: "consecutive-wins-5",
-    condition: team => {
+    condition: (team, opponent, match) => {
+      if (matchResult(team, match) === Result.Loss) {
+        return false;
+      }
       const meta = getCurrentSeasonMeta(team);
       return meta.totalHighestWinStreak >= 5;
     },
@@ -165,7 +201,10 @@ export const achievements: Achievement[] = [
   },
   {
     id: "consecutive-wins-10",
-    condition: team => {
+    condition: (team, opponent, match) => {
+      if (matchResult(team, match) === Result.Loss) {
+        return false;
+      }
       const meta = getCurrentSeasonMeta(team);
       return meta.totalHighestWinStreak >= 10;
     },
@@ -175,7 +214,10 @@ export const achievements: Achievement[] = [
   },
   {
     id: "consecutive-losses-10",
-    condition: team => {
+    condition: (team, opponent, match) => {
+      if (matchResult(team, match) === Result.Win) {
+        return false;
+      }
       const meta = getCurrentSeasonMeta(team);
       return meta.totalHighestLosingStreak >= 10;
     },
@@ -185,7 +227,10 @@ export const achievements: Achievement[] = [
   },
   {
     id: "matches-1",
-    condition: team => {
+    condition: (team, opponent, match) => {
+      if (matchResult(team, match) === Result.Win) {
+        return false;
+      }
       const meta = getCurrentSeasonMeta(team);
       return meta.totalMatches >= 1;
     },
@@ -305,10 +350,13 @@ export const achievements: Achievement[] = [
   },
   {
     id: "underdog",
-    condition: (team, opponent) => {
+    condition: (team, opponent, match) => {
+      if (matchResult(team, match) === Result.Loss) {
+        return false;
+      }
       const meta = getCurrentSeasonMeta(team);
       const opponentMeta = getCurrentSeasonMeta(opponent);
-      return meta.rating - 100 >= opponentMeta.rating;
+      return opponentMeta.rating - meta.rating >= 100;
     },
     title: "Underdog",
     description:
@@ -317,7 +365,10 @@ export const achievements: Achievement[] = [
   },
   {
     id: "badday",
-    condition: (team, opponent) => {
+    condition: (team, opponent, match) => {
+      if (matchResult(team, match) === Result.Win) {
+        return false;
+      }
       const meta = getCurrentSeasonMeta(team);
       const opponentMeta = getCurrentSeasonMeta(opponent);
       return opponentMeta.rating - meta.rating >= 100;
@@ -329,7 +380,10 @@ export const achievements: Achievement[] = [
   },
   {
     id: "david",
-    condition: (team, opponent) => {
+    condition: (team, opponent, match) => {
+      if (matchResult(team, match) === Result.Loss) {
+        return false;
+      }
       const meta = getCurrentSeasonMeta(team);
       const opponentMeta = getCurrentSeasonMeta(opponent);
       return opponentMeta.rating - 250 >= meta.rating;
@@ -341,10 +395,13 @@ export const achievements: Achievement[] = [
   },
   {
     id: "goliath",
-    condition: (team, opponent) => {
+    condition: (team, opponent, match) => {
+      if (matchResult(team, match) === Result.Win) {
+        return false;
+      }
       const meta = getCurrentSeasonMeta(team);
       const opponentMeta = getCurrentSeasonMeta(opponent);
-      return opponentMeta.rating - meta.rating >= 250;
+      return meta.rating - opponentMeta.rating >= 250;
     },
     title: "Goliath",
     description:
@@ -404,7 +461,10 @@ export const achievements: Achievement[] = [
   },
   {
     id: "daily-wins-5",
-    condition: team => {
+    condition: (team, opponent, match) => {
+      if (matchResult(team, match) === Result.Loss) {
+        return false;
+      }
       const meta = getCurrentSeasonMeta(team);
       return meta.dailyWins >= 5;
     },
@@ -414,7 +474,10 @@ export const achievements: Achievement[] = [
   },
   {
     id: "daily-wins-10",
-    condition: team => {
+    condition: (team, opponent, match) => {
+      if (matchResult(team, match) === Result.Loss) {
+        return false;
+      }
       const meta = getCurrentSeasonMeta(team);
       return meta.dailyWins >= 10;
     },
@@ -506,6 +569,9 @@ export const achievements: Achievement[] = [
   {
     id: "diff-max",
     condition: (team, opponent, match) => {
+      if (matchResult(team, match) === Result.Loss) {
+        return false;
+      }
       const matchTeam = match.team1 === team.name ? "team1" : "team2";
       return matchTeam === "team1" ? match.score2 === 0 : match.score1 === 0;
     },
@@ -516,6 +582,9 @@ export const achievements: Achievement[] = [
   {
     id: "diff-min",
     condition: (team, opponent, match) => {
+      if (matchResult(team, match) === Result.Win) {
+        return false;
+      }
       const matchTeam = match.team1 === team.name ? "team1" : "team2";
       return matchTeam === "team1" ? match.score1 === 0 : match.score2 === 0;
     },
