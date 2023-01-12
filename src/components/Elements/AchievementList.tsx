@@ -2,10 +2,18 @@ import { Fragment, FunctionComponent } from "react";
 import { Achievement, achievements } from "~/utils/achievements";
 import { TimeDistance } from "~/components/Elements/TeamDistance";
 import { TeamWithMetaAndAchievements } from "~/server/model/team";
+import { TiDeleteOutline } from "react-icons/ti";
+import { trpc } from "~/utils/trpc";
+import { toast } from "react-toastify";
 
 const AchievementCard: FunctionComponent<{
   achievement: Achievement;
-  earned: Array<{ teamName: string; date: Date; cssClasses: string }>;
+  earned: Array<{
+    teamName: string;
+    date: Date;
+    cssClasses: string;
+    id?: number;
+  }>;
   display: "single" | "versus";
 }> = ({ achievement, earned, display }) => {
   let bgColor;
@@ -19,9 +27,18 @@ const AchievementCard: FunctionComponent<{
     default:
       bgColor = "bg-gradient-to-b from-amber-700 to-amber-800";
   }
+  const utils = trpc.useContext();
+  const deleteMutation = trpc.teams.deleteAchievement.useMutation({
+    onSuccess: async () => {
+      await utils.teams.invalidate();
+      toast("Its gone. Forever.", {
+        type: "success",
+      });
+    },
+  });
 
   return (
-    <div className="w-full border rounded flex items-center dark:border-gray-500">
+    <div className="w-full border rounded flex items-center dark:border-gray-500 group">
       <div className={`p-3 text-lg h-full text-white flex items-center`}>
         <div>
           <span
@@ -34,10 +51,25 @@ const AchievementCard: FunctionComponent<{
       <div className={`p-2 w-full`}>
         <h2 className="font-bold">{achievement.title}</h2>
         <div>{achievement.description}</div>
-        <small className="text-gray-500">
+        <small className="text-gray-500 flex gap-1">
           {display === "single" ? (
             <>
               ✅ <TimeDistance date={new Date(earned[0].date)} />
+              <button
+                className="group-hover:opacity-100 opacity-0 transition-opacity ml-2 text-lg text-red-500"
+                onClick={() => {
+                  if (
+                    window.confirm(
+                      `Are you sure you want to delete the achievement "${achievement.title}" from ${earned[0].teamName}?`,
+                    ) &&
+                    earned[0].id
+                  ) {
+                    deleteMutation.mutate({ id: earned[0].id });
+                  }
+                }}
+              >
+                <TiDeleteOutline />
+              </button>
             </>
           ) : (
             <>
@@ -84,13 +116,17 @@ export const AchievementList: FunctionComponent<{
           earned={[
             ...teamAchievements
               .filter(a => a.id === achievement.id)
-              .map(() => ({
-                teamName: team.name,
-                date: team.achievements.find(
+              .map(() => {
+                const teamAchievement = team.achievements.find(
                   a => a.achievement === achievement.id,
-                )!.createdAt,
-                cssClasses: "bg-lime-600 text-white",
-              })),
+                )!;
+                return {
+                  id: teamAchievement.id,
+                  teamName: team.name,
+                  date: teamAchievement.createdAt,
+                  cssClasses: "bg-lime-600 text-white",
+                };
+              }),
             ...versusAchievements
               .filter(a => a.id === achievement.id)
               .map(() => ({
