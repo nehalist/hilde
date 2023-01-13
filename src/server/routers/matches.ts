@@ -4,15 +4,7 @@ import { z } from "zod";
 import { getOrCreateTeam } from "~/server/model/team";
 import { createMatch } from "~/server/model/match";
 import { getCurrentSeason } from "~/utils/season";
-
-function normalizeTeamName(name: string) {
-  return name
-    .split(",")
-    .map(t => t.toLowerCase().trim())
-    .sort()
-    .join(",")
-    .trim();
-}
+import { matchAddValidation } from "~/validation/match";
 
 export const matchesRouter = router({
   list: publicProcedure
@@ -140,28 +132,18 @@ export const matchesRouter = router({
       };
     }),
 
-  add: publicProcedure
-    .input(
-      z.object({
-        team1: z.string().min(2).transform(normalizeTeamName),
-        team2: z.string().min(2).transform(normalizeTeamName),
-        score1: z.number().min(0),
-        score2: z.number().min(0),
-        comment: z.string().optional().default(""),
-      }),
-    )
-    .mutation(async ({ input }) => {
-      const team1 = await getOrCreateTeam(input.team1);
-      const team2 = await getOrCreateTeam(input.team2);
+  add: publicProcedure.input(matchAddValidation).mutation(async ({ input }) => {
+    const team1 = await getOrCreateTeam(input.team1);
+    const team2 = await getOrCreateTeam(input.team2);
 
-      return await createMatch(
-        team1,
-        team2,
-        input.score1,
-        input.score2,
-        input.comment,
-      );
-    }),
+    return await createMatch(
+      team1,
+      team2,
+      input.score1,
+      input.score2,
+      input.comment,
+    );
+  }),
 
   delete: publicProcedure
     .input(

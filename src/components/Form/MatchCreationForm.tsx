@@ -1,10 +1,10 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { trpc } from "~/utils/trpc";
-import { z } from "zod";
 import { toast } from "react-toastify";
 import { Card, LoadingIndicator } from "~/components/Elements";
 import { Input } from "~/components/Form";
+import { matchAddValidation } from "~/validation/match";
 
 interface FormValues {
   team1: string;
@@ -29,21 +29,7 @@ export const MatchCreationForm = () => {
       score2: "",
       comment: "",
     },
-    resolver: zodResolver(
-      z.object({
-        team1: z.string().min(2),
-        team2: z.string().min(2),
-        score1: z.preprocess(
-          v => (v !== "" ? Number(v) : undefined),
-          z.number().min(0),
-        ),
-        score2: z.preprocess(
-          v => (v !== "" ? Number(v) : undefined),
-          z.number().min(0),
-        ),
-        comment: z.string().optional(),
-      }),
-    ),
+    resolver: zodResolver(matchAddValidation),
     mode: "all",
   });
 
