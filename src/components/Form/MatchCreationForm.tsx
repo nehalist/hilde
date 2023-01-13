@@ -1,5 +1,4 @@
-import { useEffect, useRef } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { trpc } from "~/utils/trpc";
 import { z } from "zod";
@@ -17,10 +16,11 @@ interface FormValues {
 
 export const MatchCreationForm = () => {
   const {
-    control,
     handleSubmit,
     reset,
+    register,
     formState: { isValid },
+    setFocus,
   } = useForm<FormValues>({
     defaultValues: {
       team1: "",
@@ -46,9 +46,6 @@ export const MatchCreationForm = () => {
     ),
     mode: "all",
   });
-  const ref = useRef<HTMLInputElement>(null);
-
-  useEffect(() => ref.current?.focus(), []);
 
   const utils = trpc.useContext();
   const mutation = trpc.matches.add.useMutation({
@@ -57,8 +54,8 @@ export const MatchCreationForm = () => {
       toast("Match saved.", {
         type: "success",
       });
+      setFocus("team1");
       reset();
-      ref.current?.focus();
     },
     onError: () => {
       toast("Failed to save match.", {
@@ -83,33 +80,18 @@ export const MatchCreationForm = () => {
             <div className="col-span-5">
               <div className="grid grid-cols-12 gap-3">
                 <div className="col-span-8">
-                  <Controller
-                    control={control}
-                    name="team1"
-                    render={({ field }) => (
-                      <Input
-                        placeholder="gp,rm,..."
-                        label="Team 1"
-                        value={field.value}
-                        onChange={field.onChange}
-                        reference={ref}
-                      />
-                    )}
+                  <Input
+                    placeholder="gp,rm,..."
+                    label="Team 1"
+                    {...register("team1")}
                   />
                 </div>
                 <div className="col-span-4">
-                  <Controller
-                    control={control}
-                    name="score1"
-                    render={({ field }) => (
-                      <Input
-                        type="number"
-                        placeholder="2"
-                        label="Score"
-                        value={`${field.value}`}
-                        onChange={field.onChange}
-                      />
-                    )}
+                  <Input
+                    type="number"
+                    placeholder="2"
+                    label="Score"
+                    {...register("score1")}
                   />
                 </div>
               </div>
@@ -120,32 +102,18 @@ export const MatchCreationForm = () => {
             <div className="col-span-5">
               <div className="grid grid-cols-12 gap-3">
                 <div className="col-span-8">
-                  <Controller
-                    control={control}
-                    name="team2"
-                    render={({ field }) => (
-                      <Input
-                        placeholder="pt,dl,..."
-                        label="Team 2"
-                        value={field.value}
-                        onChange={field.onChange}
-                      />
-                    )}
+                  <Input
+                    placeholder="pt,dl,..."
+                    label="Team 2"
+                    {...register("team2")}
                   />
                 </div>
                 <div className="col-span-4">
-                  <Controller
-                    control={control}
-                    name="score2"
-                    render={({ field }) => (
-                      <Input
-                        type="number"
-                        placeholder="3"
-                        label="Score"
-                        value={`${field.value}`}
-                        onChange={field.onChange}
-                      />
-                    )}
+                  <Input
+                    type="number"
+                    placeholder="3"
+                    label="Score"
+                    {...register("score2")}
                   />
                 </div>
               </div>
@@ -153,18 +121,11 @@ export const MatchCreationForm = () => {
           </div>
         </div>
         <div className="px-6 py-3 flex justify-between border-t dark:border-gray-500">
-          <Controller
-            control={control}
-            name="comment"
-            render={({ field }) => (
-              <input
-                type="text"
-                className="border-0 text-sm focus:outline-none bg-transparent"
-                placeholder="Comment"
-                value={field.value}
-                onChange={field.onChange}
-              />
-            )}
+          <input
+            type="text"
+            className="border-0 text-sm focus:outline-none bg-transparent"
+            placeholder="Comment"
+            {...register("comment")}
           />
           <button
             type="submit"
