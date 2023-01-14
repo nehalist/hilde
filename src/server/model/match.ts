@@ -7,6 +7,8 @@ import {
 } from "~/server/model/team";
 import { getCurrentSeason } from "~/server/model/season";
 import { getSeasonMeta, getTeamSize } from "~/model";
+import { differenceInMinutes } from "date-fns";
+import { TRPCError } from "@trpc/server";
 
 export const matchWithAchievements = Prisma.validator<Prisma.MatchArgs>()({
   include: {
@@ -30,6 +32,36 @@ export async function createMatch(
 ) {
   if (season === null) {
     season = await getCurrentSeason();
+  }
+
+  const existingMatch = await prisma.match.findFirst({
+    where: {
+      OR: [
+        {
+          team1: team1.name,
+          team2: team2.name,
+          score1: score1,
+          score2: score2,
+        },
+        {
+          team2: team1.name,
+          team1: team2.name,
+          score1: score2,
+          score2: score1,
+        },
+      ],
+      season,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    take: 1,
+  });
+  if (existingMatch && differenceInMinutes(date, existingMatch.createdAt) < 5) {
+    throw new TRPCError({
+      code: "BAD_REQUEST",
+      message: "Duplicated entry (or wait 5 minutes)",
+    });
   }
 
   const team1Rating = getSeasonMeta(team1, season).rating;

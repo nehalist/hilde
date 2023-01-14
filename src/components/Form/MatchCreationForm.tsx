@@ -35,7 +35,9 @@ export const MatchCreationForm = () => {
   });
 
   const selectedSeason = useStore(state => +state.season);
-  const seasons = trpc.seasons.list.useQuery(undefined, { refetchOnWindowFocus: false });
+  const seasons = trpc.seasons.list.useQuery(undefined, {
+    refetchOnWindowFocus: false,
+  });
   const utils = trpc.useContext();
   const mutation = trpc.matches.add.useMutation({
     onSuccess: async () => {
@@ -46,8 +48,8 @@ export const MatchCreationForm = () => {
       setFocus("team1");
       reset();
     },
-    onError: () => {
-      toast("Failed to save match.", {
+    onError: err => {
+      toast(`Error: ${err.message}`, {
         type: "error",
       });
     },
