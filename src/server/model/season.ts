@@ -6,7 +6,7 @@ export async function getCurrentSeason() {
       current: true,
     },
   });
-  if (! season) {
+  if (!season) {
     return 1;
   }
   return season.number;
