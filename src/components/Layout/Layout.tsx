@@ -1,10 +1,10 @@
 import Link from "next/link";
-import { FunctionComponent, ReactNode, useEffect, useState } from "react";
+import { FunctionComponent, ReactNode } from "react";
 import { useRouter } from "next/router";
 import packageJson from "../../../package.json";
 import { MdDarkMode, MdLightMode } from "react-icons/md";
 import { useTheme } from "next-themes";
-import { getCurrentSeason } from "~/utils/season";
+import {SeasonSelector} from '~/components/Elements';
 
 const NavLink: FunctionComponent<{ label: string; href: string }> = ({
   label,
@@ -27,31 +27,28 @@ export const Layout: FunctionComponent<{ children: ReactNode }> = ({
   children,
 }) => {
   const { theme, setTheme } = useTheme();
-  const [season, setSeason] = useState(1);
-
-  useEffect(() => setSeason(getCurrentSeason()), []);
 
   return (
     <div className="container max-w-3xl mx-auto mt-20  flex flex-col py-4 px-4">
       <div>
         <div className="flex justify-between items-center mb-1">
-          <Link href="/" className="flex items-end gap-1">
-            <h1
-              className="text-3xl font-bold hover:animate-pulse"
-              style={{
-                backgroundImage:
-                  "linear-gradient(90deg, #0094d8 -20%, #9fc20a 50%)",
-                backgroundClip: "text",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
-              Hilde
-            </h1>
-            <small className="opacity-50 text-xs leading-5 font-light uppercase">
-              Season {season}
-            </small>
-          </Link>
+          <div className="flex items-end gap-2">
+            <Link href="/" className="flex items-end gap-1">
+              <h1
+                className="text-3xl font-bold hover:animate-pulse"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(90deg, #0094d8 -20%, #9fc20a 50%)",
+                  backgroundClip: "text",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                }}
+              >
+                Hilde
+              </h1>
+            </Link>
+            <SeasonSelector />
+          </div>
           <div>
             <ul>
               <li className="inline mr-4">

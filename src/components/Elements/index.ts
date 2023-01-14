@@ -7,3 +7,5 @@ export * from "./TeamDistance";
 export * from "./Score";
 export * from "./AchievementList";
 export * from "./LeaderboardsTable";
+export * from "./SeasonSelector";
+export * from "./SeasonList";

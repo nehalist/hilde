@@ -3,12 +3,14 @@ import { trpc } from "~/utils/trpc";
 import { Card, MatchTable } from "~/components/Elements";
 import { useState } from "react";
 import { Select } from "~/components/Form";
+import { useStore } from "~/utils/store";
 
 const Matches = () => {
   const [team1Filter, setTeam1Filter] = useState<string>("");
   const [team2Filter, setTeam2Filter] = useState<string>("");
   const [team, setTeam] = useState(true);
 
+  const selectedSeason = useStore(state => +state.season);
   const {
     data: matches,
     hasNextPage,
@@ -19,6 +21,7 @@ const Matches = () => {
       team1: team1Filter,
       team2: team2Filter,
       exact: !team,
+      season: selectedSeason,
     },
     {
       getNextPageParam: lastPage => lastPage.nextCursor,

@@ -2,9 +2,9 @@ import { prisma } from "~/server/prisma";
 import { Match, Prisma, Team } from "@prisma/client";
 import { getDefaultTeamMeta, getSeasonMeta, getTeamSize } from "~/model";
 import { Achievement, checkAchievements } from "~/utils/achievements";
-import { getCurrentSeason } from "~/utils/season";
 import { calculateRating, defaultRating, getExpectedRating } from "~/utils/elo";
 import { format } from "date-fns";
+import { getCurrentSeason } from "~/server/model/season";
 
 export const teamWithMeta = Prisma.validator<Prisma.TeamArgs>()({
   include: {
@@ -27,6 +27,7 @@ export type TeamWithAchievements = Prisma.TeamGetPayload<
 export type TeamWithMetaAndAchievements = TeamWithMeta & TeamWithAchievements;
 
 export async function getOrCreateTeam(name: string) {
+  const currentSeason = await getCurrentSeason();
   return await prisma.team.upsert({
     where: {
       name,
@@ -42,8 +43,8 @@ export async function getOrCreateTeam(name: string) {
       teamsize: getTeamSize(name),
       meta: {
         create: {
-          ...getDefaultTeamMeta(),
-          season: getCurrentSeason(),
+          ...getDefaultTeamMeta(currentSeason),
+          season: currentSeason,
         },
       },
     },
@@ -58,8 +59,11 @@ export async function addMatchToTeam(
   win: boolean,
   score: number,
   date: Date,
-  season = getCurrentSeason(),
+  season: number | null = null,
 ) {
+  if (!season) {
+    season = await getCurrentSeason();
+  }
   const teamSeasonMeta = getSeasonMeta(team, season);
   const newDaily =
     !teamSeasonMeta.updatedAt ||
@@ -145,8 +149,11 @@ export async function addMatchToTeam(
   };
 }
 
-export async function createTeamMeta(team: Team, season = getCurrentSeason()) {
-  const { id, ...defaultMeta } = getDefaultTeamMeta();
+export async function createTeamMeta(team: Team, season: number | null = null) {
+  if (!season) {
+    season = await getCurrentSeason();
+  }
+  const { id, ...defaultMeta } = getDefaultTeamMeta(season);
   return prisma.teamMeta.upsert({
     where: {
       season_teamId: {
@@ -172,7 +179,7 @@ export async function grantAchievements(
   team: TeamWithMeta,
   achievements: Achievement[],
   match: Match,
-  season = getCurrentSeason(),
+  season: number | null = null,
 ) {
   if (achievements.length === 0) {
     return {
@@ -181,6 +188,9 @@ export async function grantAchievements(
     };
   }
 
+  if (!season) {
+    season = await getCurrentSeason();
+  }
   const meta = getSeasonMeta(team, season);
 
   let points = 0;
@@ -220,8 +230,11 @@ export async function setMatchAchievements(
   team1: TeamWithMetaAndAchievements,
   team2: TeamWithMetaAndAchievements,
   match: Match,
-  season = getCurrentSeason(),
+  season: number | null = null,
 ) {
+  if (!season) {
+    season = await getCurrentSeason();
+  }
   const achievements1 = checkAchievements(team1, team2, match);
   const achievements2 = checkAchievements(team2, team1, match);
   await grantAchievements(team1, achievements1, match, season);

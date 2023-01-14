@@ -3,8 +3,7 @@ import { prisma } from "~/server/prisma";
 import { z } from "zod";
 import { getOrCreateTeam } from "~/server/model/team";
 import { createMatch } from "~/server/model/match";
-import { getCurrentSeason } from "~/utils/season";
-import { matchAddValidation } from "~/validation/match";
+import { matchAddValidation } from "~/utils/validation";
 
 export const matchesRouter = router({
   list: publicProcedure
@@ -13,6 +12,7 @@ export const matchesRouter = router({
         limit: z.number().min(0).max(100).default(50),
         team1: z.string().optional(),
         team2: z.string().optional(),
+        season: z.number().optional(),
       }),
     )
     .query(async ({ input }) => {
@@ -45,7 +45,7 @@ export const matchesRouter = router({
         },
         where: {
           ...where,
-          season: getCurrentSeason(),
+          season: input.season ? input.season : 1,
         },
       });
     }),
@@ -58,6 +58,7 @@ export const matchesRouter = router({
         team1: z.string().optional(),
         team2: z.string().optional(),
         exact: z.boolean().optional(),
+        season: z.number().optional(),
       }),
     )
     .query(async ({ input }) => {
@@ -109,7 +110,7 @@ export const matchesRouter = router({
         take: input.limit + 1,
         where: {
           ...where,
-          season: getCurrentSeason(),
+          season: input.season ? input.season : 1,
         },
         include: {
           achievements: true,

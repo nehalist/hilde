@@ -1,6 +1,5 @@
 import { publicProcedure, router } from "~/server/trpc";
 import { z } from "zod";
-import { getCurrentSeason } from "~/utils/season";
 import { prisma } from "~/server/prisma";
 import { Leaderboards } from "~/model";
 import { TeamWithMeta } from "~/server/model/team";
@@ -9,7 +8,7 @@ export const leaderboardsRouter = router({
   forSeason: publicProcedure
     .input(
       z.object({
-        season: z.number().default(getCurrentSeason()),
+        season: z.number(),
       }),
     )
     .query(async ({ input }) => {
@@ -30,10 +29,6 @@ export const leaderboardsRouter = router({
           days: 0,
         },
         places: [],
-        // wins: [],
-        // matches: [],
-        // winRate: [],
-        // rating: [],
       };
 
       if (matches.length === 0) {

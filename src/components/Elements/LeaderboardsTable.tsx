@@ -69,10 +69,6 @@ export const LeaderboardsTable: FunctionComponent<{
         <div>
           Total Matches: <b>{leaderboards.totalMatches.total}</b>
         </div>
-        <div>
-          ~<b>{Math.round(leaderboards.totalMatches.perDay)}</b> matches per day
-          ({Math.round(leaderboards.totalMatches.days)} days)
-        </div>
       </div>
       <hr />
       <table className="table w-full">

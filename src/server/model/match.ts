@@ -1,12 +1,12 @@
 import { prisma } from "~/server/prisma";
-import { getCurrentSeasonMeta, getTeamSize } from "~/model";
 import { Prisma } from "@prisma/client";
 import {
   addMatchToTeam,
   setMatchAchievements,
   TeamWithMetaAndAchievements,
 } from "~/server/model/team";
-import { getCurrentSeason } from "~/utils/season";
+import { getCurrentSeason } from "~/server/model/season";
+import { getSeasonMeta, getTeamSize } from "~/model";
 
 export const matchWithAchievements = Prisma.validator<Prisma.MatchArgs>()({
   include: {
@@ -25,11 +25,15 @@ export async function createMatch(
   score2: number,
   comment: string,
   date = new Date(),
-  season = getCurrentSeason(),
+  season: number | null = null,
   achievements = true,
 ) {
-  const team1Rating = getCurrentSeasonMeta(team1).rating;
-  const team2Rating = getCurrentSeasonMeta(team2).rating;
+  if (season === null) {
+    season = await getCurrentSeason();
+  }
+
+  const team1Rating = getSeasonMeta(team1, season).rating;
+  const team2Rating = getSeasonMeta(team2, season).rating;
 
   const updatedTeam1 = await addMatchToTeam(
     team1,

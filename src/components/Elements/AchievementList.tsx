@@ -5,6 +5,7 @@ import { TeamWithMetaAndAchievements } from "~/server/model/team";
 import { TiDeleteOutline } from "react-icons/ti";
 import { trpc } from "~/utils/trpc";
 import { toast } from "react-toastify";
+import { useStore } from "~/utils/store";
 
 const AchievementCard: FunctionComponent<{
   achievement: Achievement;
@@ -94,12 +95,17 @@ export const AchievementList: FunctionComponent<{
   team: TeamWithMetaAndAchievements;
   versus?: TeamWithMetaAndAchievements;
 }> = ({ team, versus }) => {
+  const selectedSeason = useStore(state => state.season);
   const teamAchievements = achievements.filter(achievement =>
-    team.achievements.find(a => a.achievement === achievement.id),
+    team.achievements.find(
+      a => a.achievement === achievement.id && a.season === selectedSeason,
+    ),
   );
   const versusAchievements = versus
     ? achievements.filter(achievement =>
-        versus.achievements.find(a => a.achievement === achievement.id),
+        versus.achievements.find(
+          a => a.achievement === achievement.id && a.season === selectedSeason,
+        ),
       )
     : [];
 

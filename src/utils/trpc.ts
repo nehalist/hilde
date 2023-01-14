@@ -8,7 +8,7 @@ export const trpc = createTRPCNext<AppRouter>({
     const url =
       typeof window !== "undefined"
         ? `/api/trpc`
-        : `${process.env.URL}/api/trpc`;
+        : `${process.env.NEXTAUTH_URL}/api/trpc`;
 
     return {
       transformer: superjson,
