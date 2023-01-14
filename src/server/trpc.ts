@@ -41,7 +41,11 @@ export const publicProcedure = t.procedure;
 
 export const protectedProcedure = t.procedure.use(
   t.middleware(async ({ next, ctx }) => {
-    const session = await unstable_getServerSession(ctx.req, ctx.res, authOptions);
+    const session = await unstable_getServerSession(
+      ctx.req,
+      ctx.res,
+      authOptions,
+    );
     if (!session) {
       throw new TRPCError({ code: "UNAUTHORIZED" });
     }

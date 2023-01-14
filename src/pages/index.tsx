@@ -6,7 +6,10 @@ import { useStore } from "~/utils/store";
 
 const Home = () => {
   const selectedSeason = useStore(state => +state.season);
-  const matches = trpc.matches.list.useQuery({ limit: 5, season: selectedSeason });
+  const matches = trpc.matches.list.useQuery({
+    limit: 5,
+    season: selectedSeason,
+  });
 
   return (
     <>

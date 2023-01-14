@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import packageJson from "../../../package.json";
 import { MdDarkMode, MdLightMode } from "react-icons/md";
 import { useTheme } from "next-themes";
-import {SeasonSelector} from '~/components/Elements';
+import { SeasonSelector } from "~/components/Elements";
 
 const NavLink: FunctionComponent<{ label: string; href: string }> = ({
   label,
