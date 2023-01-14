@@ -25,7 +25,7 @@ A public **demo** is available at [demo.hilde.gg](https://demo.hilde.gg).
 
 - Simple, intuitive interface
 - **Elo rating** for each team
-- **Seasons**
+- **Seasons** (managable via admin interface)
 - Detailed team statistics (winstreaks, winrate, elo history chart, ...)
 - **Achievements** (e.g. "Win 100 Matches", "Win 10 Matches in a row", ...)
 - Compare teams against each other
@@ -110,6 +110,10 @@ via:
 
 ## ⚙️ Usage
 
+### Administration
+
+Hilde provides an admin ui at `/admin` which can be used to manage seasons.
+
 ### Commands
 
 Hilde provides a set of utility terminal commands:
@@ -121,18 +125,17 @@ Hilde provides a set of utility terminal commands:
 | `npm run start`                                                        | Starts the production server                                                                                                    |
 | `npm run lint`                                                         | Lints files                                                                                                                     |
 | `npm run migrate`                                                      | Executes Prisma migrations                                                                                                      |
-| `npm run teams:recalculate-ratings [-- [--season=X] [--achievements]]` | Recalculates all team ratings. Use `season` argument to target a specific season and `achievements` to (re-)grant achievements. |
-| `npm run utils:migrate-sqlite -- --file=X`                             | Imports matches from SQLite (used for migrating from Hilde `v0.1` to mySQL)                                                     |
 
 ### Configuration
 
 Hilde can be configured via environment variables in the `.env` file.
 
-| Variable             | Description                   | Default                                     |
-|----------------------|-------------------------------|---------------------------------------------|
-| `NEXT_PUBLIC_SEASON` | The current season (int only) | `1`                                         |
-| `URL`                | Deployed URL of Hilde         | `localhost:3000`                            |
-| `DATABASE_URL`       | Database connection string    | `mysql://root:hildepw@localhost:3309/hilde` |
+| Variable          | Description                | Default                                        |
+|-------------------|----------------------------|------------------------------------------------|
+| `ADMIN_PASSWORD`  | Administration password    | `h1ldeb3steV3r`                                |
+| `NEXTAUTH_SECRET` | Token secret               | `+Zrk5zW6fgog5k0LbN4bxL1YXKIhvb65Yln5ZKf+g3o=` |
+| `URL`             | Deployed URL of Hilde      | `localhost:3000`                               |
+| `DATABASE_URL`    | Database connection string | `mysql://root:hildepw@localhost:3309/hilde`    |
 
 ## 👐 Contributing
 

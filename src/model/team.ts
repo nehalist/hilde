@@ -2,16 +2,15 @@
  * Keep in mind that there shouldn't be any server-related logic in this file, so it
  * can be imported client-side as well.
  */
-import { getCurrentSeason } from "~/utils/season";
 import { defaultRating } from "~/utils/elo";
 import { TeamWithMeta } from "~/server/model/team";
 
-export function getDefaultTeamMeta() {
+export function getDefaultTeamMeta(season: number) {
   return {
     id: 0,
     createdAt: new Date(),
     updatedAt: new Date(),
-    season: getCurrentSeason(),
+    season: season,
     rating: defaultRating,
     achievementPoints: 0,
     totalMatches: 0,
@@ -36,11 +35,7 @@ export function getDefaultTeamMeta() {
 }
 
 export function getSeasonMeta(team: TeamWithMeta, season: number) {
-  return team.meta.find(m => m.season === season) || getDefaultTeamMeta();
-}
-
-export function getCurrentSeasonMeta(team: TeamWithMeta) {
-  return getSeasonMeta(team, getCurrentSeason());
+  return team.meta.find(m => m.season === season) || getDefaultTeamMeta(season);
 }
 
 export function getTeamSize(teamName: string) {

@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { LoadingIndicator } from "~/components/Elements";
 import { useState } from "react";
 import { Profile } from "~/components/Elements/Profile";
+import { useStore } from "~/utils/store";
 
 const Team = () => {
   const teamName = useRouter().query.name as string;
@@ -23,10 +24,12 @@ const Team = () => {
       enabled: !!versus && versus !== "",
     },
   );
+  const selectedSeason = useStore(state => state.season);
   const { data: matches } = trpc.matches.list.useQuery({
     team1: teamName,
     team2: versus !== "" ? versusTeam?.name : undefined,
     limit: 0,
+    season: selectedSeason,
   });
 
   if (!team || isLoading) {

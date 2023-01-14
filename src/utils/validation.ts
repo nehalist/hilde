@@ -22,3 +22,9 @@ export const matchAddValidation = z.object({
   ),
   comment: z.string().optional().default(""),
 });
+
+export const seasonAddValidation = z.object({
+  number: z.preprocess(v => {
+    return v !== "" ? Number(v) : undefined;
+  }, z.number().min(0)),
+});

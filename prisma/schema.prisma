@@ -28,6 +28,7 @@ model Match {
   season            Int               @default(1)
   achievements      TeamAchievement[]
 
+  @@index(season)
   @@map("match")
 }
 
@@ -72,7 +73,7 @@ model TeamMeta {
   updatedAt                DateTime @default(now())
 
   @@unique([season, teamId])
-  @@index([teamId])
+  @@index([teamId, season])
   @@map("team_meta")
 }
 
@@ -89,4 +90,14 @@ model TeamAchievement {
 
   @@index([matchId, teamId])
   @@map("team_achievement")
+}
+
+model Season {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  number    Int      @unique
+  current   Boolean  @default(false)
+
+  @@index(number)
+  @@map("season")
 }

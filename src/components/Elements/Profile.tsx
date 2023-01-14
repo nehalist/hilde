@@ -2,9 +2,10 @@ import { FunctionComponent, useMemo } from "react";
 import { Card } from "~/components/Elements/Card";
 import { EloHistory } from "~/components/Elements/EloHistory";
 import { Match, Team, TeamMeta } from "@prisma/client";
-import { getCurrentSeasonMeta } from "~/model";
 import { TeamWithMetaAndAchievements } from "~/server/model/team";
 import { AchievementList } from "~/components/Elements/AchievementList";
+import { getSeasonMeta } from "~/model";
+import { useStore } from "~/utils/store";
 
 export const Profile: FunctionComponent<{
   team: TeamWithMetaAndAchievements;
@@ -13,8 +14,9 @@ export const Profile: FunctionComponent<{
   onVersusSelect: (teamName: string) => void;
   versusOptions: Team[];
 }> = ({ team, versus, matches, onVersusSelect, versusOptions }) => {
-  const meta = getCurrentSeasonMeta(team);
-  const vsMeta = versus ? getCurrentSeasonMeta(versus) : undefined;
+  const selectedSeason = useStore(state => state.season);
+  const meta = getSeasonMeta(team, selectedSeason);
+  const vsMeta = versus ? getSeasonMeta(versus, selectedSeason) : undefined;
 
   const versusStats = useMemo((): Partial<TeamMeta> | null => {
     if (!matches || !versus) {

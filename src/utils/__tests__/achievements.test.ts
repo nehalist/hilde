@@ -2,7 +2,6 @@ import { Achievement, achievements } from "~/utils/achievements";
 import { Match, Team, TeamMeta } from "@prisma/client";
 import { TeamWithMetaAndAchievements } from "~/server/model/team";
 import { getDefaultTeamMeta, getTeamSize } from "~/model";
-import { getCurrentSeason } from "~/utils/season";
 
 function getAchievement(id: string): Achievement {
   return achievements.find(a => a.id === id)!;
@@ -17,7 +16,7 @@ function createTeam(
     name,
     meta: [
       {
-        ...getDefaultTeamMeta(),
+        ...getDefaultTeamMeta(1),
         ...meta,
         teamId: 0,
       },
@@ -48,7 +47,7 @@ function createMatch(
     team2RatingChange: 0,
     game: "test",
     teamsize: getTeamSize(team1.name),
-    season: getCurrentSeason(),
+    season: 1,
   };
 }
 

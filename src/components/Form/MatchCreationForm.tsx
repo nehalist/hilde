@@ -4,7 +4,8 @@ import { trpc } from "~/utils/trpc";
 import { toast } from "react-toastify";
 import { Card, LoadingIndicator } from "~/components/Elements";
 import { Input } from "~/components/Form";
-import { matchAddValidation } from "~/validation/match";
+import { matchAddValidation } from "~/utils/validation";
+import { useStore } from "~/utils/store";
 
 interface FormValues {
   team1: string;
@@ -33,6 +34,8 @@ export const MatchCreationForm = () => {
     mode: "all",
   });
 
+  const selectedSeason = useStore(state => +state.season);
+  const seasons = trpc.seasons.list.useQuery(undefined, { refetchOnWindowFocus: false });
   const utils = trpc.useContext();
   const mutation = trpc.matches.add.useMutation({
     onSuccess: async () => {
@@ -113,13 +116,17 @@ export const MatchCreationForm = () => {
             placeholder="Comment"
             {...register("comment")}
           />
-          <button
-            type="submit"
-            className="px-6 py-1 bg-blue-500 hover:bg-blue-600 rounded-lg font-semibold text-white disabled:opacity-50 disabled:cursor-not-allowed"
-            disabled={!isValid}
-          >
-            {mutation.isLoading ? <LoadingIndicator /> : "Save"}
-          </button>
+          {seasons.data?.find(s => s.current)?.number === selectedSeason ? (
+            <button
+              type="submit"
+              className="px-6 py-1 bg-blue-500 hover:bg-blue-600 rounded-lg font-semibold text-white disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={!isValid}
+            >
+              {mutation.isLoading ? <LoadingIndicator /> : "Save"}
+            </button>
+          ) : (
+            <span className="text-sm text-red-500">Season is over!</span>
+          )}
         </div>
       </Card>
     </form>

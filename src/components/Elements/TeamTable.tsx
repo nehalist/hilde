@@ -3,9 +3,10 @@ import { TiDeleteOutline } from "react-icons/ti";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { trpc } from "~/utils/trpc";
-import { getCurrentSeasonMeta } from "~/model";
+import { getSeasonMeta } from "~/model";
 import { TeamLink } from "~/components/Elements/TeamLink";
 import { TeamWithMeta } from "~/server/model/team";
+import { useStore } from "~/utils/store";
 
 type TeamOrder =
   | "name"
@@ -20,6 +21,7 @@ type TeamOrder =
 export const TeamTable: FunctionComponent<{ teams: TeamWithMeta[] }> = ({
   teams,
 }) => {
+  const selectedSeason = useStore(state => state.season);
   const [orderBy, setOrderBy] = useState<TeamOrder>("rating");
   const [order, setOrder] = useState<"asc" | "desc">("asc");
   const queryClient = useQueryClient();
@@ -39,8 +41,8 @@ export const TeamTable: FunctionComponent<{ teams: TeamWithMeta[] }> = ({
 
   const orderedTeams = useMemo(() => {
     const ordered = teams.sort((team1, team2) => {
-      const meta1 = getCurrentSeasonMeta(team1);
-      const meta2 = getCurrentSeasonMeta(team2);
+      const meta1 = getSeasonMeta(team1, selectedSeason);
+      const meta2 = getSeasonMeta(team2, selectedSeason);
 
       switch (orderBy) {
         case "name":
@@ -68,7 +70,7 @@ export const TeamTable: FunctionComponent<{ teams: TeamWithMeta[] }> = ({
     }
 
     return ordered;
-  }, [teams, orderBy, order]);
+  }, [teams, order, selectedSeason, orderBy]);
 
   const setOrdering = (orderBy: TeamOrder) => {
     setOrderBy(orderBy);
@@ -117,7 +119,7 @@ export const TeamTable: FunctionComponent<{ teams: TeamWithMeta[] }> = ({
       </thead>
       <tbody>
         {orderedTeams
-          .map(t => ({ ...t, meta: getCurrentSeasonMeta(t) }))
+          .map(t => ({ ...t, meta: getSeasonMeta(t, selectedSeason) }))
           .map((team, index) => (
             <tr
               key={team.id}
