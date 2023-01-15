@@ -55,6 +55,10 @@ export const MatchCreationForm = () => {
     },
   });
 
+  if (seasons.isLoading) {
+    return <div className="p-20 flex justify-center"><LoadingIndicator /></div>;
+  }
+
   return (
     <form
       onSubmit={handleSubmit(values =>
