@@ -139,13 +139,16 @@ Hilde can be configured via environment variables in the `.env` file.
 
 ## 👐 Contributing
 
-Hilde was created for fun and could be improved in many ways. It's built on:
+Hilde was created for fun and to play around with technologies I don't use on a daily basis in my office job, hence can be improved by many ways.
+
+It's built on:
 
 - [Next.js 13](https://nextjs.org/)
 - [tRPC](https://trpc.io/)
 - [Tailwind CSS](https://tailwindcss.com/)
 - [TypeScript](https://www.typescriptlang.org/)
 - [Prisma](https://www.prisma.io/)
+- [NextAuth.js](https://next-auth.js.org/)
 - and many more (see [package.json](package.json))
 
 PRs are highly appreciated 🥳
