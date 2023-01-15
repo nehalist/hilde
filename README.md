@@ -45,6 +45,8 @@ Requirements:
 - Node 14
 - MySQL (5.7+)
 
+Keep in mind that after installing you need to add a season via the admin ui (`/admin`) using the password from the environment variable (`ADMIN_PASSWORD`).
+
 ### Free hosting with Vercel & Planetscale
 
 Hilde is designed in a way that it could easily be hosted for free, using [Vercel](https://vercel.com) for hosting
@@ -70,7 +72,6 @@ services:
       - '127.0.0.1:3000:3000'
     environment:
       - DATABASE_URL=mysql://root:hildepw@database:3306/hilde
-      - SEASON=1
 
   database:
     networks:
