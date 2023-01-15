@@ -1,9 +1,9 @@
 import { prisma } from "~/server/prisma";
-import { Match, Prisma, Team } from "@prisma/client";
+import { Match, Prisma, Team, TeamMeta } from "@prisma/client";
 import { getDefaultTeamMeta, getSeasonMeta, getTeamSize } from "~/model";
 import { Achievement, checkAchievements } from "~/utils/achievements";
 import { calculateRating, defaultRating, getExpectedRating } from "~/utils/elo";
-import { format } from "date-fns";
+import { format, isSameDay } from "date-fns";
 import { getCurrentSeason } from "~/server/model/season";
 
 export const teamWithMeta = Prisma.validator<Prisma.TeamArgs>()({
@@ -147,6 +147,79 @@ export async function addMatchToTeam(
     rating,
     diff: currentRating - rating,
   };
+}
+
+export async function deleteMatchFromTeam(team: TeamWithMeta, match: Match) {
+  const teamSeasonMeta = getSeasonMeta(team, match.season);
+  const matches = teamSeasonMeta.totalMatches - 1;
+
+  if (matches === 0) {
+    const { id, ...meta } = getDefaultTeamMeta(match.season);
+    return await prisma.teamMeta.update({
+      data: {
+        ...meta,
+      },
+      where: {
+        id: teamSeasonMeta.id,
+      },
+    });
+  }
+
+  const ratingChange =
+    match.team1 === team.name
+      ? match.team1RatingChange
+      : match.team2RatingChange;
+  const win =
+    match.team1 === team.name
+      ? match.score1 > match.score2
+      : match.score2 > match.score1;
+  const score = match.team1 === team.name ? match.score1 : match.score2;
+
+  const data: Partial<TeamMeta> = {
+    updatedAt: new Date(),
+    rating: win
+      ? teamSeasonMeta.rating - ratingChange
+      : teamSeasonMeta.rating + ratingChange,
+    totalMatches: matches,
+    totalWins: teamSeasonMeta.totalWins - (win ? 1 : 0),
+    totalHighestRating: Math.max(
+      teamSeasonMeta.totalHighestRating,
+      teamSeasonMeta.rating - ratingChange,
+    ),
+    totalWinRate:
+      matches >= 1
+        ? (teamSeasonMeta.totalWins - (win ? 1 : 0)) /
+          (teamSeasonMeta.totalMatches - 1)
+        : 0,
+    totalLosses: teamSeasonMeta.totalLosses - (win ? 0 : 1),
+    totalScore: teamSeasonMeta.totalScore - score,
+    totalAvgScore:
+      matches >= 1
+        ? (teamSeasonMeta.totalScore - score) /
+          (teamSeasonMeta.totalMatches - 1)
+        : 0,
+  };
+
+  if (isSameDay(new Date(), new Date(match.createdAt))) {
+    const dailyMatches = teamSeasonMeta.dailyMatches - 1;
+    data.dailyMatches = dailyMatches;
+    data.dailyWins = teamSeasonMeta.dailyWins - (win ? 1 : 0);
+    data.dailyWinRate =
+      dailyMatches >= 1
+        ? (teamSeasonMeta.dailyWins - (win ? 1 : 0)) / data.dailyMatches
+        : 0;
+    data.dailyLosses = teamSeasonMeta.dailyLosses - (win ? 0 : 1);
+    data.dailyScore = teamSeasonMeta.dailyScore - score;
+    data.dailyAvgScore =
+      dailyMatches >= 1 ? data.dailyScore / data.dailyMatches : 0;
+  }
+
+  return await prisma.teamMeta.update({
+    data,
+    where: {
+      id: teamSeasonMeta.id,
+    },
+  });
 }
 
 export async function createTeamMeta(team: Team, season: number | null = null) {
