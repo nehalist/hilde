@@ -72,6 +72,7 @@ services:
       - '127.0.0.1:3000:3000'
     environment:
       - DATABASE_URL=mysql://root:hildepw@database:3306/hilde
+      - ADMIN_PASSWORD=v3rys3cr3tp4ssw0rd
 
   database:
     networks:
