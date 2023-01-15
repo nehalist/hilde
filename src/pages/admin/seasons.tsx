@@ -34,6 +34,7 @@ const Seasons = () => {
 
   return (
     <AdminLayout>
+      <h1 className="text-lg font-bold mb-2">Seasons</h1>
       <SeasonList seasons={seasons.data || []} />
       <form
         onSubmit={handleSubmit(values =>
