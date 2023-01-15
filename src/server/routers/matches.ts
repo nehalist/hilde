@@ -1,7 +1,7 @@
 import { publicProcedure, router } from "~/server/trpc";
 import { prisma } from "~/server/prisma";
 import { z } from "zod";
-import { getOrCreateTeam } from "~/server/model/team";
+import { deleteMatchFromTeam, getOrCreateTeam } from "~/server/model/team";
 import { createMatch } from "~/server/model/match";
 import { matchAddValidation } from "~/utils/validation";
 
@@ -153,10 +153,17 @@ export const matchesRouter = router({
       }),
     )
     .mutation(async ({ input }) => {
-      return await prisma.match.delete({
+      const match = await prisma.match.delete({
         where: {
           id: input.id,
         },
       });
+
+      const team1 = await getOrCreateTeam(match.team1);
+      const team2 = await getOrCreateTeam(match.team2);
+      await deleteMatchFromTeam(team1, match);
+      await deleteMatchFromTeam(team2, match);
+
+      return match;
     }),
 });
