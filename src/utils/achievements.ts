@@ -227,9 +227,6 @@ export const achievements: Achievement[] = [
   {
     id: "matches-1",
     condition: (team, opponent, match) => {
-      if (matchResult(team, match) === Result.Win) {
-        return false;
-      }
       const meta = getSeasonMeta(team, match.season);
       return meta.totalMatches >= 1;
     },
