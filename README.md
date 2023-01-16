@@ -120,13 +120,13 @@ Hilde provides an admin ui at `/admin` which can be used to manage seasons.
 
 Hilde provides a set of utility terminal commands:
 
-| Command                                                                | Description                                                                                                                     |
-|------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------|
-| `npm run dev`                                                          | Starts the development server                                                                                                   |
-| `npm run build`                                                        | Builds the app                                                                                                                  |
-| `npm run start`                                                        | Starts the production server                                                                                                    |
-| `npm run lint`                                                         | Lints files                                                                                                                     |
-| `npm run migrate`                                                      | Executes Prisma migrations                                                                                                      |
+| Command           | Description                   |
+|-------------------|-------------------------------|
+| `npm run dev`     | Starts the development server |
+| `npm run build`   | Builds the app                |
+| `npm run start`   | Starts the production server  |
+| `npm run lint`    | Lints files                   |
+| `npm run migrate` | Executes Prisma migrations    |
 
 ### Configuration
 
@@ -136,7 +136,7 @@ Hilde can be configured via environment variables in the `.env` file.
 |-------------------|----------------------------|------------------------------------------------|
 | `ADMIN_PASSWORD`  | Administration password    | `h1ldeb3steV3r`                                |
 | `NEXTAUTH_SECRET` | Token secret               | `+Zrk5zW6fgog5k0LbN4bxL1YXKIhvb65Yln5ZKf+g3o=` |
-| `URL`             | Deployed URL of Hilde      | `localhost:3000`                               |
+| `NEXTAUTH_URL`    | Deployed URL of Hilde      | `http://localhost:3000`                        |
 | `DATABASE_URL`    | Database connection string | `mysql://root:hildepw@localhost:3309/hilde`    |
 
 ## 👐 Contributing
