@@ -142,7 +142,7 @@ describe("badday", () => {
   test("granted", () => {
     const achievement = getAchievement("badday");
     const player = createTeam("player", {
-      rating: 700,
+      rating: 900,
     });
     const opponent = createTeam("opponent", {
       rating: 800,
@@ -160,10 +160,10 @@ describe("badday", () => {
   test("granted alt", () => {
     const achievement = getAchievement("badday");
     const player = createTeam("player", {
-      rating: 900,
+      rating: 1400,
     });
     const opponent = createTeam("opponent", {
-      rating: 1400,
+      rating: 900,
     });
 
     const granted = achievement.condition(
@@ -181,7 +181,7 @@ describe("badday", () => {
       rating: 1000,
     });
     const opponent = createTeam("opponent", {
-      rating: 800,
+      rating: 1200,
     });
 
     const granted = achievement.condition(
@@ -199,7 +199,7 @@ describe("badday", () => {
       rating: 1000,
     });
     const opponent = createTeam("opponent", {
-      rating: 800,
+      rating: 1100,
     });
 
     const granted = achievement.condition(

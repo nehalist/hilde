@@ -367,7 +367,7 @@ export const achievements: Achievement[] = [
       }
       const meta = getSeasonMeta(team, match.season);
       const opponentMeta = getSeasonMeta(opponent, match.season);
-      return opponentMeta.rating - meta.rating >= 100;
+      return meta.rating - opponentMeta.rating >= 100;
     },
     title: "Bad days happen",
     description:
