@@ -493,7 +493,7 @@ export const achievements: Achievement[] = [
   {
     id: "contributor",
     condition: team => {
-      return ["kh", "dl", "al","kk"].includes(team.name);
+      return ["kh", "dl", "al", "kk"].includes(team.name);
     },
     title: "I'm doing my part",
     description: "Contribute to Hilde",
