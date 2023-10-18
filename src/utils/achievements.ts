@@ -428,7 +428,7 @@ export const achievements: Achievement[] = [
     id: "xmas-match",
     condition: (team, opponent, match) => {
       return (
-        match.createdAt.getHours() >= 20 && match.createdAt.getHours() <= 6
+        match.createdAt.getDate() === 24 && match.createdAt.getMonth() === 11
       );
     },
     title: "Merry Christmas",
@@ -493,7 +493,7 @@ export const achievements: Achievement[] = [
   {
     id: "contributor",
     condition: team => {
-      return ["kh", "dl", "al"].includes(team.name);
+      return ["kh", "dl", "al","kk"].includes(team.name);
     },
     title: "I'm doing my part",
     description: "Contribute to Hilde",
