@@ -9,7 +9,6 @@ export const SeasonSelector: FunctionComponent = () => {
   const { season: selectedSeason, setSeason } = useStore();
 
   useEffect(() => {
-    console.log(season.data);
     if (!season.data) {
       return;
     }
