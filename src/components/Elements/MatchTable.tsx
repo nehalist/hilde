@@ -10,7 +10,7 @@ import { TeamLink } from "~/components/Elements/TeamLink";
 import { MatchWithAchievements } from "~/server/model/match";
 import { achievements } from "~/utils/achievements";
 
-const ReactTooltip = dynamic(() => import("react-tooltip"), { ssr: false });
+const ReactTooltip = dynamic(() => import("react-tooltip") as any, { ssr: false });
 
 export const MatchTable: FunctionComponent<{
   matches: MatchWithAchievements[];
@@ -69,10 +69,10 @@ export const MatchTable: FunctionComponent<{
                   >
                     🏅
                   </span>
-                  <ReactTooltip
-                    id={`match-achievements-team1-${match.id}`}
-                    globalEventOff="click"
-                  />
+                  {/*<ReactTooltip*/}
+                  {/*  id={`match-achievements-team1-${match.id}`}*/}
+                  {/*  globalEventOff="click"*/}
+                  {/*/>*/}
                 </>
               )}{" "}
               {match.score1 === 0 ? "✂️" : ""}{" "}
@@ -97,10 +97,10 @@ export const MatchTable: FunctionComponent<{
                   >
                     🏅
                   </span>
-                  <ReactTooltip
-                    id={`match-achievements-team2-${match.id}`}
-                    globalEventOff="click"
-                  />
+                  {/*<ReactTooltip*/}
+                  {/*  id={`match-achievements-team2-${match.id}`}*/}
+                  {/*  globalEventOff="click"*/}
+                  {/*/>*/}
                 </>
               )}{" "}
               {match.score2 === 0 ? "✂️" : ""}{" "}
@@ -117,10 +117,10 @@ export const MatchTable: FunctionComponent<{
                   >
                     <BiCommentDetail />
                   </button>
-                  <ReactTooltip
-                    id={`comment-${match.id}`}
-                    globalEventOff="click"
-                  />
+                  {/*<ReactTooltip*/}
+                  {/*  id={`comment-${match.id}`}*/}
+                  {/*  globalEventOff="click"*/}
+                  {/*/>*/}
                 </>
               )}
             </td>
