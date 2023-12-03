@@ -6,13 +6,12 @@ generator client {
 }
 
 datasource db {
-  provider     = "mysql"
-  url          = env("DATABASE_URL")
-  relationMode = "prisma"
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
 model Match {
-  id                Int               @id @default(autoincrement())
+  id                String            @id @default(cuid())
   createdAt         DateTime          @default(now())
   team1             String
   team2             String
@@ -32,24 +31,50 @@ model Match {
   @@map("match")
 }
 
+model League {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  name      String
+  teams     Team[]
+  owner     User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId   String
+
+  @@unique(name)
+  @@map("league")
+}
+
 model Team {
-  id           Int               @id @default(autoincrement())
+  id           String            @id @default(cuid())
   createdAt    DateTime          @default(now())
   name         String
-  teamsize     Int
   meta         TeamMeta[]
   achievements TeamAchievement[]
+  league       League            @relation(fields: [leagueId], references: [id], onDelete: Cascade)
+  leagueId     String
+  teamMembers  TeamMember[]
 
   @@unique(name)
   @@map("team")
 }
 
+model TeamMember {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  team      Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  teamId    String
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String?
+  name      String
+
+  @@unique([teamId, userId])
+  @@map("team_member")
+}
+
 model TeamMeta {
-  id                       Int      @id @default(autoincrement())
+  id                       String   @id @default(cuid())
   createdAt                DateTime @default(now())
   team                     Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  season                   Int      @default(1)
-  teamId                   Int
+  teamId                   String
   rating                   Float    @default(0)
   achievementPoints        Int      @default(0)
   totalMatches             Int      @default(0)
@@ -72,34 +97,20 @@ model TeamMeta {
   currentLosingStreak      Int      @default(0)
   updatedAt                DateTime @default(now())
 
-  @@unique([season, teamId])
-  @@index([teamId, season])
   @@map("team_meta")
 }
 
 model TeamAchievement {
-  id          Int      @id @default(autoincrement())
+  id          String   @id @default(cuid())
   createdAt   DateTime @default(now())
   team        Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  teamName    String
-  teamId      Int
+  teamId      String
   achievement String
-  season      Int      @default(1)
   match       Match    @relation(fields: [matchId], references: [id], onDelete: Cascade)
-  matchId     Int
+  matchId     String
 
   @@index([matchId, teamId])
   @@map("team_achievement")
-}
-
-model Season {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  number    Int      @unique
-  current   Boolean  @default(false)
-
-  @@index(number)
-  @@map("season")
 }
 
 model Account {
@@ -133,13 +144,15 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String       @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?      @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
+  teamMember    TeamMember[]
+  leagues       League[]
 
   @@map("user")
 }

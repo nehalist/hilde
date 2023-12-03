@@ -2,6 +2,7 @@ import Link from "next/link";
 import { FunctionComponent, ReactNode } from "react";
 import { useRouter } from "next/router";
 import {
+  Button,
   Navbar,
   NavbarBrand,
   NavbarContent,
@@ -9,7 +10,10 @@ import {
 } from "@nextui-org/react";
 import { ThemeSwitcher } from "~/components/Layout/ThemeSwitcher";
 import { UserHeader } from "~/components/Layout/UserHeader";
-import {useSession} from 'next-auth/react';
+import { useSession } from "next-auth/react";
+import { FaGithub } from "react-icons/fa";
+import { ToastContainer } from "react-toastify";
+import { useTheme } from "next-themes";
 
 const NavLink: FunctionComponent<{ label: string; href: string }> = ({
   label,
@@ -32,43 +36,57 @@ export const Layout: FunctionComponent<{ children: ReactNode }> = ({
   children,
 }) => {
   const { data: session } = useSession();
+  const { theme } = useTheme();
 
   return (
     <>
       <Navbar maxWidth="xl" isBordered>
         <NavbarBrand>
-          <h1
-            className="text-3xl font-bold hover:animate-pulse"
-            style={{
-              backgroundImage:
-                "linear-gradient(90deg, #0094d8 -20%, #9fc20a 50%)",
-              backgroundClip: "text",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
-          >
-            Hilde
+          <h1>
+            <Link
+              href={"/"}
+              className="text-3xl font-bold hover:animate-pulse"
+              style={{
+                backgroundImage:
+                  "linear-gradient(90deg, #0094d8 -20%, #9fc20a 50%)",
+                backgroundClip: "text",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
+            >
+              Hilde
+            </Link>
           </h1>
         </NavbarBrand>
         <NavbarContent className="hidden sm:flex gap-4" justify="start">
           <NavbarItem>
-            <Link color="foreground" href="#">
+            <Link color="foreground" href="/">
               Home
             </Link>
           </NavbarItem>
           <NavbarItem>
-            <Link color="foreground" href="#">
-              Pricing
+            <Link color="foreground" href="/about">
+              About
             </Link>
           </NavbarItem>
           <NavbarItem>
-            <Link color="foreground" href="#">
+            <Link color="foreground" href="/support">
               Support
             </Link>
           </NavbarItem>
         </NavbarContent>
         <NavbarContent justify="end">
-          <NavbarItem>github</NavbarItem>
+          <NavbarItem>
+            <Button
+              isIconOnly
+              variant="light"
+              as={Link}
+              href="https://github.com/nehalist/hilde"
+              className="text-xl"
+            >
+              <FaGithub />
+            </Button>
+          </NavbarItem>
           <NavbarItem>
             <ThemeSwitcher />
           </NavbarItem>
@@ -77,12 +95,21 @@ export const Layout: FunctionComponent<{ children: ReactNode }> = ({
           </NavbarItem>
         </NavbarContent>
       </Navbar>
-      {session && (
-        <Navbar className="bg-green-700" maxWidth="xl" height="3rem">
-          <NavbarContent>team header</NavbarContent>
-        </Navbar>
-      )}
-      <div className="container mx-auto mt-6">{children}</div>
+      <div className="container mx-auto mt-6">
+        {/*{session && <>team...</>}*/}
+        {/*<TeamHeader />*/}
+        {children}
+      </div>
+
+      <ToastContainer
+        position="bottom-center"
+        autoClose={5000}
+        hideProgressBar={true}
+        closeOnClick={true}
+        pauseOnFocusLoss={true}
+        pauseOnHover={false}
+        theme={theme === "dark" ? "dark" : "light"}
+      />
     </>
   );
 
@@ -137,5 +164,3 @@ export const Layout: FunctionComponent<{ children: ReactNode }> = ({
   //   </div>
   // );
 };
-
-export default Layout;

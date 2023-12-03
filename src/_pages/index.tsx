@@ -6,15 +6,14 @@ import { useStore } from "~/utils/store";
 import { useSession } from "next-auth/react";
 import { GetServerSideProps } from "next";
 import { getServerSession } from "next-auth";
-import { authOptions } from "~/pages/api/auth/[...nextauth]";
+import { authOptions } from "~/_pages/api/auth/[...nextauth]";
 import {Navbar, NavbarContent} from '@nextui-org/react';
 
 const Home = () => {
-  const selectedSeason = useStore(state => +state.season);
-  const matches = trpc.matches.list.useQuery({
-    limit: 5,
-    season: selectedSeason,
-  });
+  // const matches = trpc.matches.list.useQuery({
+  //   limit: 5,
+  //   season: selectedSeason,
+  // });
   const { data: session } = useSession();
 
   return (
@@ -23,16 +22,16 @@ const Home = () => {
       {session ? (
         <>
           <MatchCreationForm />
-          {matches.data && matches.data.length > 0 && (
-            <div className="mt-12">
-              <div className="text-center">
-                <h3 className="text-gray-400 uppercase text-sm my-2">
-                  Recent Matches
-                </h3>
-              </div>
-              <MatchTable matches={matches.data} />
-            </div>
-          )}
+          {/*{matches.data && matches.data.length > 0 && (*/}
+          {/*  <div className="mt-12">*/}
+          {/*    <div className="text-center">*/}
+          {/*      <h3 className="text-gray-400 uppercase text-sm my-2">*/}
+          {/*        Recent Matches*/}
+          {/*      </h3>*/}
+          {/*    </div>*/}
+          {/*    <MatchTable matches={matches.data} />*/}
+          {/*  </div>*/}
+          {/*)}*/}
         </>
       ) : (
         <div className="overflow-hidden py-24 sm:py-32">

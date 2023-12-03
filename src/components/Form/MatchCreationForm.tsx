@@ -35,10 +35,6 @@ export const MatchCreationForm = () => {
     mode: "all",
   });
 
-  const selectedSeason = useStore(state => +state.season);
-  const seasons = trpc.seasons.list.useQuery(undefined, {
-    refetchOnWindowFocus: false,
-  });
   const utils = trpc.useContext();
   const mutation = trpc.matches.add.useMutation({
     onSuccess: async () => {
@@ -56,14 +52,6 @@ export const MatchCreationForm = () => {
     },
   });
 
-  if (seasons.isLoading) {
-    return (
-      <div className="p-20 flex justify-center">
-        <LoadingIndicator />
-      </div>
-    );
-  }
-
   return (
     <Card>
       <CardHeader>Foo</CardHeader>
@@ -80,51 +68,6 @@ export const MatchCreationForm = () => {
     //   )}
     // >
     //   <Card>
-    //     <div className="p-6">
-    //       <div className="grid grid-cols-12">
-    //         <div className="col-span-5">
-    //           <div className="grid grid-cols-12 gap-3">
-    //             <div className="col-span-8">
-    //               <Input
-    //                 placeholder="gp,rm,..."
-    //                 label="Team 1"
-    //                 {...register("team1")}
-    //               />
-    //             </div>
-    //             <div className="col-span-4">
-    //               <Input
-    //                 type="number"
-    //                 placeholder="2"
-    //                 label="Score"
-    //                 {...register("score1")}
-    //               />
-    //             </div>
-    //           </div>
-    //         </div>
-    //         <div className="col-span-2 text-center self-center">
-    //           <h3 className="font-bold text-3xl">vs</h3>
-    //         </div>
-    //         <div className="col-span-5">
-    //           <div className="grid grid-cols-12 gap-3">
-    //             <div className="col-span-8">
-    //               <Input
-    //                 placeholder="pt,dl,..."
-    //                 label="Team 2"
-    //                 {...register("team2")}
-    //               />
-    //             </div>
-    //             <div className="col-span-4">
-    //               <Input
-    //                 type="number"
-    //                 placeholder="3"
-    //                 label="Score"
-    //                 {...register("score2")}
-    //               />
-    //             </div>
-    //           </div>
-    //         </div>
-    //       </div>
-    //     </div>
     //     <div className="px-6 py-3 flex justify-between border-t dark:border-gray-500">
     //       <input
     //         type="text"

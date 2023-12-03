@@ -9,3 +9,4 @@ export * from "./AchievementList";
 export * from "./LeaderboardsTable";
 export * from "./SeasonSelector";
 export * from "./SeasonList";
+export * from "./TeamModal";
