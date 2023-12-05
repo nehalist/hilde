@@ -32,14 +32,14 @@ model Match {
 }
 
 model League {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  name      String
-  teams     Team[]
-  owner     User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  ownerId   String
+  id         String   @id @default(cuid())
+  createdAt  DateTime @default(now())
+  name       String
+  teams      Team[]
+  owner      User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId    String
+  selectedBy User[]   @relation("selectedLeague")
 
-  @@unique(name)
   @@map("league")
 }
 
@@ -53,7 +53,6 @@ model Team {
   leagueId     String
   teamMembers  TeamMember[]
 
-  @@unique(name)
   @@map("team")
 }
 
@@ -144,15 +143,21 @@ model Session {
 }
 
 model User {
-  id            String       @id @default(cuid())
-  name          String?
-  email         String?      @unique
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
-  teamMember    TeamMember[]
-  leagues       League[]
+  id               String       @id @default(cuid())
+  name             String?
+  firstName        String?
+  lastName         String?
+  prefix           String?
+  suffix           String?
+  email            String?      @unique
+  emailVerified    DateTime?
+  image            String?
+  accounts         Account[]
+  sessions         Session[]
+  teamMember       TeamMember[]
+  leagues          League[]
+  selectedLeague   League?      @relation("selectedLeague", fields: [selectedLeagueId], references: [id])
+  selectedLeagueId String?
 
   @@map("user")
 }

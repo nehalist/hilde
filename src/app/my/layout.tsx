@@ -1,17 +1,36 @@
 import { ReactNode } from "react";
 import Link from "next/link";
 
+const nav = [
+  {
+    label: "Settings",
+    href: "/my/settings",
+  },
+  {
+    label: "Leagues",
+    href: "/my/leagues",
+  },
+  {
+    label: "Teams",
+    href: "/my/teams",
+  },
+];
+
 export default function MyLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="flex w-full">
+    <div className="flex w-full gap-5">
       <div className="w-64">
-        <ul>
-          <li>
-            <Link href={`/my/settings`}>Settings</Link>
-          </li>
-          <li>
-            <Link href={`/my/teams`}>Teams</Link>
-          </li>
+        <ul role="list" className="-mx-2 space-y-1">
+          {nav.map(item => (
+            <li key={item.href}>
+              <Link
+                href={item.href}
+                className="text-gray-700 dark:text-gray-300 hover:text-green-600 hover:bg-gray-50 dark:hover:bg-gray-900 group flex gap-x-3 rounded-md p-2 pl-3 text-snm leading-6 font-semibold"
+              >
+                {item.label}
+              </Link>
+            </li>
+          ))}
         </ul>
       </div>
       <div className="flex-1">{children}</div>

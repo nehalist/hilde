@@ -1,45 +1,54 @@
 "use server";
 
 import { SettingsFormValues } from "@/app/my/settings/form";
+import { getCurrentUser } from "@/lib/session";
+import prisma from "@/lib/db";
+import * as fs from "fs";
 
-export async function handleProfileUpdate(data: SettingsFormValues) {
-  // const user = await getUser();
-  // if (!user) {
-  //   return;
-  // }
-  // const supabase = await getSupabaseClient();
-  // return supabase.auth.updateUser({
-  //   data: {
-  //     username: data.name,
-  //   },
-  // });
+export async function updateUserProfile(data: SettingsFormValues) {
+  const user = await getCurrentUser();
+  if (!user) {
+    return;
+  }
+  return prisma.user.update({
+    data: {
+      name: data.name,
+      email: data.email,
+    },
+    where: {
+      id: user.id,
+    },
+  });
 }
 
 export async function updateUserImage(formData: FormData) {
-  // const user = await getUser();
-  // if (!user) {
-  //   return;
-  // }
-  // const file = formData.get("avatar") as File;
-  // const supabase = await getSupabaseClient();
-  // const { error, data } = await supabase.storage
-  //   .from("avatars")
-  //   .upload(`avatars/${user.id}.${file.name.split(".").pop()}`, file, {
-  //     upsert: true,
-  //     cacheControl: "3600",
-  //   });
-  //
-  // const { data: avatarUrl } = supabase.storage
-  //   .from("avatars")
-  //   .getPublicUrl(data?.path!);
-  //
-  // if (error) {
-  //   console.error(error);
-  // }
-  //
-  // return supabase.auth.updateUser({
-  //   data: {
-  //     avatar_url: avatarUrl.publicUrl,
-  //   },
-  // });
+  const user = await getCurrentUser();
+  if (!user) {
+    return;
+  }
+  if (!formData.has("avatar")) {
+    return prisma.user.update({
+      data: {
+        image: null,
+      },
+      where: {
+        id: user.id,
+      },
+    });
+  }
+  const file = formData.get("avatar") as File;
+  const data = await file.arrayBuffer();
+  const avatarFileName = `${user.id}.${file.name.split(".").pop()}`;
+  const path = `./public/avatars/${avatarFileName}`;
+
+  fs.writeFileSync(path, Buffer.from(data));
+
+  return prisma.user.update({
+    data: {
+      image: `${process.env.NEXTAUTH_URL}/avatars/${avatarFileName}`,
+    },
+    where: {
+      id: user.id,
+    },
+  });
 }

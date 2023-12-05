@@ -1,12 +1,28 @@
 import { SettingsForm } from "@/app/my/settings/form";
 import { redirect } from "next/navigation";
-// import { getUser } from "@/utils/supabase/helper";
+import { getCurrentUser } from "@/lib/session";
+import { Card, CardBody, CardHeader } from "@nextui-org/card";
+import { Divider } from "@nextui-org/react";
+import { Avatar } from "@/app/my/settings/avatar";
 
 export default async function Settings() {
-  // const user = await getUser();
-  // if (!user) {
-  //   return redirect(`/`);
-  // }
+  const user = await getCurrentUser();
+  if (!user) {
+    return redirect(`/`);
+  }
 
-  return <SettingsForm />;
+  return (
+    <>
+      <Card>
+        <CardHeader>Profile</CardHeader>
+        <Divider />
+        <CardBody>
+          <div className="flex gap-5">
+            <SettingsForm user={user} />
+            <Avatar />
+          </div>
+        </CardBody>
+      </Card>
+    </>
+  );
 }

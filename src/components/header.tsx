@@ -68,7 +68,7 @@ export async function Header() {
             <ThemeSwitcher />
           </NavbarItem>
           <NavbarItem>
-            {user ? <UserHeader user={user} /> : <AnonHeader />}
+            {user ? <UserHeader /> : <AnonHeader />}
           </NavbarItem>
         </NavbarContent>
       </NextUINavbar>

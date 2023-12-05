@@ -4,6 +4,9 @@ import EmailProvider from "next-auth/providers/email";
 import prisma from "@/lib/db";
 
 export const authOptions: AuthOptions = {
+  session: {
+    strategy: "database",
+  },
   adapter: PrismaAdapter(prisma),
   providers: [
     EmailProvider({
@@ -11,6 +14,26 @@ export const authOptions: AuthOptions = {
       from: process.env.EMAIL_FROM,
     }),
   ],
+  callbacks: {
+    async jwt({ token }) {
+      const dbUser = await prisma.user.findUnique({
+        where: {
+          email: `${token.email}`,
+        },
+      });
+      if (dbUser) {
+        token.selectedLeagueId = dbUser.selectedLeagueId;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (token) {
+        session.user.selectedLeagueId = `${token.selectedLeagueId}`;
+        session.user.id = `${token.id}`;
+      }
+      return session;
+    },
+  },
   events: {
     createUser: async ({ user }) => {
       let name = user.name;
@@ -32,6 +55,14 @@ export const authOptions: AuthOptions = {
             connect: { id: user.id },
           },
         },
+      });
+      await prisma.user.update({
+        data: {
+          selectedLeague: {
+            connect: { id: league.id },
+          },
+        },
+        where: { id: user.id },
       });
       const team = await prisma.team.create({
         data: {

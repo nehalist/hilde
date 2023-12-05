@@ -5,12 +5,18 @@ import {
   Dropdown,
   DropdownItem,
   DropdownMenu,
+  DropdownSection,
   DropdownTrigger,
   User,
 } from "@nextui-org/react";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 
-export function UserHeader({ user }: { user: any }) {
+export function UserHeader() {
+  const { data: user } = useSession();
+  if (!user) {
+    return;
+  }
+
   return (
     <Dropdown placement="bottom-start">
       <DropdownTrigger>
@@ -19,21 +25,25 @@ export function UserHeader({ user }: { user: any }) {
           avatarProps={{
             isBordered: true,
             name: "dude",
-            // src: user.user_metadata.avatar_url,
+            src: user.user.image || "",
           }}
           className="transition-transform"
-          // name={user.user_metadata.username || "Unknown"}
-          name="unknown"
-          description={user.email}
+          name={user.user.name || "Unknown"}
+          description={user.user.email}
         />
       </DropdownTrigger>
       <DropdownMenu aria-label="User Actions" variant="flat">
-        <DropdownItem key="settings" href="/my/settings" as={Link}>
-          Settings
-        </DropdownItem>
-        <DropdownItem key="team_settings" href="/my/teams" as={Link}>
-          Teams
-        </DropdownItem>
+        <DropdownSection showDivider={true}>
+          <DropdownItem key="settings" href="/my/settings" as={Link}>
+            Settings
+          </DropdownItem>
+          <DropdownItem key="teams" href="/my/teams" as={Link}>
+            Teams
+          </DropdownItem>
+          <DropdownItem key="leagues" href="/my/leagues" as={Link}>
+            Leagues
+          </DropdownItem>
+        </DropdownSection>
         {/*<DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem> TODO*/}
         <DropdownItem key="logout" color="danger" onClick={() => signOut()}>
           Log Out
