@@ -1,6 +1,6 @@
 "use client";
 
-import { updateUserImage } from "@/app/my/settings/actions";
+import { updateUserImage } from "@/app/[locale]/my/settings/actions";
 import { ChangeEvent, useRef, useTransition } from "react";
 import { toast } from "react-toastify";
 import { useSession } from "next-auth/react";

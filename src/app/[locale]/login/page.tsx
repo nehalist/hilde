@@ -1,14 +1,8 @@
-import { signUp } from "@/app/signup/actions";
+import { signIn } from "@/app/[locale]/login/actions";
 
-export default function SignUpPage() {
+export default function Login() {
   return (
-    <form action={signUp}>
-      <input
-        className="rounded-md px-4 py-2 bg-inherit border mb-6"
-        name="username"
-        placeholder="username"
-        required
-      />
+    <form action={signIn}>
       <input
         className="rounded-md px-4 py-2 bg-inherit border mb-6"
         name="email"
@@ -23,7 +17,7 @@ export default function SignUpPage() {
         required
       />
       <button className="bg-green-700 rounded-md px-4 py-2 text-foreground mb-2">
-        Create Account
+        Sign In
       </button>
     </form>
   );

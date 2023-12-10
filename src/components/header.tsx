@@ -4,8 +4,9 @@ import {
   NavbarBrand,
   NavbarContent,
   NavbarItem,
+  Link as NextUILink,
 } from "@nextui-org/react";
-import Link from "next/link";
+import { Link } from "@/lib/navigation";
 import { FaGithub } from "react-icons/fa";
 import { ThemeSwitcher } from "@/components/Layout/ThemeSwitcher";
 import { getCurrentUser } from "@/lib/session";
@@ -57,7 +58,7 @@ export async function Header() {
             <Button
               isIconOnly
               variant="light"
-              as={Link}
+              as={NextUILink}
               href="https://github.com/nehalist/hilde"
               className="text-xl"
             >
@@ -67,9 +68,7 @@ export async function Header() {
           <NavbarItem>
             <ThemeSwitcher />
           </NavbarItem>
-          <NavbarItem>
-            {user ? <UserHeader /> : <AnonHeader />}
-          </NavbarItem>
+          <NavbarItem>{user ? <UserHeader /> : <AnonHeader />}</NavbarItem>
         </NavbarContent>
       </NextUINavbar>
     </>

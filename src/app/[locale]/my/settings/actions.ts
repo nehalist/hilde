@@ -4,7 +4,7 @@ import { getCurrentUser } from "@/lib/session";
 import prisma from "@/lib/db";
 import * as fs from "fs";
 import { createAuthenticatedServerAction } from "@/utils/server-action-helper";
-import { settingsFormSchema } from "@/app/my/settings/validation";
+import { settingsFormSchema } from "@/app/[locale]/my/settings/validation";
 
 export const updateUserProfile = createAuthenticatedServerAction(
   settingsFormSchema,

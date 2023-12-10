@@ -1,5 +1,5 @@
-import { LandingPage } from "@/app/landing-page";
-import { Home } from "@/app/home";
+import { LandingPage } from "@/app/[locale]/landing-page";
+import { Home } from "@/app/[locale]/home";
 import { getCurrentUser } from "@/lib/session";
 
 export default async function Page() {
