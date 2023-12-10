@@ -35,17 +35,29 @@ export function Avatar() {
     });
   };
 
+  if (!data?.user) {
+    return null;
+  }
+
   return (
     <div className="flex-1">
-      <h3 className="text-base font-semibold leading-6 text-gray-900 mb-1">
+      <h3 className="text-base font-semibold leading-6 text-gray-900 mb-1 dark:text-gray-300">
         Picture
       </h3>
       {data?.user && (
-        <img
-          src={data.user.image || ""}
-          alt=""
-          className="h-64 w-64 flex-none rounded-lg bg-gray-800 object-cover mb-1"
-        />
+        <>
+          {data.user.image ? (
+            <img
+              src={data.user.image || ""}
+              alt=""
+              className="h-64 w-64 flex-none rounded-lg object-cover mb-1"
+            />
+          ) : (
+            <div className="flex-none rounded-lg object-cover mb-1 italic">
+              No image... yet.
+            </div>
+          )}
+        </>
       )}
       <form encType="multipart/form-data">
         <input
@@ -65,7 +77,11 @@ export function Avatar() {
             <DropdownItem key="new" onClick={() => ref.current?.click()}>
               Upload new file
             </DropdownItem>
-            <DropdownItem key="delete" onClick={() => handleImageUpload(null)}>
+            <DropdownItem
+              key="delete"
+              onClick={() => handleImageUpload(null)}
+              isDisabled={!data.user.image}
+            >
               Delete file
             </DropdownItem>
           </DropdownMenu>

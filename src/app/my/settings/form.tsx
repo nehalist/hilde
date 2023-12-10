@@ -1,12 +1,15 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { useForm, UseFormRegister } from "react-hook-form";
 import { updateUserProfile } from "@/app/my/settings/actions";
-import { Button, Input, Select, SelectItem } from "@nextui-org/react";
-import { useTransition } from "react";
-import { toast } from "react-toastify";
-import { useSession } from "next-auth/react";
+import { Button, Input } from "@nextui-org/react";
 import { User } from "@prisma/client";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { settingsFormSchema } from "@/app/my/settings/validation";
+import { useFormState } from "react-dom";
+import { useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { toast } from "react-toastify";
 
 export interface SettingsFormValues {
   name: string;
@@ -14,33 +17,17 @@ export interface SettingsFormValues {
   lastName: string;
   prefix: string;
   suffix: string;
-  email: string;
 }
 
-export function SettingsForm({ user }: { user: User }) {
-  const [isPending, startTransaction] = useTransition();
-  const { update } = useSession();
-  const { register, handleSubmit } = useForm<SettingsFormValues>({
-    mode: "all",
-    defaultValues: {
-      name: user.name || "",
-      email: user.email || "",
-    },
-  });
-
-  const onSubmit = async (values: SettingsFormValues) => {
-    startTransaction(async () => {
-      await updateUserProfile(values);
-      await update();
-      toast("Settings updated!", { type: "success" });
-    });
-  };
-
+function SettingsFormFields({
+  user,
+  register,
+}: {
+  user: User;
+  register: UseFormRegister<SettingsFormValues>;
+}) {
   return (
-    <form
-      className="flex flex-col gap-3 w-4/6"
-      onSubmit={handleSubmit(data => onSubmit(data))}
-    >
+    <>
       <div className="flex gap-3">
         <Input
           type="name"
@@ -59,7 +46,7 @@ export function SettingsForm({ user }: { user: User }) {
         />
       </div>
       <div>
-        <h3 className="text-base font-semibold leading-6 text-gray-900">
+        <h3 className="text-base font-semibold leading-6 text-gray-900 dark:text-gray-300">
           Real name
         </h3>
         <p className="max-w-4xl text-sm text-gray-500">
@@ -71,45 +58,60 @@ export function SettingsForm({ user }: { user: User }) {
         <Input
           type="name"
           label="First Name"
+          defaultValue={user.firstName || ""}
           className="w-1/2"
           {...register("firstName")}
         />
         <Input
           type="name"
           label="Last Name"
+          defaultValue={user.lastName || ""}
           className="w-1/2"
           {...register("lastName")}
         />
       </div>
-      <div>
-        <h3 className="text-base font-semibold leading-6 text-gray-900">
-          Title
-        </h3>
-        <p className="max-w-4xl text-sm text-gray-500">
-          This can be changed individually for every team you are a member of.
-        </p>
-      </div>
-      <div className="flex gap-3">
-        <Select label="Prefix" className="w-1/2" {...register("prefix")}>
-          <SelectItem key="foo" value="foo">
-            foo
-          </SelectItem>
-        </Select>
-        <Select label="Suffix" className="w-1/2" {...register("prefix")}>
-          <SelectItem key="bar" value="bar">
-            bar
-          </SelectItem>
-        </Select>
-      </div>
       <Button
         type="submit"
         color="primary"
-        isLoading={isPending}
+        // isLoading={isPending}
         fullWidth={false}
         className="w-64"
       >
         Update Profile
       </Button>
+    </>
+  );
+}
+
+export function SettingsForm({ user }: { user: User }) {
+  const { update } = useSession();
+  const { register } = useForm<SettingsFormValues>({
+    mode: "all",
+    resolver: zodResolver(settingsFormSchema),
+    defaultValues: {
+      name: user.name || "",
+      firstName: user.firstName || "",
+      lastName: user.lastName || "",
+    },
+  });
+  const [state, formAction] = useFormState(updateUserProfile, null);
+
+  useEffect(() => {
+    if (!state) {
+      return;
+    }
+    switch (state.status) {
+      case "success":
+        update();
+        toast("Profile updated.", {
+          type: "success",
+        });
+    }
+  }, [state]);
+
+  return (
+    <form className="flex flex-col gap-3 w-4/6" action={formAction}>
+      <SettingsFormFields user={user} register={register} />
     </form>
   );
 }

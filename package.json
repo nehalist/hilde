@@ -53,13 +53,14 @@
     "superjson": "^1.12.0",
     "tsconfig-paths": "^4.1.0",
     "zod": "^3.22.4",
+    "zod-form-data": "^2.0.2",
     "zustand": "^4.4.6"
   },
   "devDependencies": {
     "@types/jest": "^29.5.7",
     "@types/node": "^20.8.10",
-    "@types/react": "^18.2.37",
-    "@types/react-dom": "^18.2.15",
+    "@types/react": "18.2.36",
+    "@types/react-dom": "18.2.13",
     "autoprefixer": "^10.4.16",
     "eslint": "^8.53.0",
     "eslint-config-next": "^14.0.1",

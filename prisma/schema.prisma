@@ -147,8 +147,6 @@ model User {
   name             String?
   firstName        String?
   lastName         String?
-  prefix           String?
-  suffix           String?
   email            String?      @unique
   emailVerified    DateTime?
   image            String?
