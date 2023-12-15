@@ -1,10 +1,12 @@
 "use server";
 
-import { getCurrentUser } from "@/lib/session";
 import prisma from "@/lib/db";
-import * as fs from "fs";
 import { createAuthenticatedServerAction } from "@/utils/server-action-helper";
-import { settingsFormSchema } from "@/app/[locale]/my/settings/validation";
+import {
+  imageFormSchema,
+  settingsFormSchema,
+} from "@/app/[locale]/my/settings/validation";
+import { removeUploadedFiles, uploadFile } from "@/lib/storage";
 
 export const updateUserProfile = createAuthenticatedServerAction(
   settingsFormSchema,
@@ -13,7 +15,7 @@ export const updateUserProfile = createAuthenticatedServerAction(
       data: {
         name,
         firstName,
-        lastName
+        lastName,
       },
       where: {
         id: user.id,
@@ -26,34 +28,46 @@ export const updateUserProfile = createAuthenticatedServerAction(
   },
 );
 
-export async function updateUserImage(formData: FormData) {
-  const user = await getCurrentUser();
-  if (!user) {
-    return;
-  }
-  if (!formData.has("avatar")) {
-    return prisma.user.update({
-      data: {
-        image: null,
-      },
-      where: {
-        id: user.id,
-      },
-    });
-  }
-  const file = formData.get("avatar") as File;
-  const data = await file.arrayBuffer();
-  const avatarFileName = `${user.id}.${file.name.split(".").pop()}`;
-  const path = `./public/avatars/${avatarFileName}`;
+export const updateUserImage = createAuthenticatedServerAction(
+  imageFormSchema,
+  async ({ image }, { user }) => {
+    if (!image) {
+      await removeUploadedFiles(`avatars/${user.id}-*`);
 
-  fs.writeFileSync(path, Buffer.from(data));
+      await prisma.user.update({
+        data: {
+          image: null,
+        },
+        where: {
+          id: user.id,
+        },
+      });
+      return {
+        status: "success",
+      };
+    }
+    try {
+      await removeUploadedFiles(`avatars/${user.id}-*`);
+      const { fileName } = await uploadFile(image, `avatars/${user.id}-${+new Date()}`);
 
-  return prisma.user.update({
-    data: {
-      image: `${process.env.NEXTAUTH_URL}/avatars/${avatarFileName}`,
-    },
-    where: {
-      id: user.id,
-    },
-  });
-}
+      await prisma.user.update({
+        data: {
+          image: fileName,
+        },
+        where: {
+          id: user.id,
+        },
+      });
+
+      return {
+        status: "success",
+      };
+    } catch (e) {
+      console.error(e);
+      return {
+        status: "error",
+        message: "Failed to upload avatar",
+      };
+    }
+  },
+);

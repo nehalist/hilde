@@ -24,6 +24,7 @@ export function createServerAction<TData extends z.ZodRawShape>(
       const input = schema.parse(data);
       return action(input, prevState);
     } catch (e) {
+      console.error(e);
       if (e instanceof z.ZodError) {
         return {
           status: "error" as const,
@@ -31,7 +32,6 @@ export function createServerAction<TData extends z.ZodRawShape>(
           context: e.issues,
         };
       }
-      console.error(e);
       return {
         status: "error" as const,
         message: "An error occurred",

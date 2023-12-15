@@ -4,6 +4,8 @@
 db.sqlite
 db.sqlite-journal
 
+public/uploads
+
 # dependencies
 /node_modules
 /.pnp

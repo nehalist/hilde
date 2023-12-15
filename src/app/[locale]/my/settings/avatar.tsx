@@ -1,8 +1,7 @@
 "use client";
 
 import { updateUserImage } from "@/app/[locale]/my/settings/actions";
-import { ChangeEvent, useRef, useTransition } from "react";
-import { toast } from "react-toastify";
+import { useEffect, useRef, useTransition } from "react";
 import { useSession } from "next-auth/react";
 import {
   Button,
@@ -11,29 +10,32 @@ import {
   DropdownMenu,
   DropdownTrigger,
 } from "@nextui-org/react";
+import { useFormState } from "react-dom";
+import { toast } from "react-toastify";
 
 export function Avatar() {
   const { data, update } = useSession();
-  const [isPending, startTransaction] = useTransition();
-  const ref = useRef<HTMLInputElement>(null);
-  const handleImageUpload = async (e: ChangeEvent<HTMLInputElement> | null) => {
-    startTransaction(async () => {
-      if (!e) {
-        await updateUserImage(new FormData());
-        await update();
-        toast("Settings updated!", { type: "success" });
-        return;
-      }
-      if (!e.target.files) {
-        return;
-      }
-      const formData = new FormData();
-      formData.append("avatar", e.target.files[0]);
-      await updateUserImage(formData);
-      await update();
-      toast("Settings updated!", { type: "success" });
-    });
-  };
+  const uploadButtonRef = useRef<HTMLInputElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+  const [state, formAction] = useFormState(updateUserImage, null);
+
+  useEffect(() => {
+    if (!state) {
+      return;
+    }
+    switch (state.status) {
+      case "success":
+        update();
+        toast("Profile updated.", {
+          type: "success",
+        });
+        break;
+      case "error":
+        toast(state.message, {
+          type: "error",
+        });
+    }
+  }, [state]);
 
   if (!data?.user) {
     return null;
@@ -48,7 +50,7 @@ export function Avatar() {
         <>
           {data.user.image ? (
             <img
-              src={data.user.image || ""}
+              src={data.user.image}
               alt=""
               className="h-64 w-64 flex-none rounded-lg object-cover mb-1"
             />
@@ -59,13 +61,13 @@ export function Avatar() {
           )}
         </>
       )}
-      <form encType="multipart/form-data">
+      <form action={formAction} ref={formRef}>
         <input
           type="file"
           name="image"
-          onChange={handleImageUpload}
+          onChange={() => formRef.current?.requestSubmit()}
           hidden={true}
-          ref={ref}
+          ref={uploadButtonRef}
         />
         <Dropdown>
           <DropdownTrigger>
@@ -74,12 +76,18 @@ export function Avatar() {
             </Button>
           </DropdownTrigger>
           <DropdownMenu aria-label="Static Actions">
-            <DropdownItem key="new" onClick={() => ref.current?.click()}>
+            <DropdownItem
+              key="new"
+              onClick={() => uploadButtonRef.current?.click()}
+            >
               Upload new file
             </DropdownItem>
             <DropdownItem
               key="delete"
-              onClick={() => handleImageUpload(null)}
+              onClick={() => {
+                formRef.current?.reset();
+                formRef.current?.requestSubmit();
+              }}
               isDisabled={!data.user.image}
             >
               Delete file

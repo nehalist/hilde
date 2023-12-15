@@ -32,13 +32,16 @@ model Match {
 }
 
 model League {
-  id         String   @id @default(cuid())
-  createdAt  DateTime @default(now())
-  name       String
-  teams      Team[]
-  owner      User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  ownerId    String
-  selectedBy User[]   @relation("selectedLeague")
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  name        String
+  image       String?
+  description String?
+  finished    Boolean  @default(false)
+  teams       Team[]
+  owner       User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId     String
+  selectedBy  User[]   @relation("selectedLeague")
 
   @@map("league")
 }

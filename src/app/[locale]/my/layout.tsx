@@ -18,7 +18,7 @@ const nav = [
 
 export default function MyLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="flex w-full gap-5">
+    <div className="flex w-full gap-5 mt-5">
       <div className="w-64">
         <ul role="list" className="-mx-2 space-y-1">
           {nav.map(item => (

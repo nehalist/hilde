@@ -6,7 +6,7 @@ import { Button, Input } from "@nextui-org/react";
 import { User } from "@prisma/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { settingsFormSchema } from "@/app/[locale]/my/settings/validation";
-import { useFormState } from "react-dom";
+import { useFormState, useFormStatus } from "react-dom";
 import { useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
@@ -15,8 +15,6 @@ export interface SettingsFormValues {
   name: string;
   firstName: string;
   lastName: string;
-  prefix: string;
-  suffix: string;
 }
 
 function SettingsFormFields({
@@ -26,6 +24,8 @@ function SettingsFormFields({
   user: User;
   register: UseFormRegister<SettingsFormValues>;
 }) {
+  const { pending } = useFormStatus();
+
   return (
     <>
       <div className="flex gap-3">
@@ -73,7 +73,7 @@ function SettingsFormFields({
       <Button
         type="submit"
         color="primary"
-        // isLoading={isPending}
+        isLoading={pending}
         fullWidth={false}
         className="w-64"
       >
@@ -105,6 +105,11 @@ export function SettingsForm({ user }: { user: User }) {
         update();
         toast("Profile updated.", {
           type: "success",
+        });
+        break;
+      case "error":
+        toast(state.message, {
+          type: "error",
         });
     }
   }, [state]);
