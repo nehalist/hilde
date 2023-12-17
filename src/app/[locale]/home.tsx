@@ -11,9 +11,11 @@ export async function Home() {
   }
 
   return (
-    <>
-      <LeagueHeader leagues={leagues} selectedLeague={selectedLeague} />
-      <MatchCreationForm />
-    </>
+    <div className="grid grid-cols-4">
+      <div className="col-span-3">
+        <LeagueHeader leagues={leagues} selectedLeague={selectedLeague} />
+        <MatchCreationForm />
+      </div>
+    </div>
   );
 }
