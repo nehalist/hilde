@@ -37,11 +37,11 @@ export function UserHeader() {
           <DropdownItem key="settings" href="/my/settings" as={Link}>
             Settings
           </DropdownItem>
-          <DropdownItem key="teams" href="/my/teams" as={Link}>
-            Teams
-          </DropdownItem>
           <DropdownItem key="leagues" href="/my/leagues" as={Link}>
             Leagues
+          </DropdownItem>
+          <DropdownItem key="teams" href="/my/teams" as={Link}>
+            Teams
           </DropdownItem>
         </DropdownSection>
         {/*<DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem> TODO*/}

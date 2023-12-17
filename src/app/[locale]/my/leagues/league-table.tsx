@@ -1,7 +1,8 @@
 "use client";
 
 import {
-  Button,
+  Avatar,
+  Button, Chip,
   Table,
   TableBody,
   TableCell,
@@ -15,6 +16,10 @@ import { Link } from "@/lib/navigation";
 
 const columns = [
   {
+    key: "image",
+    label: "",
+  },
+  {
     key: "name",
     label: "Name",
   },
@@ -25,22 +30,36 @@ const columns = [
   {
     key: "actions",
     label: "",
-  }
+  },
 ];
 
 export function LeagueTable({ leagues }: { leagues: League[] }) {
   return (
-    <Table aria-label="League table" isStriped={true}>
+    <Table aria-label="League table">
       <TableHeader columns={columns}>
         {column => <TableColumn key={column.key}>{column.label}</TableColumn>}
       </TableHeader>
       <TableBody items={leagues}>
         {item => (
           <TableRow key={item.id}>
-            <TableCell>{item.name}</TableCell>
-            <TableCell>...</TableCell>
             <TableCell>
-              <Button isIconOnly={true} as={Link} href={`/my/leagues/${item.id}`}>
+              <Avatar
+                isBordered={true}
+                src={item.image || undefined}
+                name={item.name}
+                radius="sm"
+              />
+            </TableCell>
+            <TableCell>{item.name}</TableCell>
+            <TableCell>
+              <Chip color="success">Active</Chip>
+            </TableCell>
+            <TableCell>
+              <Button
+                isIconOnly={true}
+                as={Link}
+                href={`/my/leagues/${item.id}`}
+              >
                 <EditIcon />
               </Button>
             </TableCell>

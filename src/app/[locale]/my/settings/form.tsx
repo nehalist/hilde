@@ -20,9 +20,11 @@ export interface SettingsFormValues {
 function SettingsFormFields({
   user,
   register,
+  isValid,
 }: {
   user: User;
   register: UseFormRegister<SettingsFormValues>;
+  isValid: boolean;
 }) {
   const { pending } = useFormStatus();
 
@@ -74,6 +76,7 @@ function SettingsFormFields({
         type="submit"
         color="primary"
         isLoading={pending}
+        isDisabled={!isValid}
         fullWidth={false}
         className="w-64"
       >
@@ -85,7 +88,10 @@ function SettingsFormFields({
 
 export function SettingsForm({ user }: { user: User }) {
   const { update } = useSession();
-  const { register } = useForm<SettingsFormValues>({
+  const {
+    register,
+    formState: { isValid },
+  } = useForm<SettingsFormValues>({
     mode: "all",
     resolver: zodResolver(settingsFormSchema),
     defaultValues: {
@@ -116,7 +122,7 @@ export function SettingsForm({ user }: { user: User }) {
 
   return (
     <form className="flex flex-col gap-3 w-4/6" action={formAction}>
-      <SettingsFormFields user={user} register={register} />
+      <SettingsFormFields user={user} register={register} isValid={isValid} />
     </form>
   );
 }
