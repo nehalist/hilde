@@ -45,11 +45,9 @@ export default async function Leagues() {
         <div className="flex-1">... league description ...</div>
         <div className="text-right w-1/4">
           <Link href="/my/leagues/create">Create new League</Link>
-          {/*<Button color="success" as={Link} href={`/my/leagues/new`}>Create new League</Button>*/}
         </div>
       </div>
       <LeagueTable leagues={leagues} />
-      {/*<CreateLeague />*/}
     </div>
   );
 }

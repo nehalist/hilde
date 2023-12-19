@@ -24,10 +24,10 @@ model Match {
   comment           String
   game              String
   teamsize          Int
-  season            Int               @default(1)
   achievements      TeamAchievement[]
+  league            League            @relation(fields: [leagueId], references: [id], onDelete: Cascade)
+  leagueId          String
 
-  @@index(season)
   @@map("match")
 }
 
@@ -42,6 +42,7 @@ model League {
   owner       User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId     String
   selectedBy  User[]   @relation("selectedLeague")
+  matches     Match[]
 
   @@map("league")
 }

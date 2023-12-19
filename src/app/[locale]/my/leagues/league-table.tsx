@@ -2,7 +2,8 @@
 
 import {
   Avatar,
-  Button, Chip,
+  Button,
+  Chip,
   Table,
   TableBody,
   TableCell,
@@ -10,9 +11,9 @@ import {
   TableHeader,
   TableRow,
 } from "@nextui-org/react";
-import { League } from "@prisma/client";
 import { EditIcon } from "@nextui-org/shared-icons";
 import { Link } from "@/lib/navigation";
+import { League } from "@prisma/client";
 
 const columns = [
   {
@@ -50,7 +51,9 @@ export function LeagueTable({ leagues }: { leagues: League[] }) {
                 radius="sm"
               />
             </TableCell>
-            <TableCell>{item.name}</TableCell>
+            <TableCell>
+              <div className="flex flex-col">{item.name}</div>
+            </TableCell>
             <TableCell>
               <Chip color="success">Active</Chip>
             </TableCell>
