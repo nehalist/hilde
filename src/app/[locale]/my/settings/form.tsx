@@ -3,13 +3,13 @@
 import { useForm, UseFormRegister } from "react-hook-form";
 import { updateUserProfile } from "@/app/[locale]/my/settings/actions";
 import { Button, Input } from "@nextui-org/react";
-import { User } from "@prisma/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { settingsFormSchema } from "@/app/[locale]/my/settings/validation";
 import { useFormState, useFormStatus } from "react-dom";
 import { useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
+import { User } from "@/db/schema";
 
 export interface SettingsFormValues {
   name: string;

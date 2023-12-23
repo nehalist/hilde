@@ -46,91 +46,72 @@ function CreateLeagueFormFields({
   control: Control<CreateLeagueFormValues>;
 }) {
   return (
-    <div className="flex gap-3">
-      <div className="flex gap-3 flex-col w-1/2">
-        <Input
-          type="file"
-          label="Image"
-          labelPlacement="outside"
-          placeholder="Placeholder"
-          variant="flat"
-          {...register("image")}
-        />
-        <Input
-          type="text"
-          label="Name"
-          labelPlacement="outside"
-          placeholder="Placeholder"
-          {...register("name")}
-        />
-        <Textarea
-          label="Description"
-          labelPlacement="outside"
-          placeholder="Placeholder"
-          {...register("description")}
-        />
-        <Button type="submit" color="primary">
-          Create League
-        </Button>
-      </div>
-      <div className="w-1/2">
-        <div className="flex gap-3 flex-col">
-          <Controller
-            render={({ field: { onChange, value } }) => (
-              <Select
-                label="Game"
-                labelPlacement="outside"
-                placeholder="Placeholder"
-                defaultSelectedKeys={[value]}
-                onChange={onChange}
-                disallowEmptySelection={true}
-              >
-                {games.map(game => (
-                  <SelectItem key={game.id} value={game.id}>
-                    {game.name}
-                  </SelectItem>
-                ))}
-              </Select>
-            )}
-            name="game"
-            control={control}
-          />
-          <div className="flex gap-3">
-            <Input
-              type="text"
-              label="Max Score per match"
-              labelPlacement="outside"
-              placeholder="Placeholder"
-              className="w-2/3"
-              {...register("maxScore")}
-            />
-            <Controller
-              render={({ field: { onChange, value } }) => (
-                <Checkbox onChange={onChange} isSelected={value}>Allow Draws</Checkbox>
-              )}
-              name="allowDraws"
-              control={control}
-            />
+    <form>
+      <div className="space-y-12 sm:space-y-16">
+        <div>
+          <h2 className="text-base font-semibold leading-7 text-gray-900">League</h2>
+          <p className="mt-1 max-w-2xl text-sm leading-6 text-gray-600">
+            General information regarding the league.
+          </p>
+
+          <div className="mt-10 space-y-8 border-b border-gray-900/10 pb-12 sm:space-y-0 sm:divide-y sm:divide-gray-900/10 sm:border-t sm:pb-0">
+            <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
+              <label htmlFor="username" className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5">
+                Name
+              </label>
+              <div className="mt-2 sm:col-span-2 sm:mt-0">
+                <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
+                  <input
+                    type="text"
+                    name="username"
+                    id="username"
+                    autoComplete="username"
+                    className="block flex-1 border-0 bg-transparent px-2 py-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                    placeholder="janesmith"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
-          <Accordion variant="splitted">
-            <AccordionItem title="Advanced" key="advanced">
-              <Select
-                label="Rating System"
-                labelPlacement="outside"
-                {...register("ratingSystem")}
-              >
-                <SelectItem key="elo" value="elo">
-                  Elo
-                </SelectItem>
-                <SelectItem key="glicko2" value="glicko2">
-                  Glicko2
-                </SelectItem>
-              </Select>
-            </AccordionItem>
-          </Accordion>
+        </div>
+
+        <div>
+          <h2 className="text-base font-semibold leading-7 text-gray-900">Personal Information</h2>
+          <p className="mt-1 max-w-2xl text-sm leading-6 text-gray-600">
+            Use a permanent address where you can receive mail.
+          </p>
+
+          <div className="mt-10 space-y-8 border-b border-gray-900/10 pb-12 sm:space-y-0 sm:divide-y sm:divide-gray-900/10 sm:border-t sm:pb-0">
+            <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
+              <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5">
+                First name
+              </label>
+              <div className="mt-2 sm:col-span-2 sm:mt-0">
+                <input
+                  type="text"
+                  name="first-name"
+                  id="first-name"
+                  autoComplete="given-name"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+
+      <div className="mt-6 flex items-center justify-end gap-x-6">
+        <button type="button" className="text-sm font-semibold leading-6 text-gray-900">
+          Cancel
+        </button>
+        <button
+          type="submit"
+          className="inline-flex justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+        >
+          Save
+        </button>
+      </div>
+    </form>
   );
 }
 

@@ -12,6 +12,17 @@ services:
     volumes:
       - db:/var/lib/mysql
 
+  db:
+    image: postgres:13.3
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data/
+    environment:
+      POSTGRES_DB: app
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+
   mail:
     image: axllent/mailpit
     ports:
@@ -20,3 +31,4 @@ services:
 
 volumes:
   db:
+  db_data:

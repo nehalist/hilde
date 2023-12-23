@@ -13,7 +13,8 @@ import {
 } from "@nextui-org/react";
 import { EditIcon } from "@nextui-org/shared-icons";
 import { Link } from "@/lib/navigation";
-import { League } from "@prisma/client";
+import { getLeaguesForUser } from "@/db/model/league";
+import { FaCrown } from "react-icons/fa6";
 
 const columns = [
   {
@@ -34,7 +35,11 @@ const columns = [
   },
 ];
 
-export function LeagueTable({ leagues }: { leagues: League[] }) {
+export function LeagueTable({
+  leagues,
+}: {
+  leagues: Awaited<ReturnType<typeof getLeaguesForUser>>;
+}) {
   return (
     <Table aria-label="League table">
       <TableHeader columns={columns}>
@@ -42,29 +47,44 @@ export function LeagueTable({ leagues }: { leagues: League[] }) {
       </TableHeader>
       <TableBody items={leagues}>
         {item => (
-          <TableRow key={item.id}>
+          <TableRow key={item.league.id}>
             <TableCell>
               <Avatar
                 isBordered={true}
-                src={item.image || undefined}
-                name={item.name}
+                src={item.league.image || undefined}
+                name={item.league.name}
                 radius="sm"
               />
             </TableCell>
             <TableCell>
-              <div className="flex flex-col">{item.name}</div>
+              <div className="flex flex-col">
+                <p className="text-bold text-sm">{item.league.name} {!!item.ownership && (<FaCrown />)}</p>
+                <p className="text-bold text-sm text-default-400">
+                  {item.teams} teams, {item.memberships} members, {item.matches} matches
+                 </p>
+              </div>
             </TableCell>
             <TableCell>
               <Chip color="success">Active</Chip>
             </TableCell>
             <TableCell>
-              <Button
-                isIconOnly={true}
-                as={Link}
-                href={`/my/leagues/${item.id}`}
-              >
-                <EditIcon />
-              </Button>
+              {item.ownership ? (
+                <Button
+                  isIconOnly={true}
+                  as={Link}
+                  href={`/my/leagues/${item.league.id}`}
+                >
+                  <EditIcon />
+                </Button>
+              ) : (
+                <Button
+                  as={Link}
+                  href={`/my/leagues/${item.league.id}`}
+                  color="danger"
+                >
+                  Leave League
+                </Button>
+              )}
             </TableCell>
           </TableRow>
         )}

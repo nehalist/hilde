@@ -1,39 +1,15 @@
-import prisma from "@/lib/db";
-import { LeagueTable } from "@/app/[locale]/my/leagues/league-table";
 import { getCurrentUser } from "@/lib/session";
 import { redirect } from "next/navigation";
-import { League } from "@prisma/client";
 import { Link } from "@/lib/navigation";
+import { getLeaguesForUser } from "@/db/model/league";
+import { LeagueTable } from "@/app/[locale]/my/leagues/league-table";
 
 async function getLeagues() {
   const user = await getCurrentUser();
   if (!user) {
     return redirect("/");
   }
-
-  const memberships = await prisma.teamMember.findMany({
-    where: {
-      userId: user.id,
-    },
-    include: {
-      team: {
-        include: {
-          league: true,
-        },
-      },
-    },
-  });
-
-  const leagues: League[] = [];
-  memberships.forEach(membership => {
-    const league = membership.team.league;
-    if (leagues.find(l => l.id === league.id)) {
-      return;
-    }
-    leagues.push(league);
-  });
-
-  return leagues;
+  return getLeaguesForUser(user);
 }
 
 export default async function Leagues() {

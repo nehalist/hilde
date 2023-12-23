@@ -1,13 +1,15 @@
 import { AuthOptions } from "next-auth";
-import { PrismaAdapter } from "@auth/prisma-adapter";
 import EmailProvider from "next-auth/providers/email";
-import prisma from "@/lib/db";
+import { DrizzleAdapter } from "@auth/drizzle-adapter";
+import { db } from "@/db";
+import { leagues, teamMembers, teams, users } from "@/db/schema";
+import { eq } from "drizzle-orm";
 
 export const authOptions: AuthOptions = {
   session: {
     strategy: "database",
   },
-  adapter: PrismaAdapter(prisma),
+  adapter: DrizzleAdapter(db),
   providers: [
     EmailProvider({
       server: process.env.EMAIL_SERVER,
@@ -16,73 +18,62 @@ export const authOptions: AuthOptions = {
   ],
   callbacks: {
     async jwt({ token }) {
-      const dbUser = await prisma.user.findUnique({
-        where: {
-          email: `${token.email}`,
-        },
-      });
-      if (dbUser) {
-        token.selectedLeagueId = dbUser.selectedLeagueId;
-      }
+      // const dbUser = await prisma.user.findUnique({
+      //   where: {
+      //     email: `${token.email}`,
+      //   },
+      // });
+      // if (dbUser) {
+      //   token.selectedLeagueId = dbUser.selectedLeagueId;
+      // }
       return token;
     },
     async session({ session, token }) {
-      if (token) {
-        session.user.selectedLeagueId = `${token.selectedLeagueId}`;
-        session.user.id = `${token.id}`;
-      }
+      // if (token) {
+      //   session.user.selectedLeagueId = `${token.selectedLeagueId}`;
+      //   session.user.id = `${token.id}`;
+      // }
       return session;
     },
   },
   events: {
     createUser: async ({ user }) => {
-      let name = user.name;
       if (!user.email) {
-        // todo: how can this be?
-        return;
+        return; // todo: how can this be?
       }
+      let name = user.name;
       if (!name) {
         name = user.email.split("@")[0];
-        await prisma.user.update({
-          where: { id: user.id },
-          data: { name },
-        });
+        await db.update(users).set({ name }).where(eq(users.email, user.email));
       }
-      const league = await prisma.league.create({
-        data: {
+      const [league] = await db
+        .insert(leagues)
+        .values({
           name: "Default League",
-          owner: {
-            connect: { id: user.id },
-          },
-        },
-      });
-      await prisma.user.update({
-        data: {
-          selectedLeague: {
-            connect: { id: league.id },
-          },
-        },
-        where: { id: user.id },
-      });
-      const team = await prisma.team.create({
-        data: {
-          name: user.name || "Default Team",
-          league: {
-            connect: { id: league.id },
-          },
-        },
-      });
-      const teamMember = await prisma.teamMember.create({
-        data: {
-          name: user.name || "Default Team Member",
-          user: {
-            connect: { id: user.id },
-          },
-          team: {
-            connect: { id: team.id },
-          },
-        },
-      });
+          ownerId: user.id,
+        })
+        .returning();
+
+      await db
+        .update(users)
+        .set({ selectedLeagueId: league.id })
+        .where(eq(users.id, user.id));
+
+      const [team] = await db
+        .insert(teams)
+        .values({
+          name: "foobar",
+          leagueId: league.id,
+        })
+        .returning();
+
+      await db
+        .insert(teamMembers)
+        .values({
+          name,
+          teamId: team.id,
+          userId: user.id,
+        });
     },
   },
 };
