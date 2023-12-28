@@ -1,2 +1,6 @@
 {
+  "LeagueManagement": {
+    "description": "League description",
+    "createButtonLabel": "Create League"
+  }
 }

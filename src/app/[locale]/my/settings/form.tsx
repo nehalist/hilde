@@ -1,7 +1,7 @@
 "use client";
 
 import { useForm, UseFormRegister } from "react-hook-form";
-import { updateUserProfile } from "@/app/[locale]/my/settings/actions";
+import { updateUserProfileAction } from "@/app/[locale]/my/settings/actions";
 import { Button, Input } from "@nextui-org/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { settingsFormSchema } from "@/app/[locale]/my/settings/validation";
@@ -100,7 +100,7 @@ export function SettingsForm({ user }: { user: User }) {
       lastName: user.lastName || "",
     },
   });
-  const [state, formAction] = useFormState(updateUserProfile, null);
+  const [state, formAction] = useFormState(updateUserProfileAction, null);
 
   useEffect(() => {
     if (!state) {

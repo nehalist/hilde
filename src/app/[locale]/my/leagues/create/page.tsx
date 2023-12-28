@@ -1,8 +1,7 @@
 "use client";
 
-import { CreateLeagueForm } from "@/app/[locale]/my/leagues/form";
+import { CreateLeagueForm } from "@/app/[locale]/my/leagues/create/form";
 import { BreadcrumbItem, Breadcrumbs } from "@nextui-org/react";
-import { Link } from "@/lib/navigation";
 
 export default function CreateLeague() {
   return (

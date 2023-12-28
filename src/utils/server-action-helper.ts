@@ -1,6 +1,9 @@
 import { z } from "zod";
 import { getCurrentUser } from "@/lib/session";
-import { User } from "@prisma/client";
+import { User } from "@/db/schema";
+import { CacheKey } from "@/lib/cache";
+import { unstable_cache } from "next/cache";
+import { redirect } from "next/navigation";
 
 export interface ServerActionState {
   status: "success" | "error";

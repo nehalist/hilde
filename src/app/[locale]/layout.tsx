@@ -3,6 +3,7 @@ import "@/styles/globals.css";
 import { Header } from "@/components/header";
 import { Providers } from "@/app/[locale]/providers";
 import { notFound } from "next/navigation";
+import { useMessages } from "next-intl";
 
 const locales = ["de", "en"];
 
@@ -26,7 +27,7 @@ export default async function RootLayout({
     <html lang={locale}>
       <head />
       <body>
-        <Providers>
+        <Providers locale={locale}>
           <Header />
           <div className="container mx-auto max-w-7xl">{children}</div>
         </Providers>

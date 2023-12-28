@@ -1,0 +1,1 @@
+ALTER TABLE "user" ADD COLUMN "maxLeagues" integer DEFAULT 1 NOT NULL;

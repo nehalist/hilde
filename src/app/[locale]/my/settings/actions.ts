@@ -8,7 +8,7 @@ import {
 import { removeUploadedFiles, uploadFile } from "@/lib/storage";
 import { updateUser } from "@/db/model/user";
 
-export const updateUserProfile = createAuthenticatedServerAction(
+export const updateUserProfileAction = createAuthenticatedServerAction(
   settingsFormSchema,
   async ({ name, firstName, lastName }, { user }) => {
     await updateUser(user.id, { name, firstName, lastName });
@@ -19,7 +19,7 @@ export const updateUserProfile = createAuthenticatedServerAction(
   },
 );
 
-export const updateUserImage = createAuthenticatedServerAction(
+export const updateUserImageAction = createAuthenticatedServerAction(
   imageFormSchema,
   async ({ image }, { user }) => {
     if (!image) {

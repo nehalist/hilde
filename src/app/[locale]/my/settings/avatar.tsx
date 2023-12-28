@@ -1,6 +1,6 @@
 "use client";
 
-import { updateUserImage } from "@/app/[locale]/my/settings/actions";
+import { updateUserImageAction } from "@/app/[locale]/my/settings/actions";
 import { useEffect, useRef, useTransition } from "react";
 import { useSession } from "next-auth/react";
 import {
@@ -17,7 +17,7 @@ export function Avatar() {
   const { data, update } = useSession();
   const uploadButtonRef = useRef<HTMLInputElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
-  const [state, formAction] = useFormState(updateUserImage, null);
+  const [state, formAction] = useFormState(updateUserImageAction, null);
 
   useEffect(() => {
     if (!state) {

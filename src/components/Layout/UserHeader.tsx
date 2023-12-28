@@ -7,12 +7,17 @@ import {
   DropdownMenu,
   DropdownSection,
   DropdownTrigger,
+  Spinner,
   User,
 } from "@nextui-org/react";
 import { signOut, useSession } from "next-auth/react";
 
 export function UserHeader() {
-  const { data: user } = useSession();
+  const { data: user, status } = useSession();
+  if (status === "loading") {
+    return <Spinner />;
+  }
+
   if (!user) {
     return;
   }

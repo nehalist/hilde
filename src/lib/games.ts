@@ -1,21 +1,37 @@
-export interface Game {
+// We might use this type in the future, but for now it's not needed.
+// type RatingSystemConfig<
+//   S extends typeof ratingSystems[number] = typeof ratingSystems[number],
+// > = S extends unknown
+//   ? {
+//       ratingSystem: S["id"];
+//       ratingSystemParameters: Record<S["parameters"][number]["id"], number>;
+//     }
+//   : never;
+
+export type Game = {
   id: string;
   name: string;
   defaults: {
-    maxScore: number;
+    maxScorePerMatch: number;
     allowDraws: boolean;
-    ratingSystem: string;
   };
-}
+};
 
 export const games: Game[] = [
   {
     id: "custom",
     name: "Custom",
     defaults: {
-      maxScore: 0,
+      maxScorePerMatch: 0,
       allowDraws: true,
-      ratingSystem: "elo",
+    },
+  },
+  {
+    id: "badminton",
+    name: "Badminton",
+    defaults: {
+      maxScorePerMatch: 21,
+      allowDraws: false,
     },
   },
 ];

@@ -1,5 +1,7 @@
 import {
+  boolean,
   integer,
+  json,
   pgEnum,
   pgTable,
   primaryKey,
@@ -9,8 +11,18 @@ import {
 } from "drizzle-orm/pg-core";
 import { AdapterAccount } from "@auth/core/adapters";
 import { relations } from "drizzle-orm";
+import { games } from "@/lib/games";
+import { ratingSystems } from "@/lib/rating";
 
 export const leagueStatusEnum = pgEnum("leagueStatus", ["active", "finished"]);
+export const gamesEnum = pgEnum("game", [
+  "custom",
+  ...games.filter(g => g.id !== "custom").map(g => g.id),
+]);
+export const ratingSystemsEnum = pgEnum("ratingSystem", [
+  "unknown",
+  ...ratingSystems.map(rs => rs.id),
+]);
 
 export const leagues = pgTable("league", {
   id: text("id")
@@ -19,6 +31,12 @@ export const leagues = pgTable("league", {
   name: text("name").notNull(),
   image: text("image"),
   description: text("description"),
+  game: gamesEnum("game").notNull().default("custom"),
+  maxScorePerMatch: integer("maxScorePerMatch").notNull().default(0),
+  allowDraws: boolean("allowDraws").notNull().default(true),
+  defaultRating: integer("defaultRating").notNull().default(1000),
+  ratingSystem: ratingSystemsEnum("ratingSystem").notNull().default("unknown"),
+  ratingSystemParameters: json("ratingSystemParameters").notNull().default({}),
   status: leagueStatusEnum("leagueStatus").default("active"),
   ownerId: text("ownerId")
     .notNull()
@@ -27,6 +45,7 @@ export const leagues = pgTable("league", {
 });
 
 export type League = typeof leagues.$inferSelect;
+export type NewLeague = typeof leagues.$inferInsert;
 
 export const leaguesRelations = relations(leagues, ({ one, many }) => ({
   owner: one(users, {
@@ -107,6 +126,7 @@ export const users = pgTable("user", {
   emailVerified: timestamp("emailVerified", { mode: "date" }),
   image: text("image"),
   selectedLeagueId: text("selectedLeagueId"),
+  maxLeagues: integer("maxLeagues").notNull().default(10),
 });
 
 export type User = typeof users.$inferSelect;

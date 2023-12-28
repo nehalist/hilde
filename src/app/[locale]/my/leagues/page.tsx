@@ -1,8 +1,10 @@
 import { getCurrentUser } from "@/lib/session";
 import { redirect } from "next/navigation";
-import { Link } from "@/lib/navigation";
 import { getLeaguesForUser } from "@/db/model/league";
 import { LeagueTable } from "@/app/[locale]/my/leagues/league-table";
+import { LeagueHeader } from "@/app/[locale]/my/leagues/league-header";
+import { getTranslations } from "next-intl/server";
+import { RefreshOnFocus } from "@/components/refresh-on-focus";
 
 async function getLeagues() {
   const user = await getCurrentUser();
@@ -14,16 +16,27 @@ async function getLeagues() {
 
 export default async function Leagues() {
   const leagues = await getLeagues();
+  const t = await getTranslations("LeagueManagement");
+  const user = await getCurrentUser();
+
+  if (!user) {
+    return null;
+  }
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="flex items-center">
-        <div className="flex-1">... league description ...</div>
-        <div className="text-right w-1/4">
-          <Link href="/my/leagues/create">Create new League</Link>
-        </div>
-      </div>
+      <LeagueHeader
+        canCreateLeagues={
+          user.maxLeagues >=
+          leagues.filter(l => l.league.status === "active").length
+        }
+        messages={{
+          description: t("description"),
+          createButtonLabel: t("createButtonLabel"),
+        }}
+      />
       <LeagueTable leagues={leagues} />
+      <RefreshOnFocus />
     </div>
   );
 }

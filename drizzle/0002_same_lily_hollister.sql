@@ -1,0 +1,1 @@
+ALTER TABLE "league" ADD COLUMN "defaultRating" integer DEFAULT 1000 NOT NULL;
