@@ -1,14 +1,15 @@
 import {
   League,
   leagues,
-  matches,
+  matches, Team,
   teamMembers,
   teams,
-  User,
+  User, users,
 } from "@/db/schema";
 import { db } from "@/db";
 import { desc, eq, or, sql } from "drizzle-orm";
 import { RatingSystem } from "@/lib/rating";
+import { redirect } from "@/lib/navigation";
 
 export async function getLeaguesForUser(user: User) {
   return db
@@ -84,4 +85,43 @@ export async function createLeague(
 
 export async function updateLeague(league: League, data: Partial<League>) {
   return db.update(leagues).set(data).where(eq(leagues.id, league.id));
+}
+
+export async function getLeagueWithUser(leagueId: string) {
+  const data = await db
+    .select()
+    .from(leagues)
+    .leftJoin(teams, eq(teams.leagueId, leagues.id))
+    .leftJoin(teamMembers, eq(teamMembers.teamId, teams.id))
+    .leftJoin(users, eq(users.id, teamMembers.userId))
+    .where(eq(leagues.id, leagueId));
+
+  if (!data) {
+    redirect("/404");
+  }
+
+  const user: (User & { teams: Team[] })[] = [];
+  data.forEach(row => {
+    if (!row.user) {
+      return;
+    }
+    if (user.find(u => u.id === row.user?.id)) {
+      if (
+        row.team &&
+        !user.find(u => u.teams.find(t => t.id === row.team?.id))
+      ) {
+        user.find(u => u.id === row.user?.id)?.teams.push(row.team);
+      }
+      return;
+    }
+    user.push({
+      ...row.user,
+      teams: row.team ? [row.team] : [],
+    });
+  });
+
+  return {
+    league: data[0]?.league,
+    user,
+  };
 }

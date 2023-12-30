@@ -3,6 +3,7 @@
 import {
   Avatar,
   Button,
+  Chip,
   Table,
   TableBody,
   TableCell,
@@ -16,11 +17,17 @@ import { getLeaguesForUser } from "@/db/model/league";
 import { FaCrown } from "react-icons/fa6";
 import { leaveLeagueAction } from "@/app/[locale]/my/leagues/actions";
 import { useFormState } from "react-dom";
+import { GameChip } from "@/components/game-chip";
+import { LeagueStatusChip } from "@/components/league-status-chip";
 
 const columns = [
   {
     key: "name",
     label: "Name",
+  },
+  {
+    key: "game",
+    label: "Game",
   },
   {
     key: "status",
@@ -77,7 +84,8 @@ export function LeagueTable({
                 </div>
               </div>
             </TableCell>
-            <TableCell>{item.league.status}</TableCell>
+            <TableCell><GameChip game={item.league.game} /></TableCell>
+            <TableCell><LeagueStatusChip status={item.league.status} /></TableCell>
             <TableCell>
               {item.ownership ? (
                 <Button

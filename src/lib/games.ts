@@ -27,11 +27,51 @@ export const games: Game[] = [
     },
   },
   {
+    id: "foosball",
+    name: "Foosball",
+    defaults: {
+      maxScorePerMatch: 10,
+      allowDraws: false,
+    },
+  },
+  {
     id: "badminton",
     name: "Badminton",
     defaults: {
       maxScorePerMatch: 21,
       allowDraws: false,
     },
+  },
+  {
+    id: "chess",
+    name: "Chess",
+    defaults: {
+      maxScorePerMatch: 1,
+      allowDraws: true,
+    }
+  },
+  {
+    id: "pool",
+    name: "Pool",
+    defaults: {
+      maxScorePerMatch: 1,
+      allowDraws: false,
+    }
+  },
+  {
+    id: "table-tennis",
+    name: "Table Tennis",
+    defaults: {
+      maxScorePerMatch: 7,
+      allowDraws: false,
+    }
+  },
+  {
+    id: "sixty-six",
+    name: "Sixty-Six (Schnapsen)",
+    defaults: {
+      maxScorePerMatch: 7,
+      allowDraws: false,
+    }
   },
 ];

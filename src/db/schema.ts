@@ -67,6 +67,8 @@ export const teams = pgTable("team", {
   createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
 });
 
+export type Team = typeof teams.$inferSelect;
+
 export const teamsRelations = relations(teams, ({ one, many }) => ({
   league: one(leagues, {
     fields: [teams.leagueId],

@@ -1,17 +1,24 @@
 import { z } from "zod";
 import { getCurrentUser } from "@/lib/session";
 import { User } from "@/db/schema";
-import { CacheKey } from "@/lib/cache";
-import { unstable_cache } from "next/cache";
-import { redirect } from "next/navigation";
 
-export interface ServerActionState {
-  status: "success" | "error";
+type StateError = {
+  status: "error";
   message?: string;
-  context?: unknown;
 }
 
-export function createServerAction<TData extends z.ZodRawShape>(
+type StateSuccess<T> = {
+  status: "success";
+  message?: string;
+  data?: T;
+};
+
+export type ServerActionState<TData = any> = StateError | StateSuccess<TData>;
+
+export function createServerAction<
+  TData extends z.ZodRawShape,
+  TStateData extends ServerActionState,
+>(
   schema: z.ZodEffects<
     z.ZodObject<TData>,
     z.output<z.ZodObject<TData>>,
@@ -20,7 +27,7 @@ export function createServerAction<TData extends z.ZodRawShape>(
   action: (
     input: z.infer<typeof schema>,
     prevState: ServerActionState | null,
-  ) => Promise<ServerActionState>,
+  ) => Promise<TStateData>,
 ) {
   return async function (prevState: ServerActionState | null, data: FormData) {
     try {
@@ -32,7 +39,7 @@ export function createServerAction<TData extends z.ZodRawShape>(
         return {
           status: "error" as const,
           message: e.message,
-          context: e.issues,
+          data: e.issues,
         };
       }
       return {
@@ -43,7 +50,10 @@ export function createServerAction<TData extends z.ZodRawShape>(
   };
 }
 
-export function createAuthenticatedServerAction<TData extends z.ZodRawShape>(
+export function createAuthenticatedServerAction<
+  TData extends z.ZodRawShape,
+  TStateData extends ServerActionState,
+>(
   schema: z.ZodEffects<
     z.ZodObject<TData>,
     z.output<z.ZodObject<TData>>,
@@ -53,13 +63,13 @@ export function createAuthenticatedServerAction<TData extends z.ZodRawShape>(
     input: z.infer<typeof schema>,
     context: { user: User },
     prevState: ServerActionState | null,
-  ) => Promise<ServerActionState>,
+  ) => Promise<TStateData>,
 ) {
   return createServerAction(schema, async (input, prevState) => {
     const user = await getCurrentUser();
     if (!user) {
       return {
-        status: "error",
+        status: "error" as const,
         message: "User not found",
       };
     }

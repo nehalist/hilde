@@ -5,8 +5,6 @@ import { leagueFormSchema } from "@/app/[locale]/my/leagues/validation";
 import { validateRatingSystemParameters } from "@/lib/rating";
 import { uploadFile } from "@/lib/storage";
 import { createLeague, updateLeague } from "@/db/model/league";
-import { revalidateTag } from "next/cache";
-import { redirect } from "@/lib/navigation";
 
 export const createLeagueAction = createAuthenticatedServerAction(
   leagueFormSchema,
@@ -19,7 +17,7 @@ export const createLeagueAction = createAuthenticatedServerAction(
       )
     ) {
       return {
-        status: "error",
+        status: "error" as const,
       };
     }
 
@@ -43,11 +41,11 @@ export const createLeagueAction = createAuthenticatedServerAction(
       await updateLeague(league, { image: fileName });
     }
 
-    revalidateTag("leagues");
-    redirect("/my/leagues");
-
     return {
       status: "success",
+      data: {
+        foo: "bar",
+      },
     };
   },
 );

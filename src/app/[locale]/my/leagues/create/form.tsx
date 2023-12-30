@@ -21,6 +21,7 @@ import {
   RatingSystem,
   ratingSystems,
 } from "@/lib/rating";
+import { useServerActionState } from "@/hooks/use-server-action-state";
 
 export interface CreateLeagueFormValues {
   name: string;
@@ -246,7 +247,7 @@ function CreateLeagueFormFields({
   );
 }
 
-export function CreateLeagueForm() {
+export async function CreateLeagueForm() {
   const defaultGame = games.find(game => game.id === "custom")!;
   const defaultRatingSystem = RatingSystem.Elo;
   const form = useForm<CreateLeagueFormValues>({
@@ -267,6 +268,15 @@ export function CreateLeagueForm() {
     },
   });
   const [state, formAction] = useFormState(createLeagueAction, null);
+
+  useServerActionState(state, {
+    onSuccess: () => {
+      return {
+        message: "League created",
+        redirect: `/my/leagues`,
+      }
+    }
+  });
 
   return (
     <form action={formAction}>

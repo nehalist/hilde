@@ -36,6 +36,13 @@
       "when": 1703710486089,
       "tag": "0004_goofy_junta",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1703845653384,
+      "tag": "0005_steady_boomerang",
+      "breakpoints": true
     }
   ]
 }
