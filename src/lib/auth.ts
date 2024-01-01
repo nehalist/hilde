@@ -18,21 +18,33 @@ export const authOptions: AuthOptions = {
   ],
   callbacks: {
     async jwt({ token }) {
-      // const dbUser = await prisma.user.findUnique({
-      //   where: {
-      //     email: `${token.email}`,
-      //   },
-      // });
-      // if (dbUser) {
-      //   token.selectedLeagueId = dbUser.selectedLeagueId;
-      // }
+      if (!token.email) {
+        return token;
+      }
+      const [user] = await db
+        .select()
+        .from(users)
+        .where(eq(users.email, token.email));
+      if (user) {
+        token.selectedLeagueId = user.selectedLeagueId;
+        token.firstName = user.firstName;
+        token.lastName = user.lastName;
+        token.role = user.role;
+      }
       return token;
     },
-    async session({ session, token }) {
-      // if (token) {
-      //   session.user.selectedLeagueId = `${token.selectedLeagueId}`;
-      //   session.user.id = `${token.id}`;
-      // }
+    async session({ session }) {
+      if (!session.user || !session.user.email) {
+        return session;
+      }
+      const [user] = await db
+        .select()
+        .from(users)
+        .where(eq(users.email, session.user.email));
+      if (user) {
+        session.user.selectedLeagueId = `${user.selectedLeagueId}`;
+        session.user.role = `${user.role}`;
+      }
       return session;
     },
   },
@@ -67,13 +79,11 @@ export const authOptions: AuthOptions = {
         })
         .returning();
 
-      await db
-        .insert(teamMembers)
-        .values({
-          name,
-          teamId: team.id,
-          userId: user.id,
-        });
+      await db.insert(teamMembers).values({
+        name,
+        teamId: team.id,
+        userId: user.id,
+      });
     },
   },
 };

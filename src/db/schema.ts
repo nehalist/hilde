@@ -23,6 +23,7 @@ export const ratingSystemsEnum = pgEnum("ratingSystem", [
   "unknown",
   ...ratingSystems.map(rs => rs.id),
 ]);
+export const userRolesEnum = pgEnum("role", ["user", "admin"]);
 
 export const leagues = pgTable("league", {
   id: text("id")
@@ -125,10 +126,12 @@ export const users = pgTable("user", {
   firstName: text("firstName"),
   lastName: text("lastName"),
   email: text("email").notNull(),
+  role: userRolesEnum("role").notNull().default("user"),
   emailVerified: timestamp("emailVerified", { mode: "date" }),
   image: text("image"),
   selectedLeagueId: text("selectedLeagueId"),
   maxLeagues: integer("maxLeagues").notNull().default(10),
+  createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
 });
 
 export type User = typeof users.$inferSelect;

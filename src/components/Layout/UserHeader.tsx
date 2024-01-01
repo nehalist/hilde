@@ -22,6 +22,32 @@ export function UserHeader() {
     return;
   }
 
+  const dropdownItems = [
+    {
+      key: "settings",
+      href: "/my/settings",
+      label: "Settings",
+    },
+    {
+      key: "leagues",
+      href: "/my/leagues",
+      label: "Leagues",
+    },
+    {
+      key: "teams",
+      href: "/my/teams",
+      label: "Teams",
+    },
+  ];
+
+  if (user.user.role === "admin") {
+    dropdownItems.push({
+      key: "admin",
+      href: "/admin",
+      label: "Administration",
+    });
+  }
+
   return (
     <Dropdown placement="bottom-start">
       <DropdownTrigger>
@@ -29,7 +55,7 @@ export function UserHeader() {
           as="button"
           avatarProps={{
             isBordered: true,
-            name: "dude",
+            name: user.user.name || "Unknown",
             src: user.user.image || "",
           }}
           className="transition-transform"
@@ -39,15 +65,11 @@ export function UserHeader() {
       </DropdownTrigger>
       <DropdownMenu aria-label="User Actions" variant="flat">
         <DropdownSection showDivider={true}>
-          <DropdownItem key="settings" href="/my/settings" as={Link}>
-            Settings
-          </DropdownItem>
-          <DropdownItem key="leagues" href="/my/leagues" as={Link}>
-            Leagues
-          </DropdownItem>
-          <DropdownItem key="teams" href="/my/teams" as={Link}>
-            Teams
-          </DropdownItem>
+          {dropdownItems.map((item) => (
+            <DropdownItem key={item.key} href={item.href} as={Link}>
+              {item.label}
+            </DropdownItem>
+          ))}
         </DropdownSection>
         {/*<DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem> TODO*/}
         <DropdownItem key="logout" color="danger" onClick={() => signOut()}>

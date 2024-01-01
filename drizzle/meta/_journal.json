@@ -43,6 +43,20 @@
       "when": 1703845653384,
       "tag": "0005_steady_boomerang",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1703954428039,
+      "tag": "0006_workable_joshua_kane",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "5",
+      "when": 1703974520656,
+      "tag": "0007_brave_invaders",
+      "breakpoints": true
     }
   ]
 }
