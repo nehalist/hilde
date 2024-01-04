@@ -1,20 +1,13 @@
-"use client";
-
 import { CreateLeagueForm } from "@/app/[locale]/my/leagues/create/form";
-import { BreadcrumbItem, Breadcrumbs } from "@nextui-org/react";
+import { getTranslations } from "next-intl/server";
+import { MyHeader } from "@/app/[locale]/my/my-header";
 
-export default function CreateLeague() {
+export default async function CreateLeague() {
+  const t = await getTranslations("my.leagues.create");
+
   return (
     <>
-      <header className="mb-5">
-        <Breadcrumbs>
-          <BreadcrumbItem>Leagues</BreadcrumbItem>
-          <BreadcrumbItem>Create League</BreadcrumbItem>
-        </Breadcrumbs>
-        <h2 className="text-3xl font-bold leading-7 sm:tracking-tight">
-          Create League
-        </h2>
-      </header>
+      <MyHeader title={t("title")} description={t("description")} />
       <CreateLeagueForm />
     </>
   );

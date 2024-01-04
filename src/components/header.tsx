@@ -12,9 +12,12 @@ import { ThemeSwitcher } from "@/components/Layout/ThemeSwitcher";
 import { getCurrentUser } from "@/lib/session";
 import { UserHeader } from "@/components/Layout/UserHeader";
 import { AnonHeader } from "@/components/anon-header";
+import { getTranslations } from "next-intl/server";
+import { LocaleSwitcher } from "@/components/locale-switcher";
 
 export async function Header() {
   const user = await getCurrentUser();
+  const t = await getTranslations("layout");
 
   return (
     <NextUINavbar maxWidth="xl" isBordered>
@@ -38,26 +41,29 @@ export async function Header() {
       <NavbarContent className="hidden sm:flex gap-4" justify="start">
         <NavbarItem>
           <Link color="foreground" href="/">
-            Home
+            {t("navigation.home")}
           </Link>
         </NavbarItem>
         <NavbarItem>
           <Link color="foreground" href="/about">
-            About
+            {t("navigation.about")}
           </Link>
         </NavbarItem>
         <NavbarItem>
           <Link color="foreground" href="/blog">
-            Blog
+            {t("navigation.blog")}
           </Link>
         </NavbarItem>
         <NavbarItem>
-          <Link color="foreground" href="/support">
-            Support
+          <Link color="foreground" href="/donate">
+            {t("navigation.donate")}
           </Link>
         </NavbarItem>
       </NavbarContent>
       <NavbarContent justify="end">
+        <NavbarItem>
+          <LocaleSwitcher />
+        </NavbarItem>
         <NavbarItem>
           <Button
             isIconOnly

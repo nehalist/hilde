@@ -120,6 +120,15 @@ export const matches = pgTable("matches", {
   createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
 });
 
+export const feedback = pgTable("feedback", {
+  id: text("id").notNull().primaryKey(),
+  userId: text("userId")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  description: text("description"),
+  createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+});
+
 export const users = pgTable("user", {
   id: text("id").notNull().primaryKey(),
   name: text("name"),
@@ -144,6 +153,7 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   leagues: many(leagues),
   teams: many(teams),
   memberships: many(teamMembers),
+  feedback: many(feedback),
 }));
 
 export const accounts = pgTable(

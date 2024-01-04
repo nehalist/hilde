@@ -2,9 +2,10 @@ import { getCurrentUser } from "@/lib/session";
 import { redirect } from "next/navigation";
 import { getLeaguesForUser } from "@/db/model/league";
 import { LeagueTable } from "@/app/[locale]/my/leagues/league-table";
-import { LeagueHeader } from "@/app/[locale]/my/leagues/league-header";
 import { getTranslations } from "next-intl/server";
 import { RefreshOnFocus } from "@/components/refresh-on-focus";
+import { MyHeader } from "@/app/[locale]/my/my-header";
+import { LeagueHeaderActions } from "@/app/[locale]/my/leagues/league-header-actions";
 
 async function getLeagues() {
   const user = await getCurrentUser();
@@ -16,7 +17,7 @@ async function getLeagues() {
 
 export default async function Leagues() {
   const leagues = await getLeagues();
-  const t = await getTranslations("LeagueManagement");
+  const t = await getTranslations("my");
   const user = await getCurrentUser();
 
   if (!user) {
@@ -25,15 +26,10 @@ export default async function Leagues() {
 
   return (
     <div className="flex flex-col gap-5">
-      <LeagueHeader
-        canCreateLeagues={
-          user.maxLeagues >=
-          leagues.filter(l => l.league.status === "active").length
-        }
-        messages={{
-          description: t("description"),
-          createButtonLabel: t("createButtonLabel"),
-        }}
+      <MyHeader
+        title={t("leagues.title")}
+        description={t("leagues.description")}
+        actions={<LeagueHeaderActions />}
       />
       <LeagueTable leagues={leagues} />
       <RefreshOnFocus />

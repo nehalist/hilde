@@ -1,6 +1,71 @@
 {
-  "LeagueManagement": {
-    "description": "League description",
-    "createButtonLabel": "Create League"
+  "landingPage": {
+    "header": "Hilde is your score-keeping companion",
+    "subheader": "Keep track of your scores, for games like [...]. unlimited leagues and players, statistics, rating, achievements ... for free."
+  },
+  "my": {
+    "leagues": {
+      "title": "Leagues",
+      "description": "...",
+      "createButtonLabel": "Create League",
+      "create": {
+        "title": "Create League",
+        "description": "...",
+        "settings": {
+          "title": "Settings",
+          "description": "General information regarding your new league",
+          "nameLabel": "Name",
+          "namePlaceholder": "My awesome league",
+          "descriptionLabel": "Description"
+        },
+        "optionalHint": "The following settings are optional.",
+        "game": {
+          "title": "Game",
+          "description": "The game you want to play in this league",
+          "gameLabel": "Game",
+          "maxScorePerMatchLabel": "Max. Score per Match",
+          "maxScorePerMatchDescription": "Set to 0 for no limit. You can still add matches with higher scores, it's just for convenience.",
+          "allowDrawsLabel": "Allow Draws"
+        },
+        "rating": {
+          "title": "Rating",
+          "description": "How to calculate the ratings for this league",
+          "ratingSystemLabel": "Rating System",
+          "defaultRatingLabel": "Default Rating",
+          "ratingSystemParametersDescription": "Rating System Parameters. Keep the default values if you don't know what they mean.",
+          "ratingSystemParameters": {
+            "kFactor": "K-Factor",
+            "kFactorDescription": "The K-Factor determines how much a single match affects the rating. The higher the K-Factor, the more a single match affects the rating. The default value is {default}.",
+            "tau": "Tau",
+            "tauDescription": "The constraining factor on the change in volatility over time. Recommended: 0.01 - 1, default: {default}",
+            "ratingDeviation": "Rating Deviation",
+            "ratingDeviationDescription": "The initial rating deviation. Recommended: 10 - 1000, default: {default}",
+            "ratingVolatility": "Rating Volatility",
+            "ratingVolatilityDescription": "The initial rating volatility. Recommended: 0.001 - 1, default: {default}"
+          }
+        },
+        "toasts": {
+          "success": "League created"
+        },
+        "saveButtonLabel": "Save"
+      }
+    },
+    "settings": {
+      "title": "Settings",
+      "description": "Your Profile.",
+      "profileCardHeader": "Profile"
+    }
+  },
+  "layout": {
+    "navigation": {
+      "home": "Home",
+      "about": "About",
+      "blog": "Blog",
+      "donate": "Donate"
+    },
+    "locales": {
+      "en": "English",
+      "de": "Deutsch"
+    }
   }
 }

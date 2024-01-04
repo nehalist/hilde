@@ -3,7 +3,7 @@
 import { Controller, useForm, UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { leagueFormSchema } from "@/app/[locale]/my/leagues/validation";
-import { useFormState } from "react-dom";
+import { useFormState, useFormStatus } from "react-dom";
 import { createLeagueAction } from "@/app/[locale]/my/leagues/create/actions";
 import { games } from "@/lib/games";
 import {
@@ -22,6 +22,7 @@ import {
   ratingSystems,
 } from "@/lib/rating";
 import { useServerActionState } from "@/hooks/use-server-action-state";
+import { useTranslations } from "next-intl";
 
 export interface CreateLeagueFormValues {
   name: string;
@@ -40,18 +41,20 @@ function CreateLeagueFormFields({
 }: {
   form: UseFormReturn<CreateLeagueFormValues>;
 }) {
+  const t = useTranslations("my.leagues.create");
   const ratingSystem = ratingSystems.find(
     rs => rs.id === form.watch("ratingSystem"),
   );
+  const { pending } = useFormStatus();
 
   return (
     <div className="flex flex-col gap-5">
       <Card>
         <CardHeader>
           <div className="flex flex-col">
-            <p className="text-md">League</p>
+            <p className="text-md">{t("settings.title")}</p>
             <p className="text-small text-default-500">
-              General information regarding your new league
+              {t("settings.description")}
             </p>
           </div>
         </CardHeader>
@@ -62,26 +65,31 @@ function CreateLeagueFormFields({
               type="file"
               label="Image"
               labelPlacement="outside"
-              placeholder="Placeholder"
+              placeholder="."
               variant="flat"
               {...form.register("image")}
             />
-            <Input type="name" label="Name" {...form.register("name")} />
+            <Input
+              type="name"
+              label={t("settings.nameLabel")}
+              placeholder={t("settings.namePlaceholder")}
+              {...form.register("name")}
+            />
             <Textarea
               type="name"
-              label="Description"
+              label={t("settings.descriptionLabel")}
               {...form.register("description")}
             />
           </div>
         </CardBody>
       </Card>
-      --- optional settings ---
+      {t("optionalHint")}
       <Card>
         <CardHeader>
           <div className="flex flex-col">
-            <p className="text-md">Game</p>
+            <p className="text-md">{t("game.title")}</p>
             <p className="text-small text-default-500">
-              The game that will be played in your new league
+              {t("game.description")}
             </p>
           </div>
         </CardHeader>
@@ -94,7 +102,7 @@ function CreateLeagueFormFields({
               render={({ field: { onChange, value } }) => (
                 <Select
                   disallowEmptySelection={true}
-                  label="Game"
+                  label={t("game.gameLabel")}
                   name="game"
                   selectedKeys={[value]}
                   onChange={e => {
@@ -123,11 +131,11 @@ function CreateLeagueFormFields({
                 <Input
                   type="number"
                   name="maxScorePerMatch"
-                  label="Max score per match"
+                  label={t("game.maxScorePerMatchLabel")}
                   className="w-1/2"
                   value={`${value}`}
                   onChange={onChange}
-                  description="Set to 0 for no limit. You can still add matches with higher scores, it's just for convenience."
+                  description={t("game.maxScorePerMatchDescription")}
                 />
               )}
             />
@@ -142,7 +150,7 @@ function CreateLeagueFormFields({
                   className="w-64"
                   onChange={onChange}
                 >
-                  Allow draws
+                  {t("game.allowDrawsLabel")}
                 </Checkbox>
               )}
             />
@@ -152,9 +160,9 @@ function CreateLeagueFormFields({
       <Card>
         <CardHeader>
           <div className="flex flex-col">
-            <p className="text-md">Rating</p>
+            <p className="text-md">{t("rating.title")}</p>
             <p className="text-small text-default-500">
-              The rating system used for your new league
+              {t("rating.description")}
             </p>
           </div>
         </CardHeader>
@@ -166,7 +174,7 @@ function CreateLeagueFormFields({
               name="ratingSystem"
               render={({ field: { onChange, value } }) => (
                 <Select
-                  label="Rating System"
+                  label={t("rating.ratingSystemLabel")}
                   name="ratingSystem"
                   defaultSelectedKeys={[value]}
                   disallowEmptySelection={true}
@@ -200,7 +208,7 @@ function CreateLeagueFormFields({
                 <Input
                   type="number"
                   name="defaultRating"
-                  label="Default rating"
+                  label={t("rating.defaultRatingLabel")}
                   className="w-1/2"
                   value={`${value}`}
                   onChange={onChange}
@@ -210,7 +218,9 @@ function CreateLeagueFormFields({
           </div>
           {ratingSystem && ratingSystem.parameters && (
             <>
-              <p className="text-sm">Rating System Parameters</p>
+              <p className="text-sm">
+                {t("rating.ratingSystemParametersDescription")}
+              </p>
               <div className="flex gap-3">
                 <input
                   type="hidden"
@@ -220,9 +230,12 @@ function CreateLeagueFormFields({
                   <Input
                     key={parameter.id}
                     type="number"
-                    label={parameter.name}
+                    label={t(`rating.ratingSystemParameters.${parameter.id}`)}
                     className="w-1/3"
-                    description={parameter.description}
+                    description={t(
+                      `rating.ratingSystemParameters.${parameter.id}Description`,
+                      { default: parameter.defaultValue },
+                    )}
                     defaultValue={parameter.defaultValue}
                     onValueChange={value => {
                       form.setValue(
@@ -242,12 +255,17 @@ function CreateLeagueFormFields({
           )}
         </CardBody>
       </Card>
-      <Button type="submit">Save</Button>
+      <div className="text-right">
+        <Button type="submit" color="primary" isLoading={pending}>
+          {t("saveButtonLabel")}
+        </Button>
+      </div>
     </div>
   );
 }
 
-export async function CreateLeagueForm() {
+export function CreateLeagueForm() {
+  const t = useTranslations("my.leagues.create");
   const defaultGame = games.find(game => game.id === "custom")!;
   const defaultRatingSystem = RatingSystem.Elo;
   const form = useForm<CreateLeagueFormValues>({
@@ -272,10 +290,10 @@ export async function CreateLeagueForm() {
   useServerActionState(state, {
     onSuccess: () => {
       return {
-        message: "League created",
+        message: t("toasts.success"),
         redirect: `/my/leagues`,
-      }
-    }
+      };
+    },
   });
 
   return (

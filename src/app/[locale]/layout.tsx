@@ -3,7 +3,7 @@ import "@/styles/globals.css";
 import { Header } from "@/components/header";
 import { Providers } from "@/app/[locale]/providers";
 import { notFound } from "next/navigation";
-import { useMessages } from "next-intl";
+import { NextIntlClientProvider, useMessages } from "next-intl";
 
 const locales = ["de", "en"];
 
@@ -12,13 +12,14 @@ export const metadata = {
   description: "Hilde.",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
   params: { locale },
 }: {
   children: ReactNode;
   params: { locale: string };
 }) {
+  const messages = useMessages();
   if (!locales.includes(locale)) {
     return notFound();
   }
@@ -27,10 +28,12 @@ export default async function RootLayout({
     <html lang={locale}>
       <head />
       <body>
-        <Providers locale={locale}>
-          <Header />
-          <div className="container mx-auto max-w-7xl">{children}</div>
-        </Providers>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <Providers locale={locale}>
+            <Header />
+            <div>{children}</div>
+          </Providers>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

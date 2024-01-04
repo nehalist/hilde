@@ -7,6 +7,7 @@ import {
   DropdownMenu,
   DropdownSection,
   DropdownTrigger,
+  Progress,
   Spinner,
   User,
 } from "@nextui-org/react";
@@ -38,6 +39,11 @@ export function UserHeader() {
       href: "/my/teams",
       label: "Teams",
     },
+    {
+      key: "feedback",
+      href: "/my/feedback",
+      label: "Feedback",
+    }
   ];
 
   if (user.user.role === "admin") {
@@ -60,18 +66,21 @@ export function UserHeader() {
           }}
           className="transition-transform"
           name={user.user.name || "Unknown"}
-          description={user.user.email}
+          description={
+            <div className="w-24 flex items-center gap-2">
+              <Progress size="sm" aria-label="Loading..." value={30} /> 31
+            </div>
+          }
         />
       </DropdownTrigger>
       <DropdownMenu aria-label="User Actions" variant="flat">
         <DropdownSection showDivider={true}>
-          {dropdownItems.map((item) => (
+          {dropdownItems.map(item => (
             <DropdownItem key={item.key} href={item.href} as={Link}>
               {item.label}
             </DropdownItem>
           ))}
         </DropdownSection>
-        {/*<DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem> TODO*/}
         <DropdownItem key="logout" color="danger" onClick={() => signOut()}>
           Log Out
         </DropdownItem>

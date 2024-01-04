@@ -2,6 +2,7 @@
 
 import { getLeagueWithUser } from "@/db/model/league";
 import {
+  Input,
   Table,
   TableBody,
   TableCell,
@@ -10,23 +11,24 @@ import {
   TableRow,
 } from "@nextui-org/react";
 import { User } from "@/components/user";
-
-const columns = [
-  {
-    key: "name",
-    label: "Name",
-  },
-  // {
-  //   key: "actions",
-  //   label: "",
-  // },
-];
+import { Card, CardBody, CardHeader } from "@nextui-org/card";
 
 export function UserTable({
   data,
 }: {
   data: Awaited<ReturnType<typeof getLeagueWithUser>>;
 }) {
+  const columns = [
+    {
+      key: "name",
+      label: "Name",
+    },
+    {
+      key: "teams",
+      label: "Teams",
+    },
+  ];
+
   return (
     <Table aria-label="League table">
       <TableHeader columns={columns}>
@@ -37,6 +39,9 @@ export function UserTable({
           <TableRow key={item.id}>
             <TableCell>
               <User user={item} />
+            </TableCell>
+            <TableCell>
+              {item.teams.map(t => t.name).join(", ")}
             </TableCell>
           </TableRow>
         )}

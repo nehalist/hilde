@@ -13,7 +13,6 @@ export const ratingSystems = [
       {
         id: "kFactor",
         name: "K-Factor",
-        description: "The maximum change in rating for a single game.",
         defaultValue: 32,
       },
     ],
@@ -27,20 +26,16 @@ export const ratingSystems = [
       {
         id: "tau",
         name: "Tau",
-        description:
-          "The constraining factor on the change in volatility over time. Recommended: 0.01 - 1",
         defaultValue: 0.5,
       },
       {
         id: "ratingDeviation",
         name: "Rating Deviation",
-        description: "The initial rating deviation. Recommended: 10 - 1000",
         defaultValue: 350,
       },
       {
         id: "ratingVolatility",
         name: "Rating Volatility",
-        description: "The initial rating volatility. Recommended: 0.001 - 1",
         defaultValue: 0.06,
       },
     ],
