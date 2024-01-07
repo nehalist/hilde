@@ -1,24 +1,27 @@
-import { signIn } from "@/app/[locale]/login/actions";
+"use client";
 
-export default function Login() {
+import { Container } from "@/components/container";
+import { Card, CardBody } from "@nextui-org/card";
+import { LoginForm } from "@/app/[locale]/login/form";
+
+export default async function Login() {
   return (
-    <form action={signIn}>
-      <input
-        className="rounded-md px-4 py-2 bg-inherit border mb-6"
-        name="email"
-        placeholder="you@example.com"
-        required
-      />
-      <input
-        className="rounded-md px-4 py-2 bg-inherit border mb-6"
-        type="password"
-        name="password"
-        placeholder="••••••••"
-        required
-      />
-      <button className="bg-green-700 rounded-md px-4 py-2 text-foreground mb-2">
-        Sign In
-      </button>
-    </form>
+    <Container>
+      <div className="max-w-xl mx-auto my-24">
+        <header className="mb-6 text-center">
+          <h2 className="mt-8 text-2xl font-bold leading-9 tracking-tight text-gray-900">
+            Sign in
+          </h2>
+          <p className="mt-2 text-sm leading-6 text-gray-500">
+            ... and say goodbye to Spreadsheets and paper score sheets!
+          </p>
+        </header>
+        <Card className="text-center py-8 px-4">
+          <CardBody>
+            <LoginForm />
+          </CardBody>
+        </Card>
+      </div>
+    </Container>
   );
 }

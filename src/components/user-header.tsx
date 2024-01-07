@@ -39,11 +39,6 @@ export function UserHeader() {
       href: "/my/teams",
       label: "Teams",
     },
-    {
-      key: "feedback",
-      href: "/my/feedback",
-      label: "Feedback",
-    }
   ];
 
   if (user.user.role === "admin") {

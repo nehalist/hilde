@@ -9,7 +9,8 @@
     "lint": "next lint && prettier --check src",
     "test": "jest",
     "db:migrations:make": "drizzle-kit generate:pg",
-    "db:migrations:execute": "tsx src/db/migrate.ts"
+    "db:migrations:execute": "tsx src/db/migrate.ts",
+    "email:dev": "email dev"
   },
   "homepage": "https://hilde.gg",
   "repository": {
@@ -19,12 +20,16 @@
   "author": "Kevin Hirczy <kevin@nehalist.io> (https://nehalist.io)",
   "license": "MIT",
   "dependencies": {
+    "@auth/core": "^0.20.0",
     "@auth/drizzle-adapter": "^0.3.11",
     "@formkit/auto-animate": "^0.8.1",
     "@hookform/resolvers": "^3.3.2",
     "@nextui-org/react": "^2.2.6",
     "@nivo/core": "^0.83.0",
     "@nivo/line": "^0.83.0",
+    "@react-email/button": "^0.0.13",
+    "@react-email/components": "^0.0.12",
+    "@react-email/render": "^0.0.10",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "date-fns": "^2.30.0",
@@ -43,6 +48,7 @@
     "prettier": "^2.6.2",
     "react": "canary",
     "react-dom": "canary",
+    "react-email": "^1.10.0",
     "react-hook-form": "^7.48.2",
     "react-icons": "^4.12.0",
     "react-select": "^5.8.0",

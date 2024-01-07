@@ -16,10 +16,6 @@ export default function MyLayout({ children }: { children: ReactNode }) {
       label: "Teams",
       href: "/my/teams",
     },
-    {
-      label: "Feedback",
-      href: "/my/feedback",
-    },
   ];
 
   return (

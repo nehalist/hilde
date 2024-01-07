@@ -157,6 +157,20 @@ export async function getLeagueByInviteCode(code: string) {
     .limit(1);
 }
 
+export async function getLeagueById(id: string) {
+  return db.select().from(leagues).where(eq(leagues.id, id));
+}
+
+export async function regenerateInviteCodeForLeague(league: League) {
+  return db
+    .update(leagues)
+    .set({
+      inviteCode: sql`substr(md5(random()::text), 0, 25)`,
+    })
+    .where(eq(leagues.id, league.id))
+    .returning();
+}
+
 export async function userIsInLeague(leagueId: string, user: User) {
   const [team] = await db
     .select()

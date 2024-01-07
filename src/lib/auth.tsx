@@ -4,6 +4,9 @@ import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { db } from "@/db";
 import { leagues, teamMembers, teams, users } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import { createTransport } from "nodemailer";
+import { render } from "@react-email/render";
+import VerificationRequest from "../../emails/verification-request";
 
 export const authOptions: AuthOptions = {
   session: {
@@ -14,8 +17,26 @@ export const authOptions: AuthOptions = {
     EmailProvider({
       server: process.env.EMAIL_SERVER,
       from: process.env.EMAIL_FROM,
+      sendVerificationRequest: async ({ identifier, url, provider, theme }) => {
+        const transport = createTransport(provider.server);
+        const html = render(<VerificationRequest url={url} />);
+        const { host } = new URL(url);
+        const result = await transport.sendMail({
+          to: identifier,
+          from: provider.from,
+          subject: `Sign in to ${host}`,
+          html,
+        });
+        const failed = result.rejected.concat(result.pending).filter(Boolean);
+        if (failed.length) {
+          throw new Error(`Email(s) (${failed.join(", ")}) could not be sent`);
+        }
+      },
     }),
   ],
+  pages: {
+    signIn: "/login",
+  },
   callbacks: {
     async jwt({ token }) {
       if (!token.email) {

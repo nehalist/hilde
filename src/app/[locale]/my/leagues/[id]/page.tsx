@@ -6,6 +6,7 @@ export default async function LeagueDetails({
   params: { id },
 }: {
   params: { id: string };
+  pageUrl: string;
 }) {
   const league = await getLeagueWithUser(id);
 

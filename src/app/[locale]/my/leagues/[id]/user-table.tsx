@@ -1,8 +1,6 @@
 "use client";
 
-import { getLeagueWithUser } from "@/db/model/league";
 import {
-  Input,
   Table,
   TableBody,
   TableCell,
@@ -10,14 +8,10 @@ import {
   TableHeader,
   TableRow,
 } from "@nextui-org/react";
-import { User } from "@/components/user";
-import { Card, CardBody, CardHeader } from "@nextui-org/card";
+import { User as UserComponent } from "@/components/user";
+import { Team, User } from "@/db/schema";
 
-export function UserTable({
-  data,
-}: {
-  data: Awaited<ReturnType<typeof getLeagueWithUser>>;
-}) {
+export function UserTable({ user }: { user: (User & { teams: Team[] })[] }) {
   const columns = [
     {
       key: "name",
@@ -34,15 +28,13 @@ export function UserTable({
       <TableHeader columns={columns}>
         {column => <TableColumn key={column.key}>{column.label}</TableColumn>}
       </TableHeader>
-      <TableBody items={data.user}>
+      <TableBody items={user}>
         {item => (
           <TableRow key={item.id}>
             <TableCell>
-              <User user={item} />
+              <UserComponent user={item} />
             </TableCell>
-            <TableCell>
-              {item.teams.map(t => t.name).join(", ")}
-            </TableCell>
+            <TableCell>{item.teams.map(t => t.name).join(", ")}</TableCell>
           </TableRow>
         )}
       </TableBody>
