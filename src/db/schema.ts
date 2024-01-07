@@ -10,7 +10,7 @@ import {
   unique,
 } from "drizzle-orm/pg-core";
 import { AdapterAccount } from "@auth/core/adapters";
-import { relations } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import { games } from "@/lib/games";
 import { ratingSystems } from "@/lib/rating";
 
@@ -39,6 +39,7 @@ export const leagues = pgTable("league", {
   ratingSystem: ratingSystemsEnum("ratingSystem").notNull().default("unknown"),
   ratingSystemParameters: json("ratingSystemParameters").notNull().default({}),
   status: leagueStatusEnum("leagueStatus").default("active"),
+  inviteCode: text("inviteCode").notNull().unique().default(sql`substr(md5(random()::text), 0, 25)`),
   ownerId: text("ownerId")
     .notNull()
     .references(() => users.id),

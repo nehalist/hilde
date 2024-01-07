@@ -3,6 +3,10 @@
     "header": "Hilde is your score-keeping companion",
     "subheader": "Keep track of your scores, for games like [...]. unlimited leagues and players, statistics, rating, achievements ... for free."
   },
+  "invite": {
+    "title": "You're about to join",
+    "joinButtonLabel": "Join"
+  },
   "my": {
     "leagues": {
       "title": "Leagues",

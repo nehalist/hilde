@@ -1,13 +1,15 @@
 import {
   League,
   leagues,
-  matches, Team,
+  matches,
+  Team,
   teamMembers,
   teams,
-  User, users,
+  User,
+  users,
 } from "@/db/schema";
 import { db } from "@/db";
-import { desc, eq, or, sql } from "drizzle-orm";
+import { and, desc, eq, or, sql } from "drizzle-orm";
 import { RatingSystem } from "@/lib/rating";
 import { redirect } from "@/lib/navigation";
 
@@ -83,6 +85,27 @@ export async function createLeague(
   return league;
 }
 
+export async function addUserToLeague(league: League, user: User) {
+  const [team] = await db
+    .insert(teams)
+    .values({
+      name: user.name || "Unknown",
+      leagueId: league.id,
+    })
+    .returning();
+
+  const [teamMember] = await db
+    .insert(teamMembers)
+    .values({
+      name: user.name || "Unknown",
+      teamId: team.id,
+      userId: user.id,
+    })
+    .returning();
+
+  return { team, teamMember };
+}
+
 export async function updateLeague(league: League, data: Partial<League>) {
   return db.update(leagues).set(data).where(eq(leagues.id, league.id));
 }
@@ -124,4 +147,28 @@ export async function getLeagueWithUser(leagueId: string) {
     league: data[0]?.league,
     user,
   };
+}
+
+export async function getLeagueByInviteCode(code: string) {
+  return db
+    .select()
+    .from(leagues)
+    .where(and(eq(leagues.inviteCode, code), eq(leagues.status, "active")))
+    .limit(1);
+}
+
+export async function userIsInLeague(leagueId: string, user: User) {
+  const [team] = await db
+    .select()
+    .from(leagues)
+    .leftJoin(teams, eq(teams.leagueId, leagues.id))
+    .leftJoin(teamMembers, eq(teamMembers.teamId, teams.id))
+    .where(
+      or(
+        and(eq(leagues.id, leagueId), eq(teamMembers.userId, user.id)),
+        and(eq(leagues.id, leagueId), eq(leagues.ownerId, user.id)),
+      ),
+    );
+
+  return !!team;
 }

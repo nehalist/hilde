@@ -57,6 +57,13 @@
       "when": 1703974520656,
       "tag": "0007_brave_invaders",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "5",
+      "when": 1704567971636,
+      "tag": "0008_purple_darkstar",
+      "breakpoints": true
     }
   ]
 }

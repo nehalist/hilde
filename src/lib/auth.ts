@@ -7,7 +7,7 @@ import { eq } from "drizzle-orm";
 
 export const authOptions: AuthOptions = {
   session: {
-    strategy: "database",
+    strategy: "jwt",
   },
   adapter: DrizzleAdapter(db),
   providers: [
@@ -26,6 +26,7 @@ export const authOptions: AuthOptions = {
         .from(users)
         .where(eq(users.email, token.email));
       if (user) {
+        token.name = user.name;
         token.selectedLeagueId = user.selectedLeagueId;
         token.firstName = user.firstName;
         token.lastName = user.lastName;
