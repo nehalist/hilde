@@ -8,12 +8,12 @@ import {
 } from "@nextui-org/react";
 import { Link } from "@/lib/navigation";
 import { FaGithub } from "react-icons/fa";
-import { ThemeSwitcher } from "@/components/Layout/ThemeSwitcher";
 import { getCurrentUser } from "@/lib/session";
-import { UserHeader } from "@/components/Layout/UserHeader";
+import { UserHeader } from "@/components/user-header";
 import { AnonHeader } from "@/components/anon-header";
 import { getTranslations } from "next-intl/server";
 import { LocaleSwitcher } from "@/components/locale-switcher";
+import { ThemeSwitcher } from "@/components/theme-switcher";
 
 export async function Header() {
   const user = await getCurrentUser();
