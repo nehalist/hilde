@@ -57,6 +57,25 @@ export const leaguesRelations = relations(leagues, ({ one, many }) => ({
   teams: many(teams),
 }));
 
+// export const feed = pgTable("feed", {
+//   id: text("id")
+//     .$defaultFn(() => crypto.randomUUID())
+//     .primaryKey(),
+//   // parentId: text("parentId").references(() => feed.id, { onDelete: "cascade" }),
+//   action: text("action").notNull(),
+//   leagueId: text("leagueId")
+//     .notNull()
+//     .references(() => leagues.id, { onDelete: "cascade" }),
+//   createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+// });
+//
+// export const feedRelations = relations(feed, ({ one }) => ({
+//   league: one(leagues, {
+//     fields: [feed.leagueId],
+//     references: [leagues.id],
+//   }),
+// }));
+
 export const teams = pgTable("team", {
   id: text("id")
     .$defaultFn(() => crypto.randomUUID())
