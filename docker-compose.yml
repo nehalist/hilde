@@ -1,17 +1,6 @@
 version: '3'
 
 services:
-  database:
-    container_name: hilde_db
-    image: mysql:8.0
-    environment:
-      - MYSQL_DATABASE=hilde
-      - MYSQL_ROOT_PASSWORD=hildepw
-    ports:
-      - "127.0.0.1:3309:3306"
-    volumes:
-      - db:/var/lib/mysql
-
   db:
     image: postgres:13.3
     ports:
@@ -30,5 +19,4 @@ services:
       - "8025:8025"
 
 volumes:
-  db:
   db_data:
