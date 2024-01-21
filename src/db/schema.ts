@@ -85,6 +85,7 @@ export const teams = pgTable("team", {
   leagueId: text("leagueId")
     .notNull()
     .references(() => leagues.id, { onDelete: "cascade" }),
+  teamSize: integer("teamsize").notNull().default(1),
   createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
 });
 

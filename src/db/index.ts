@@ -9,11 +9,13 @@ declare global {
 
 let db: PostgresJsDatabase<typeof schema>;
 
+export const client = postgres(`${process.env.DATABASE_URL}`);
+
 if (process.env.NODE_ENV === "production") {
-  db = drizzle(postgres(`${process.env.DATABASE_URL}`), { schema });
+  db = drizzle(client, { schema });
 } else {
   if (!global.db) {
-    global.db = drizzle(postgres(`${process.env.DATABASE_URL}`), { schema });
+    global.db = drizzle(client, { schema });
   }
 
   db = global.db;

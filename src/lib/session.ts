@@ -13,4 +13,3 @@ export async function getCurrentUser(): Promise<User | undefined> {
     where: (users, { eq }) => eq(users.email, session.user.email!),
   });
 }
-
