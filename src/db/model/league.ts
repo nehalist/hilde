@@ -12,6 +12,7 @@ import { db } from "@/db";
 import { and, desc, eq, or, sql } from "drizzle-orm";
 import { RatingSystem } from "@/lib/rating";
 import { redirect } from "@/lib/navigation";
+import { getCurrentUser } from "@/lib/session";
 
 export async function getLeaguesForUser(user: User) {
   return db
@@ -185,4 +186,49 @@ export async function userIsInLeague(leagueId: string, user: User) {
     );
 
   return !!team;
+}
+
+export async function getLeaguesForCurrentUser() {
+  const user = await getCurrentUser();
+  if (!user) {
+    return null;
+  }
+
+  const leagues: League[] = [];
+  (
+    await db.query.teamMembers.findMany({
+      with: {
+        team: {
+          with: {
+            league: true,
+          },
+        },
+      },
+      where: (teamMembers, { eq }) => eq(teamMembers.userId, user.id),
+    })
+  ).forEach(membership => {
+    if (leagues.find(l => l.id === membership.team.league.id)) {
+      return;
+    }
+    leagues.push(membership.team.league);
+  });
+
+  return leagues;
+}
+
+export async function getLeagueTeamsForCurrentUser() {
+  const user = await getCurrentUser();
+  if (!user || !user.selectedLeagueId) {
+    return [];
+  }
+  return db.query.teams.findMany({
+    where: eq(teams.leagueId, user.selectedLeagueId),
+    with: {
+      members: {
+        with: {
+          user: true,
+        },
+      },
+    },
+  });
 }

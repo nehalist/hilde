@@ -33,3 +33,15 @@ export const switchLeagueAction = createAuthenticatedServerAction(
     };
   },
 );
+
+export const createMatchAction = createAuthenticatedServerAction(
+  zfd.formData({
+    team1: zfd.text(),
+    score1: zfd.numeric(),
+  }),
+  async () => {
+    return {
+      status: "success",
+    }
+  }
+);

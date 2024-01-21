@@ -15,7 +15,6 @@ import { Link } from "@/lib/navigation";
 import { useFormState } from "react-dom";
 import { switchLeagueAction } from "@/app/[locale]/(home)/actions";
 import { useRef } from "react";
-import { useSession } from "next-auth/react";
 
 interface LeagueHeaderProps {
   leagues: League[];
@@ -82,16 +81,16 @@ export function LeagueHeader({ leagues, selectedLeagueId }: LeagueHeaderProps) {
       <nav>
         <ul className="flex gap-6">
           <li>
-            <Link href="#">Dashboard</Link>
+            <Link href="/">Dashboard</Link>
           </li>
           <li>
-            <Link href="#">Matches</Link>
+            <Link href="/matches">Matches</Link>
           </li>
           <li>
-            <Link href="#">Team</Link>
+            <Link href="/teams">Teams</Link>
           </li>
           <li>
-            <Link href="#">Leaderboards</Link>
+            <Link href="/leaderboards">Leaderboards</Link>
           </li>
         </ul>
       </nav>

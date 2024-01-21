@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import { ReactNode } from "react";
 import "@/styles/globals.css";
 import { Header } from "@/components/header";
 import { Providers } from "@/app/[locale]/providers";
