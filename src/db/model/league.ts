@@ -2,8 +2,9 @@ import {
   League,
   leagues,
   matches,
+  membershipRole,
+  memberships,
   Team,
-  teamMembers,
   teams,
   User,
   users,
@@ -14,15 +15,15 @@ import { RatingSystem } from "@/lib/rating";
 import { redirect } from "@/lib/navigation";
 import { getCurrentUser } from "@/lib/session";
 
-export async function getLeaguesForUser(user: User) {
+export async function getUserLeagues(user: User) {
   return db
     .select({
       league: leagues,
       teams: sql<string>`count(distinct
       ${teams.id}
       )`,
-      memberships: sql<string>`count(distinct
-      ${teamMembers.id}
+      users: sql<string>`count(distinct
+      ${users.id}
       )`,
       matches: sql<string>`count(distinct
       ${matches.id}
@@ -31,11 +32,11 @@ export async function getLeaguesForUser(user: User) {
     })
     .from(leagues)
     .leftJoin(teams, eq(leagues.id, teams.leagueId))
-    .leftJoin(teamMembers, eq(teams.id, teamMembers.teamId))
+    .leftJoin(users, eq(teams.userId, users.id))
     .leftJoin(matches, eq(leagues.id, matches.leagueId))
     .groupBy(leagues.id)
     .orderBy(desc(leagues.createdAt))
-    .where(or(eq(teamMembers.userId, user.id), eq(leagues.ownerId, user.id)));
+    .where(or(eq(teams.userId, user.id), eq(leagues.ownerId, user.id)));
 }
 
 export async function createLeague(
@@ -66,45 +67,26 @@ export async function createLeague(
     })
     .returning();
 
-  const [team] = await db
-    .insert(teams)
-    .values({
-      name: owner.name || "Unknown",
-      leagueId: league.id,
-    })
-    .returning();
-
-  await db
-    .insert(teamMembers)
-    .values({
-      name: owner.name || "Unknown",
-      teamId: team.id,
-      userId: owner.id,
-    })
-    .returning();
+  await createMembership(league, owner, "admin");
 
   return league;
 }
 
-export async function addUserToLeague(league: League, user: User) {
-  const [team] = await db
-    .insert(teams)
+export async function createMembership(
+  league: League,
+  user: User,
+  role?: typeof membershipRole.enumValues[number],
+) {
+  const [membership] = await db
+    .insert(memberships)
     .values({
-      name: user.name || "Unknown",
       leagueId: league.id,
-    })
-    .returning();
-
-  const [teamMember] = await db
-    .insert(teamMembers)
-    .values({
-      name: user.name || "Unknown",
-      teamId: team.id,
       userId: user.id,
+      role: role || "member",
     })
     .returning();
 
-  return { team, teamMember };
+  return membership;
 }
 
 export async function updateLeague(league: League, data: Partial<League>) {
@@ -116,8 +98,7 @@ export async function getLeagueWithUser(leagueId: string) {
     .select()
     .from(leagues)
     .leftJoin(teams, eq(teams.leagueId, leagues.id))
-    .leftJoin(teamMembers, eq(teamMembers.teamId, teams.id))
-    .leftJoin(users, eq(users.id, teamMembers.userId))
+    .leftJoin(users, eq(users.id, teams.userId))
     .where(eq(leagues.id, leagueId));
 
   if (!data) {
@@ -166,26 +147,22 @@ export async function regenerateInviteCodeForLeague(league: League) {
   return db
     .update(leagues)
     .set({
-      inviteCode: sql`substr(md5(random()::text), 0, 25)`,
+      inviteCode: sql`substr
+      (md5(random()::text), 0, 25)`,
     })
     .where(eq(leagues.id, league.id))
     .returning();
 }
 
 export async function userIsInLeague(leagueId: string, user: User) {
-  const [team] = await db
-    .select()
-    .from(leagues)
-    .leftJoin(teams, eq(teams.leagueId, leagues.id))
-    .leftJoin(teamMembers, eq(teamMembers.teamId, teams.id))
-    .where(
-      or(
-        and(eq(leagues.id, leagueId), eq(teamMembers.userId, user.id)),
-        and(eq(leagues.id, leagueId), eq(leagues.ownerId, user.id)),
-      ),
-    );
+  const membership = await db.query.memberships.findFirst({
+    where: and(
+      eq(memberships.leagueId, leagueId),
+      eq(memberships.userId, user.id),
+    ),
+  });
 
-  return !!team;
+  return !!membership;
 }
 
 export async function getLeaguesForCurrentUser() {
@@ -194,26 +171,13 @@ export async function getLeaguesForCurrentUser() {
     return null;
   }
 
-  const leagues: League[] = [];
-  (
-    await db.query.teamMembers.findMany({
-      with: {
-        team: {
-          with: {
-            league: true,
-          },
-        },
-      },
-      where: (teamMembers, { eq }) => eq(teamMembers.userId, user.id),
-    })
-  ).forEach(membership => {
-    if (leagues.find(l => l.id === membership.team.league.id)) {
-      return;
-    }
-    leagues.push(membership.team.league);
-  });
-
-  return leagues;
+  return (
+    await db
+      .select()
+      .from(leagues)
+      .leftJoin(memberships, eq(memberships.leagueId, leagues.id))
+      .where(or(eq(memberships.userId, user.id), eq(leagues.ownerId, user.id)))
+  ).map(l => l.league);
 }
 
 export async function getLeagueTeamsForCurrentUser() {
@@ -221,14 +185,5 @@ export async function getLeagueTeamsForCurrentUser() {
   if (!user || !user.selectedLeagueId) {
     return [];
   }
-  return db.query.teams.findMany({
-    where: eq(teams.leagueId, user.selectedLeagueId),
-    with: {
-      members: {
-        with: {
-          user: true,
-        },
-      },
-    },
-  });
+  return [];
 }

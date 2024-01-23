@@ -1,6 +1,6 @@
 import { getCurrentUser } from "@/lib/session";
 import { redirect } from "next/navigation";
-import { getLeaguesForUser } from "@/db/model/league";
+import { getUserLeagues } from "@/db/model/league";
 import { LeagueTable } from "@/app/[locale]/my/leagues/league-table";
 import { getTranslations } from "next-intl/server";
 import { RefreshOnFocus } from "@/components/refresh-on-focus";
@@ -12,7 +12,7 @@ async function getLeagues() {
   if (!user) {
     return redirect("/");
   }
-  return getLeaguesForUser(user);
+  return getUserLeagues(user);
 }
 
 export default async function Leagues() {

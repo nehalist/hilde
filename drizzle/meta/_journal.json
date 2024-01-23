@@ -5,71 +5,8 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1703374465200,
-      "tag": "0000_brown_ink",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1703676851013,
-      "tag": "0001_common_roxanne_simpson",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "5",
-      "when": 1703676936478,
-      "tag": "0002_same_lily_hollister",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "5",
-      "when": 1703709807305,
-      "tag": "0003_public_randall",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "5",
-      "when": 1703710486089,
-      "tag": "0004_goofy_junta",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "5",
-      "when": 1703845653384,
-      "tag": "0005_steady_boomerang",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "5",
-      "when": 1703954428039,
-      "tag": "0006_workable_joshua_kane",
-      "breakpoints": true
-    },
-    {
-      "idx": 7,
-      "version": "5",
-      "when": 1703974520656,
-      "tag": "0007_brave_invaders",
-      "breakpoints": true
-    },
-    {
-      "idx": 8,
-      "version": "5",
-      "when": 1704567971636,
-      "tag": "0008_purple_darkstar",
-      "breakpoints": true
-    },
-    {
-      "idx": 9,
-      "version": "5",
-      "when": 1705864512208,
-      "tag": "0009_far_blob",
+      "when": 1706031688362,
+      "tag": "0000_overrated_fantastic_four",
       "breakpoints": true
     }
   ]

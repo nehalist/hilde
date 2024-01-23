@@ -17,9 +17,11 @@ export type Game = {
   };
 };
 
+export const customGameId = "custom";
+
 export const games: Game[] = [
   {
-    id: "custom",
+    id: customGameId,
     name: "Custom",
     defaults: {
       maxScorePerMatch: 0,

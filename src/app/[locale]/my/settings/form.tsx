@@ -13,8 +13,6 @@ import { User } from "@/db/schema";
 
 export interface SettingsFormValues {
   name: string;
-  firstName: string;
-  lastName: string;
 }
 
 function SettingsFormFields({
@@ -47,31 +45,6 @@ function SettingsFormFields({
           isDisabled={true}
         />
       </div>
-      <div>
-        <h3 className="text-base font-semibold leading-6 text-gray-900 dark:text-gray-300">
-          Real name
-        </h3>
-        <p className="max-w-4xl text-sm text-gray-500">
-          Optional, not public. This simply makes it easier for your team mates
-          to find you when adding a match.
-        </p>
-      </div>
-      <div className="flex gap-3">
-        <Input
-          type="name"
-          label="First Name"
-          defaultValue={user.firstName || ""}
-          className="w-1/2"
-          {...register("firstName")}
-        />
-        <Input
-          type="name"
-          label="Last Name"
-          defaultValue={user.lastName || ""}
-          className="w-1/2"
-          {...register("lastName")}
-        />
-      </div>
       <Button
         type="submit"
         color="primary"
@@ -96,8 +69,6 @@ export function SettingsForm({ user }: { user: User }) {
     resolver: zodResolver(settingsFormSchema),
     defaultValues: {
       name: user.name || "",
-      firstName: user.firstName || "",
-      lastName: user.lastName || "",
     },
   });
   const [state, formAction] = useFormState(updateUserProfileAction, null);

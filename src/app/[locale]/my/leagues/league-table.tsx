@@ -13,7 +13,7 @@ import {
 } from "@nextui-org/react";
 import { EditIcon } from "@nextui-org/shared-icons";
 import { Link } from "@/lib/navigation";
-import { getLeaguesForUser } from "@/db/model/league";
+import { getUserLeagues } from "@/db/model/league";
 import { FaCrown } from "react-icons/fa6";
 import { leaveLeagueAction } from "@/app/[locale]/my/leagues/actions";
 import { useFormState } from "react-dom";
@@ -42,7 +42,7 @@ const columns = [
 export function LeagueTable({
   leagues,
 }: {
-  leagues: Awaited<ReturnType<typeof getLeaguesForUser>>;
+  leagues: Awaited<ReturnType<typeof getUserLeagues>>;
 }) {
   const [state, leaveFormAction] = useFormState(leaveLeagueAction, null);
 

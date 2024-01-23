@@ -1,1 +1,0 @@
-ALTER TABLE "user" ADD COLUMN "createdAt" timestamp DEFAULT now() NOT NULL;

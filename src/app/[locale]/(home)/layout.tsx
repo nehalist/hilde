@@ -12,7 +12,7 @@ export const metadata = {
 
 export default async function HomeLayout({
   children,
-  params: { locale, ...params },
+  params: { locale },
 }: {
   children: ReactNode;
   params: { locale: string };

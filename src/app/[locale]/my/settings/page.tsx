@@ -3,7 +3,6 @@ import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/session";
 import { Card, CardBody, CardHeader } from "@nextui-org/card";
 import { Divider } from "@nextui-org/react";
-import { Avatar } from "@/app/[locale]/my/settings/avatar";
 import { MyHeader } from "@/app/[locale]/my/my-header";
 import { getTranslations } from "next-intl/server";
 
@@ -26,7 +25,6 @@ export default async function Settings() {
         <CardBody>
           <div className="flex gap-5">
             <SettingsForm user={user} />
-            <Avatar />
           </div>
         </CardBody>
       </Card>

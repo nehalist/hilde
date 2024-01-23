@@ -1,1 +1,0 @@
-ALTER TABLE "user" ALTER COLUMN "maxLeagues" SET DEFAULT 10;

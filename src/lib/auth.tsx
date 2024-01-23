@@ -2,11 +2,14 @@ import { AuthOptions } from "next-auth";
 import EmailProvider from "next-auth/providers/email";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { db } from "@/db";
-import { leagues, teamMembers, teams, users } from "@/db/schema";
+import { users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { createTransport } from "nodemailer";
 import { render } from "@react-email/render";
 import VerificationRequest from "../../emails/verification-request";
+import { createLeague } from "@/db/model/league";
+import { customGameId } from "@/lib/games";
+import { RatingSystem } from "@/lib/rating";
 
 export const authOptions: AuthOptions = {
   session: {
@@ -34,9 +37,9 @@ export const authOptions: AuthOptions = {
       },
     }),
   ],
-  pages: {
-    signIn: "/login",
-  },
+  // pages: {
+  //   signIn: "/login",
+  // },
   callbacks: {
     async jwt({ token }) {
       if (!token.email) {
@@ -49,8 +52,6 @@ export const authOptions: AuthOptions = {
       if (user) {
         token.name = user.name;
         token.selectedLeagueId = user.selectedLeagueId;
-        token.firstName = user.firstName;
-        token.lastName = user.lastName;
         token.role = user.role;
       }
       return token;
@@ -80,32 +81,27 @@ export const authOptions: AuthOptions = {
         name = user.email.split("@")[0];
         await db.update(users).set({ name }).where(eq(users.email, user.email));
       }
-      const [league] = await db
-        .insert(leagues)
-        .values({
-          name: "Default League",
-          ownerId: user.id,
-        })
-        .returning();
+      const dbUser = await db.query.users.findFirst({
+        where: (users, { eq }) => eq(users.email, `${user.email}`),
+      });
+      if (!dbUser) {
+        return;
+      }
+      const league = await createLeague(
+        dbUser,
+        `${name}'s League`,
+        customGameId,
+        0,
+        true,
+        RatingSystem.Elo,
+        1000,
+        { k: 32 },
+      );
 
       await db
         .update(users)
         .set({ selectedLeagueId: league.id })
         .where(eq(users.id, user.id));
-
-      const [team] = await db
-        .insert(teams)
-        .values({
-          name: "foobar",
-          leagueId: league.id,
-        })
-        .returning();
-
-      await db.insert(teamMembers).values({
-        name,
-        teamId: team.id,
-        userId: user.id,
-      });
     },
   },
 };
