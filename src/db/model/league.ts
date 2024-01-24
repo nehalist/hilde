@@ -22,8 +22,8 @@ export async function getUserLeagues(user: User) {
       teams: sql<string>`count(distinct
       ${teams.id}
       )`,
-      users: sql<string>`count(distinct
-      ${users.id}
+      memberships: sql<string>`count(distinct
+      ${memberships.userId}
       )`,
       matches: sql<string>`count(distinct
       ${matches.id}
@@ -32,7 +32,7 @@ export async function getUserLeagues(user: User) {
     })
     .from(leagues)
     .leftJoin(teams, eq(leagues.id, teams.leagueId))
-    .leftJoin(users, eq(teams.userId, users.id))
+    .leftJoin(memberships, eq(leagues.id, memberships.leagueId))
     .leftJoin(matches, eq(leagues.id, matches.leagueId))
     .groupBy(leagues.id)
     .orderBy(desc(leagues.createdAt))
@@ -173,10 +173,11 @@ export async function getLeaguesForCurrentUser() {
 
   return (
     await db
-      .select()
+      .select({ league: leagues })
       .from(leagues)
       .leftJoin(memberships, eq(memberships.leagueId, leagues.id))
       .where(or(eq(memberships.userId, user.id), eq(leagues.ownerId, user.id)))
+      .groupBy(leagues.id)
   ).map(l => l.league);
 }
 

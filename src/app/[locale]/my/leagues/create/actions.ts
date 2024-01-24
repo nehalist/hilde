@@ -3,8 +3,7 @@
 import { createAuthenticatedServerAction } from "@/utils/server-action-helper";
 import { leagueFormSchema } from "@/app/[locale]/my/leagues/validation";
 import { validateRatingSystemParameters } from "@/lib/rating";
-import { uploadFile } from "@/lib/storage";
-import { createLeague, updateLeague } from "@/db/model/league";
+import { createLeague } from "@/db/model/league";
 
 export const createLeagueAction = createAuthenticatedServerAction(
   leagueFormSchema,
@@ -21,7 +20,7 @@ export const createLeagueAction = createAuthenticatedServerAction(
       };
     }
 
-    const league = await createLeague(
+    await createLeague(
       user,
       data.name,
       data.game,
@@ -32,14 +31,6 @@ export const createLeagueAction = createAuthenticatedServerAction(
       data.ratingSystemParameters,
       data.description,
     );
-
-    if (data.image) {
-      const { fileName } = await uploadFile(
-        data.image,
-        `leagues/${league.id}-${+new Date()}`,
-      );
-      await updateLeague(league, { image: fileName });
-    }
 
     return {
       status: "success",

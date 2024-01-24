@@ -9,7 +9,12 @@ import { render } from "@react-email/render";
 import VerificationRequest from "../../emails/verification-request";
 import { createLeague } from "@/db/model/league";
 import { customGameId } from "@/lib/games";
-import { RatingSystem } from "@/lib/rating";
+import {
+  getDefaultRatingSystemParameters,
+  RatingSystem,
+  ratingSystems,
+} from "@/lib/rating";
+import { getTranslations } from "next-intl/server";
 
 export const authOptions: AuthOptions = {
   session: {
@@ -64,10 +69,12 @@ export const authOptions: AuthOptions = {
         .select()
         .from(users)
         .where(eq(users.email, session.user.email));
+
       if (user) {
         session.user.selectedLeagueId = `${user.selectedLeagueId}`;
         session.user.role = `${user.role}`;
       }
+
       return session;
     },
   },
@@ -87,15 +94,16 @@ export const authOptions: AuthOptions = {
       if (!dbUser) {
         return;
       }
+      const eloRating = ratingSystems.find(r => r.id === RatingSystem.Elo)!;
       const league = await createLeague(
         dbUser,
         `${name}'s League`,
         customGameId,
         0,
         true,
-        RatingSystem.Elo,
+        eloRating.id,
         1000,
-        { k: 32 },
+        getDefaultRatingSystemParameters(eloRating.id),
       );
 
       await db

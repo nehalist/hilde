@@ -12,6 +12,8 @@ import {
   User,
 } from "@nextui-org/react";
 import { signOut, useSession } from "next-auth/react";
+import { UserIcon } from "lucide-react";
+import { FaUser } from "react-icons/fa";
 
 export function UserHeader() {
   const { data: user, status } = useSession();
@@ -55,17 +57,11 @@ export function UserHeader() {
         <User
           as="button"
           avatarProps={{
-            isBordered: true,
-            name: user.user.name || "Unknown",
-            src: user.user.image || "",
+            showFallback: true,
+            fallback: <FaUser />,
           }}
           className="transition-transform"
-          name={user.user.name || "Unknown"}
-          description={
-            <div className="w-24 flex items-center gap-2">
-              <Progress size="sm" aria-label="Loading..." value={30} /> 31
-            </div>
-          }
+          name={user.user.name}
         />
       </DropdownTrigger>
       <DropdownMenu aria-label="User Actions" variant="flat">

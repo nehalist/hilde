@@ -62,14 +62,6 @@ function CreateLeagueFormFields({
         <CardBody>
           <div className="flex flex-col gap-3 w-1/2">
             <Input
-              type="file"
-              label="Image"
-              labelPlacement="outside"
-              placeholder="."
-              variant="flat"
-              {...form.register("image")}
-            />
-            <Input
               type="name"
               label={t("settings.nameLabel")}
               placeholder={t("settings.namePlaceholder")}
@@ -274,7 +266,6 @@ export function CreateLeagueForm() {
     defaultValues: {
       name: "",
       description: "",
-      image: null,
       game: defaultGame.id,
       maxScorePerMatch: defaultGame.defaults.maxScorePerMatch,
       allowDraws: defaultGame.defaults.allowDraws,

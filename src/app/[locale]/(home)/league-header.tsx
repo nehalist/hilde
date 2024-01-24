@@ -15,6 +15,7 @@ import { Link } from "@/lib/navigation";
 import { useFormState } from "react-dom";
 import { switchLeagueAction } from "@/app/[locale]/(home)/actions";
 import { useRef } from "react";
+import { GameIcon } from "@/components/game-icon";
 
 interface LeagueHeaderProps {
   leagues: League[];
@@ -44,7 +45,8 @@ export function LeagueHeader({ leagues, selectedLeagueId }: LeagueHeaderProps) {
             <User
               avatarProps={{
                 isBordered: true,
-                src: selectedLeague.image || "",
+                showFallback: true,
+                fallback: <span className="text-xl"><GameIcon game={selectedLeague.game} /></span>
               }}
               className="transition-transform"
               name={selectedLeague.name}

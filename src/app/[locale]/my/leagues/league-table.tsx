@@ -56,12 +56,6 @@ export function LeagueTable({
           <TableRow key={item.league.id}>
             <TableCell>
               <div className="flex gap-5 items-center">
-                <Avatar
-                  isBordered={true}
-                  src={item.league.image || undefined}
-                  name={item.league.name}
-                  radius="sm"
-                />
                 <div className="flex flex-col">
                   <p className="font-semibold flex gap-3 items-center">
                     {item.league.name}{" "}
