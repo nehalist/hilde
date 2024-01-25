@@ -80,7 +80,6 @@ export const teams = pgTable("team", {
     .$defaultFn(() => crypto.randomUUID())
     .primaryKey(),
   name: text("name").notNull(),
-  image: text("image"),
   leagueId: text("leagueId")
     .notNull()
     .references(() => leagues.id, { onDelete: "cascade" }),

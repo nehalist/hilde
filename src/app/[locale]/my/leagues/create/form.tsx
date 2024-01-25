@@ -27,7 +27,6 @@ import { useTranslations } from "next-intl";
 export interface CreateLeagueFormValues {
   name: string;
   description: string;
-  image: any;
   game: string;
   maxScorePerMatch: number;
   allowDraws: boolean;
@@ -75,7 +74,6 @@ function CreateLeagueFormFields({
           </div>
         </CardBody>
       </Card>
-      {t("optionalHint")}
       <Card>
         <CardHeader>
           <div className="flex flex-col">
@@ -154,7 +152,9 @@ function CreateLeagueFormFields({
           <div className="flex flex-col">
             <p className="text-md">{t("rating.title")}</p>
             <p className="text-small text-default-500">
-              {t("rating.description")}
+              {t.rich("rating.description", {
+                warning: text => <span className="text-red-600 font-bold">{text}</span>
+              })}
             </p>
           </div>
         </CardHeader>

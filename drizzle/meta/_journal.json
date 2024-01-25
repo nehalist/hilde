@@ -15,6 +15,13 @@
       "when": 1706131342418,
       "tag": "0001_good_network",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1706202419681,
+      "tag": "0002_goofy_paladin",
+      "breakpoints": true
     }
   ]
 }

@@ -86,6 +86,14 @@ export async function createMembership(
     })
     .returning();
 
+  await db
+    .insert(teams)
+    .values({
+      leagueId: league.id,
+      userId: user.id,
+      name: user.name || "Unknown",
+    });
+
   return membership;
 }
 
@@ -186,5 +194,11 @@ export async function getLeagueTeamsForCurrentUser() {
   if (!user || !user.selectedLeagueId) {
     return [];
   }
-  return [];
+
+  return db.query.teams.findMany({
+    where: and(
+      eq(teams.leagueId, user.selectedLeagueId),
+      eq(teams.userId, user.id)
+    ),
+  });
 }

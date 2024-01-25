@@ -16,6 +16,7 @@ import { useFormState } from "react-dom";
 import { switchLeagueAction } from "@/app/[locale]/(home)/actions";
 import { useRef } from "react";
 import { GameIcon } from "@/components/game-icon";
+import { useTranslations } from "next-intl";
 
 interface LeagueHeaderProps {
   leagues: League[];
@@ -26,6 +27,7 @@ export function LeagueHeader({ leagues, selectedLeagueId }: LeagueHeaderProps) {
   const [state, formAction] = useFormState(switchLeagueAction, null);
   const formRef = useRef<HTMLFormElement>(null);
   const leagueIdRef = useRef<HTMLInputElement>(null);
+  const t = useTranslations();
 
   const selectedLeague = leagues.find(league => league.id === selectedLeagueId);
   if (!selectedLeague) {
@@ -46,11 +48,15 @@ export function LeagueHeader({ leagues, selectedLeagueId }: LeagueHeaderProps) {
               avatarProps={{
                 isBordered: true,
                 showFallback: true,
-                fallback: <span className="text-xl"><GameIcon game={selectedLeague.game} /></span>
+                fallback: (
+                  <span className="text-xl">
+                    <GameIcon game={selectedLeague.game} />
+                  </span>
+                ),
               }}
               className="transition-transform"
               name={selectedLeague.name}
-              description={selectedLeague.description || "No description"}
+              description={t(`games.${selectedLeague.game}`)}
             />
             <FaChevronDown />
           </Button>
@@ -75,7 +81,9 @@ export function LeagueHeader({ leagues, selectedLeagueId }: LeagueHeaderProps) {
               ))}
             </DropdownSection>
             <DropdownSection>
-              <DropdownItem key="settings" href="/my/leagues" as={Link}>Manage leagues</DropdownItem>
+              <DropdownItem key="settings" href="/my/leagues" as={Link}>
+                Manage leagues
+              </DropdownItem>
             </DropdownSection>
           </DropdownMenu>
         </form>

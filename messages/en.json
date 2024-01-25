@@ -33,7 +33,7 @@
         },
         "rating": {
           "title": "Rating",
-          "description": "How to calculate the ratings for this league",
+          "description": "How to calculate the ratings for this league. <warning>This cannot be changed after the league has been created!</warning>",
           "ratingSystemLabel": "Rating System",
           "defaultRatingLabel": "Default Rating",
           "ratingSystemParametersDescription": "Rating System Parameters. Keep the default values if you don't know what they mean.",
@@ -71,5 +71,10 @@
       "en": "English",
       "de": "Deutsch"
     }
+  },
+  "games": {
+    "custom": "Custom",
+    "chess": "Chess",
+    "badminton": "Badminton"
   }
 }
