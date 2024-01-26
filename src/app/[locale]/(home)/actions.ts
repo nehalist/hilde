@@ -2,11 +2,13 @@
 
 import { createAuthenticatedServerAction } from "@/utils/server-action-helper";
 import { zfd } from "zod-form-data";
-import { userIsInLeague } from "@/db/model/league";
+import { getSelectedUserLeague, userIsInLeague } from "@/db/model/league";
 import { db } from "@/db";
 import { users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { getOrCreateTeam } from "@/db/model/team";
+import { createMatch } from "@/db/model/match";
 
 export const switchLeagueAction = createAuthenticatedServerAction(
   zfd.formData({
@@ -38,10 +40,43 @@ export const createMatchAction = createAuthenticatedServerAction(
   zfd.formData({
     team1: zfd.text(),
     score1: zfd.numeric(),
+    team2: zfd.text(),
+    score2: zfd.numeric(),
   }),
-  async () => {
+  async ({ team1, score1, team2, score2 }, { user }) => {
+    const selectedUserLeague = await getSelectedUserLeague();
+    if (!selectedUserLeague) {
+      return {
+        status: "error"
+      }
+    }
+
+    const team1Entity = await getOrCreateTeam(
+      selectedUserLeague,
+      team1,
+      user.id,
+    );
+    const team2Entity = await getOrCreateTeam(
+      selectedUserLeague,
+      team2,
+      user.id,
+    );
+
+    // TODO: check for duplicates
+
+    await createMatch(
+      selectedUserLeague,
+      user,
+      team1Entity,
+      team2Entity,
+      score1,
+      score2,
+    );
+
+    revalidatePath("/");
+
     return {
       status: "success",
-    }
-  }
+    };
+  },
 );

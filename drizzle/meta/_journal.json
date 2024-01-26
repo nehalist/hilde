@@ -22,6 +22,27 @@
       "when": 1706202419681,
       "tag": "0002_goofy_paladin",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1706273662187,
+      "tag": "0003_black_betty_ross",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1706274952205,
+      "tag": "0004_nifty_bastion",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1706278884835,
+      "tag": "0005_demonic_roland_deschain",
+      "breakpoints": true
     }
   ]
 }

@@ -3,7 +3,6 @@
 import { Card, CardBody, CardFooter } from "@nextui-org/card";
 import { MatchTeamSelector } from "@/app/[locale]/(home)/match-team-selector";
 import { Button, Divider, Input } from "@nextui-org/react";
-import { League } from "@/db/schema";
 import { getLeagueTeamsForCurrentUser } from "@/db/model/league";
 import { Controller, useForm } from "react-hook-form";
 import { useFormState } from "react-dom";
@@ -25,7 +24,7 @@ interface FormValues {
 export function MatchCreationForm({ teams }: MatchCreationFormProps) {
   const { register, control } = useForm<FormValues>({
     defaultValues: {
-      team1: [],
+      team1: ["dubi"],
       score1: "",
       team2: [],
       score2: "",
@@ -34,6 +33,7 @@ export function MatchCreationForm({ teams }: MatchCreationFormProps) {
   });
   const [state, formAction] = useFormState(createMatchAction, null);
   const team1Ref = useRef<HTMLInputElement>(null);
+  const team2Ref = useRef<HTMLInputElement>(null);
 
   return (
     <Card className="overflow-visible">
@@ -50,6 +50,8 @@ export function MatchCreationForm({ teams }: MatchCreationFormProps) {
                       name="team1"
                       render={({ field: { onChange } }) => (
                         <MatchTeamSelector
+                          autoFocus={true}
+                          value={[]} // todo own team
                           teams={teams}
                           onChange={data => {
                             onChange(data);
@@ -61,9 +63,8 @@ export function MatchCreationForm({ teams }: MatchCreationFormProps) {
                         />
                       )}
                     />
-                    {/*<p className="text-xs">Suggestions: [self] others</p>*/}
                   </div>
-                  <div className="col-span-4">
+                  <div className="col-span-4 flex items-end gap-1">
                     <Input
                       type="number"
                       placeholder="2"
@@ -79,13 +80,33 @@ export function MatchCreationForm({ teams }: MatchCreationFormProps) {
               </div>
               <div className="col-span-5">
                 <div className="grid grid-cols-12 gap-3">
-                  <div className="col-span-8">{/*<MatchTeamSelector />*/}</div>
+                  <div className="col-span-8">
+                    <input type="hidden" name="team2" ref={team2Ref} />
+                    <Controller
+                      control={control}
+                      name="team2"
+                      render={({ field: { onChange } }) => (
+                        <MatchTeamSelector
+                          value={[]}
+                          teams={teams}
+                          onChange={data => {
+                            onChange(data);
+                            if (!team2Ref.current) {
+                              return;
+                            }
+                            return (team2Ref.current.value = data.join(","));
+                          }}
+                        />
+                      )}
+                    />
+                  </div>
                   <div className="col-span-4">
                     <Input
                       type="number"
                       placeholder="3"
                       label="Score"
                       labelPlacement="outside"
+                      {...register("score2")}
                     />
                   </div>
                 </div>

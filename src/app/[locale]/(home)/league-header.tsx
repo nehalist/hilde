@@ -35,7 +35,7 @@ export function LeagueHeader({ leagues, selectedLeagueId }: LeagueHeaderProps) {
   }
 
   return (
-    <div className="flex mb-3 items-center gap-10">
+    <div className="flex items-center gap-10">
       <Dropdown placement="bottom-start" backdrop="blur">
         <DropdownTrigger>
           <Button

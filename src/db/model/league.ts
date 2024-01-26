@@ -202,3 +202,17 @@ export async function getLeagueTeamsForCurrentUser() {
     ),
   });
 }
+
+export async function getSelectedUserLeague() {
+  const user = await getCurrentUser();
+  if (!user || !user.selectedLeagueId) {
+    return null;
+  }
+  const selectedLeagueId = user.selectedLeagueId;
+  if (! selectedLeagueId) {
+    return null;
+  }
+  return db.query.leagues.findFirst({
+    where: (leagues, { eq }) => eq(leagues.id, selectedLeagueId)
+  })
+}

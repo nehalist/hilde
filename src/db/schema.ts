@@ -7,6 +7,7 @@ import {
   primaryKey,
   text,
   timestamp,
+  unique,
 } from "drizzle-orm/pg-core";
 import { AdapterAccount } from "@auth/core/adapters";
 import { relations, sql } from "drizzle-orm";
@@ -39,7 +40,8 @@ export const leagues = pgTable("league", {
   ratingSystem: ratingSystemsEnum("ratingSystem").notNull().default("unknown"),
   ratingSystemParameters: json("ratingSystemParameters").notNull().default({}),
   status: leagueStatusEnum("leagueStatus").default("active"),
-  inviteCode: text("inviteCode").notNull().unique().default(sql`substr(md5(random()::text), 0, 25)`),
+  inviteCode: text("inviteCode").notNull().unique().default(sql`substr
+  (md5(random()::text), 0, 25)`),
   ownerId: text("ownerId")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
@@ -59,7 +61,7 @@ export const memberships = pgTable(
     createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
   },
   t => ({
-    pk: primaryKey({ columns: [t.userId, t.leagueId]}),
+    pk: primaryKey({ columns: [t.userId, t.leagueId] }),
   }),
 );
 
@@ -75,22 +77,30 @@ export const leaguesRelations = relations(leagues, ({ one, many }) => ({
   users: many(memberships),
 }));
 
-export const teams = pgTable("team", {
-  id: text("id")
-    .$defaultFn(() => crypto.randomUUID())
-    .primaryKey(),
-  name: text("name").notNull(),
-  leagueId: text("leagueId")
-    .notNull()
-    .references(() => leagues.id, { onDelete: "cascade" }),
-  teamSize: integer("teamsize").notNull().default(1),
-  userId: text("userId")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
-  createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
-});
+export const teams = pgTable(
+  "team",
+  {
+    id: text("id")
+      .$defaultFn(() => crypto.randomUUID())
+      .primaryKey(),
+    name: text("name").notNull(),
+    leagueId: text("leagueId")
+      .notNull()
+      .references(() => leagues.id, { onDelete: "cascade" }),
+    teamSize: integer("teamsize").notNull().default(1),
+    userId: text("userId")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    rating: integer("rating").notNull().default(1000),
+    createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+  },
+  t => ({
+    unq: unique().on(t.name, t.leagueId),
+  }),
+);
 
 export type Team = typeof teams.$inferSelect;
+export type NewTeam = typeof teams.$inferInsert;
 
 export const teamsRelations = relations(teams, ({ one, many }) => ({
   league: one(leagues, {
@@ -101,6 +111,8 @@ export const teamsRelations = relations(teams, ({ one, many }) => ({
     fields: [teams.userId],
     references: [users.id],
   }),
+  matchesTeam1: many(matches, { relationName: "team1" }),
+  matchesTeam2: many(matches, { relationName: "team2" }),
 }));
 
 export const matches = pgTable("matches", {
@@ -110,8 +122,42 @@ export const matches = pgTable("matches", {
   leagueId: text("leagueId")
     .notNull()
     .references(() => leagues.id, { onDelete: "cascade" }),
+  team1Id: text("team1Id")
+    .notNull()
+    .references(() => teams.id, { onDelete: "cascade" }),
+  score1: integer("score1").notNull().default(0),
+  team2Id: text("team2Id")
+    .notNull()
+    .references(() => teams.id, { onDelete: "cascade" }),
+  score2: integer("score2").notNull().default(0),
+  userId: text("userId")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
   createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
 });
+
+export type Match = typeof matches.$inferSelect;
+
+export const matchesRelations = relations(matches, ({ one }) => ({
+  league: one(leagues, {
+    fields: [matches.leagueId],
+    references: [leagues.id],
+  }),
+  user: one(users, {
+    fields: [matches.userId],
+    references: [users.id],
+  }),
+  team1: one(teams, {
+    fields: [matches.team1Id],
+    references: [teams.id],
+    relationName: "team1",
+  }),
+  team2: one(teams, {
+    fields: [matches.team2Id],
+    references: [teams.id],
+    relationName: "team2",
+  }),
+}));
 
 export const users = pgTable("user", {
   id: text("id").notNull().primaryKey(),
@@ -133,6 +179,7 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   }),
   leagues: many(memberships),
   teams: many(teams),
+  matches: many(matches),
 }));
 
 export const accounts = pgTable(
