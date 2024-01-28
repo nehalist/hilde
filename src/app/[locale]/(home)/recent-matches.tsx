@@ -10,27 +10,38 @@ import {
 } from "@nextui-org/react";
 import { getRecentLeagueMatches } from "@/db/model/match";
 import { TimeDistance } from "@/components/time-distance";
+import { RatingChange } from "@/components/rating-change";
 
 interface RecentMatchesProps {
-  matches: Awaited<ReturnType<typeof getRecentLeagueMatches>>
+  matches: Awaited<ReturnType<typeof getRecentLeagueMatches>>;
 }
 
 export function RecentMatches({ matches }: RecentMatchesProps) {
   return (
     <Table aria-label="Recent Matches">
       <TableHeader>
-        <TableColumn>Team 1</TableColumn>
-        <TableColumn>Result</TableColumn>
-        <TableColumn>Team 2</TableColumn>
-        <TableColumn>Date</TableColumn>
+        <TableColumn width="30%">Team 1</TableColumn>
+        <TableColumn width="5%">Result</TableColumn>
+        <TableColumn width="30%">Team 2</TableColumn>
+        <TableColumn width="20%">Date</TableColumn>
       </TableHeader>
       <TableBody items={matches}>
         {match => (
           <TableRow key={match.id}>
-            <TableCell>{match.team1.name}</TableCell>
-            <TableCell>{match.score1} {match.score2}</TableCell>
-            <TableCell>{match.team2.name}</TableCell>
-            <TableCell><TimeDistance date={match.createdAt} /></TableCell>
+            <TableCell>
+              {match.team1.name}{" "}
+              <RatingChange change={match.team2RatingChange} />
+            </TableCell>
+            <TableCell>
+              {match.score1} {match.score2}
+            </TableCell>
+            <TableCell>
+              {match.team2.name}{" "}
+              <RatingChange change={match.team2RatingChange} />
+            </TableCell>
+            <TableCell>
+              <TimeDistance date={match.createdAt} />
+            </TableCell>
           </TableRow>
         )}
       </TableBody>

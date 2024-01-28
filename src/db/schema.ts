@@ -1,10 +1,10 @@
 import {
   boolean,
   integer,
-  json,
+  json, numeric,
   pgEnum,
   pgTable,
-  primaryKey,
+  primaryKey, real,
   text,
   timestamp,
   unique,
@@ -12,7 +12,6 @@ import {
 import { AdapterAccount } from "@auth/core/adapters";
 import { relations, sql } from "drizzle-orm";
 import { games } from "@/lib/games";
-import { ratingSystems } from "@/lib/rating";
 
 export const leagueStatusEnum = pgEnum("leagueStatus", ["active", "finished"]);
 export const gamesEnum = pgEnum("game", [
@@ -21,7 +20,8 @@ export const gamesEnum = pgEnum("game", [
 ]);
 export const ratingSystemsEnum = pgEnum("ratingSystem", [
   "unknown",
-  ...ratingSystems.map(rs => rs.id),
+  "elo",
+  "glicko2"
 ]);
 export const userRolesEnum = pgEnum("role", ["user", "admin"]);
 export const membershipRole = pgEnum("membershipRole", ["member", "admin"]);
@@ -91,7 +91,7 @@ export const teams = pgTable(
     userId: text("userId")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
-    rating: integer("rating").notNull().default(1000),
+    rating: real("rating").notNull().default(1000),
     createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
   },
   t => ({
@@ -133,6 +133,10 @@ export const matches = pgTable("matches", {
   userId: text("userId")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
+  team1RatingChange: real("team1RatingChange").notNull().default(0),
+  team2RatingChange: real("team2RatingChange").notNull().default(0),
+  team1Rating: real("team1Rating").notNull().default(0),
+  team2Rating: real("team2Rating").notNull().default(0),
   createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
 });
 

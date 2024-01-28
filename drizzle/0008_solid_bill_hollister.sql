@@ -1,0 +1,1 @@
+ALTER TABLE "team" ALTER COLUMN "rating" SET DATA TYPE real;

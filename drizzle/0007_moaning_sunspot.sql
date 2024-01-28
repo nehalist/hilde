@@ -1,0 +1,1 @@
+ALTER TABLE "matches" ADD COLUMN "team2RatingChange" real DEFAULT 0 NOT NULL;
