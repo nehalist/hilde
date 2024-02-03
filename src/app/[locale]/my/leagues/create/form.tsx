@@ -23,13 +23,13 @@ import {
 } from "@/lib/rating";
 import { useServerActionState } from "@/hooks/use-server-action-state";
 import { useTranslations } from "next-intl";
+import { GameIcon } from "@/components/game-icon";
 
 export interface CreateLeagueFormValues {
   name: string;
   description: string;
   game: string;
   maxScorePerMatch: number;
-  allowDraws: boolean;
   ratingSystem: string;
   defaultRating: number;
   ratingSystemParameters: string;
@@ -70,22 +70,10 @@ function CreateLeagueFormFields({
               type="name"
               label={t("settings.descriptionLabel")}
               {...form.register("description")}
+              className="mb-0"
             />
           </div>
-        </CardBody>
-      </Card>
-      <Card>
-        <CardHeader>
-          <div className="flex flex-col">
-            <p className="text-md">{t("game.title")}</p>
-            <p className="text-small text-default-500">
-              {t("game.description")}
-            </p>
-          </div>
-        </CardHeader>
-        <Divider />
-        <CardBody className="flex gap-3">
-          <div className="flex gap-3">
+          <div className="flex gap-3 mt-1">
             <Controller
               control={form.control}
               name="game"
@@ -95,18 +83,9 @@ function CreateLeagueFormFields({
                   label={t("game.gameLabel")}
                   name="game"
                   selectedKeys={[value]}
-                  onChange={e => {
-                    onChange(e);
-                    const game = games.find(game => game.id === e.target.value);
-                    if (!game) {
-                      return;
-                    }
-                    form.setValue(
-                      "maxScorePerMatch",
-                      game.defaults.maxScorePerMatch,
-                    );
-                    form.setValue("allowDraws", game.defaults.allowDraws);
-                  }}
+                  onChange={onChange}
+                  className="w-1/2"
+                  startContent={<GameIcon game={value} />}
                 >
                   {games.map(game => (
                     <SelectItem key={game.id}>{game.name}</SelectItem>
@@ -129,27 +108,12 @@ function CreateLeagueFormFields({
                 />
               )}
             />
-            <Controller
-              control={form.control}
-              name="allowDraws"
-              render={({ field: { onChange, value } }) => (
-                <Checkbox
-                  name="allowDraws"
-                  isSelected={value}
-                  value="on"
-                  className="w-64"
-                  onChange={onChange}
-                >
-                  {t("game.allowDrawsLabel")}
-                </Checkbox>
-              )}
-            />
           </div>
         </CardBody>
       </Card>
       <Card>
         <CardHeader>
-          <div className="flex flex-col">
+        <div className="flex flex-col">
             <p className="text-md">{t("rating.title")}</p>
             <p className="text-small text-default-500">
               {t.rich("rating.description", {
@@ -267,8 +231,6 @@ export function CreateLeagueForm() {
       name: "",
       description: "",
       game: defaultGame.id,
-      maxScorePerMatch: defaultGame.defaults.maxScorePerMatch,
-      allowDraws: defaultGame.defaults.allowDraws,
       defaultRating: 1000,
       ratingSystem: defaultRatingSystem,
       ratingSystemParameters: JSON.stringify(

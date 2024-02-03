@@ -4,9 +4,9 @@ import { RecentMatches } from "@/app/[locale]/(home)/recent-matches";
 import { getRecentLeagueMatches } from "@/db/model/match";
 
 export async function Home() {
+  const league = await getSelectedUserLeague();
   const teams = await getLeagueTeamsForCurrentUser();
   const recentMatches = await getRecentLeagueMatches();
-  const league = await getSelectedUserLeague();
 
   if (! league) {
     return null;

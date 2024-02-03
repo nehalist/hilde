@@ -22,9 +22,9 @@ interface FormValues {
 }
 
 export function MatchCreationForm({ teams }: MatchCreationFormProps) {
-  const { register, control, setValue } = useForm<FormValues>({
+  const { register, control } = useForm<FormValues>({
     defaultValues: {
-      team1: ["dubi"],
+      team1: ["foo", "bar", "foobar", "foozbar", "foobaz", "whahaah"],
       score1: "",
       team2: [],
       score2: "",
@@ -41,7 +41,7 @@ export function MatchCreationForm({ teams }: MatchCreationFormProps) {
         <CardBody className="overflow-y-visible">
             <div className="grid grid-cols-12">
               <div className="col-span-5">
-                <div className="grid grid-cols-12 gap-3">
+                <div className="grid grid-cols-12 gap-3 items-start">
                   <div className="col-span-8">
                     <input type="hidden" name="team1" ref={team1Ref} />
                     <Controller
@@ -78,7 +78,7 @@ export function MatchCreationForm({ teams }: MatchCreationFormProps) {
                 <h3 className="font-bold text-3xl">vs</h3>
               </div>
               <div className="col-span-5">
-                <div className="grid grid-cols-12 gap-3">
+                <div className="grid grid-cols-12 gap-3 items-start">
                   <div className="col-span-8">
                     <input type="hidden" name="team2" ref={team2Ref} />
                     <Controller

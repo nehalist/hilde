@@ -25,7 +25,6 @@ export const createLeagueAction = createAuthenticatedServerAction(
       data.name,
       data.game,
       data.maxScorePerMatch,
-      data.allowDraws,
       data.ratingSystem,
       data.defaultRating,
       data.ratingSystemParameters,

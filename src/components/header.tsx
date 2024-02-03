@@ -20,19 +20,12 @@ export async function Header() {
   const t = await getTranslations("layout");
 
   return (
-    <NextUINavbar maxWidth="xl" isBordered>
+    <NextUINavbar maxWidth="lg" isBordered={true}>
       <NavbarBrand>
         <h1>
           <Link
             href={"/"}
-            className="text-3xl font-bold hover:animate-pulse"
-            style={{
-              backgroundImage:
-                "linear-gradient(90deg, #0094d8 -20%, #9fc20a 50%)",
-              backgroundClip: "text",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
+            className="text-3xl font-bold hover:animate-pulse hilde"
           >
             Hilde
           </Link>
@@ -45,18 +38,8 @@ export async function Header() {
           </Link>
         </NavbarItem>
         <NavbarItem>
-          <Link color="foreground" href="/about">
-            {t("navigation.about")}
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link color="foreground" href="/blog">
-            {t("navigation.blog")}
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link color="foreground" href="/donate">
-            {t("navigation.donate")}
+          <Link color="foreground" href="mailto:hello@hilde.gg">
+            {t("navigation.contact")}
           </Link>
         </NavbarItem>
       </NavbarContent>

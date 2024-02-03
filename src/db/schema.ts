@@ -35,7 +35,6 @@ export const leagues = pgTable("league", {
   description: text("description"),
   game: gamesEnum("game").notNull().default("custom"),
   maxScorePerMatch: integer("maxScorePerMatch").notNull().default(0),
-  allowDraws: boolean("allowDraws").notNull().default(true),
   defaultRating: integer("defaultRating").notNull().default(1000),
   ratingSystem: ratingSystemsEnum("ratingSystem").notNull().default("unknown"),
   ratingSystemParameters: json("ratingSystemParameters").notNull().default({}),

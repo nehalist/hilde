@@ -1,5 +1,7 @@
 import { ReactNode } from "react";
 import "@/styles/globals.css";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import { Header } from "@/components/header";
 import { Providers } from "@/app/[locale]/providers";
 import { notFound } from "next/navigation";

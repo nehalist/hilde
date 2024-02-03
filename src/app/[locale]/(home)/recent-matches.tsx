@@ -30,7 +30,7 @@ export function RecentMatches({ matches }: RecentMatchesProps) {
           <TableRow key={match.id}>
             <TableCell>
               {match.team1.name}{" "}
-              <RatingChange change={match.team2RatingChange} />
+              <RatingChange change={match.team1RatingChange} />
             </TableCell>
             <TableCell>
               {match.score1} {match.score2}

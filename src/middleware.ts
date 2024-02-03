@@ -4,7 +4,7 @@ import { withAuth } from "next-auth/middleware";
 import { NextRequestWithAuth } from "next-auth/src/next/middleware";
 import { NextRequest } from "next/server";
 
-const publicPages = ["/", "/blog", "/blog/(.*)", "/about", "/login"];
+const publicPages = ["/", "/blog", "/blog/(.*)", "/about", "/login", "/faq"];
 
 const intlMiddleware = createMiddleware({
   locales,

@@ -1,5 +1,7 @@
 import { AuthOptions } from "next-auth";
 import EmailProvider from "next-auth/providers/email";
+import GithubProvider from "next-auth/providers/github";
+import DiscordProvider from "next-auth/providers/discord";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { db } from "@/db";
 import { users } from "@/db/schema";
@@ -14,7 +16,6 @@ import {
   RatingSystem,
   ratingSystems,
 } from "@/lib/rating";
-import { getTranslations } from "next-intl/server";
 
 export const authOptions: AuthOptions = {
   session: {
@@ -22,17 +23,24 @@ export const authOptions: AuthOptions = {
   },
   adapter: DrizzleAdapter(db),
   providers: [
+    GithubProvider({
+      clientId: "id",
+      clientSecret: "secret"
+    }),
+    DiscordProvider({
+      clientId: "id",
+      clientSecret: "secret"
+    }),
     EmailProvider({
       server: process.env.EMAIL_SERVER,
       from: process.env.EMAIL_FROM,
       sendVerificationRequest: async ({ identifier, url, provider, theme }) => {
         const transport = createTransport(provider.server);
         const html = render(<VerificationRequest url={url} />);
-        const { host } = new URL(url);
         const result = await transport.sendMail({
           to: identifier,
           from: provider.from,
-          subject: `Sign in to ${host}`,
+          subject: `Sign in to Hilde`,
           html,
         });
         const failed = result.rejected.concat(result.pending).filter(Boolean);
@@ -42,9 +50,10 @@ export const authOptions: AuthOptions = {
       },
     }),
   ],
-  // pages: {
-  //   signIn: "/login",
-  // },
+  pages: {
+    signIn: "/",
+    verifyRequest: "/?login=verify-request",
+  },
   callbacks: {
     async jwt({ token }) {
       if (!token.email) {

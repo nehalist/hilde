@@ -1,6 +1,10 @@
 import { League, Team, teams } from "@/db/schema";
 import { db } from "@/db";
 
+export function getTeamSize(teamName: string) {
+  return teamName.split(",").length;
+}
+
 export async function getOrCreateTeam(
   league: League,
   name: string,
@@ -19,6 +23,7 @@ export async function getOrCreateTeam(
       name,
       leagueId: league.id,
       userId,
+      teamSize: getTeamSize(name),
     })
     .onConflictDoNothing()
     .returning();

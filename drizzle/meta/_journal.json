@@ -64,6 +64,20 @@
       "when": 1706433650227,
       "tag": "0008_solid_bill_hollister",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "5",
+      "when": 1706865937188,
+      "tag": "0009_tearful_whiplash",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "5",
+      "when": 1707001631433,
+      "tag": "0010_light_grim_reaper",
+      "breakpoints": true
     }
   ]
 }

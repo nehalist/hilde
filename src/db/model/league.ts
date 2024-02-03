@@ -44,7 +44,6 @@ export async function createLeague(
   name: string,
   game: string,
   maxScorePerMatch: number,
-  allowDraws: boolean,
   ratingSystem: RatingSystem,
   defaultRating: number,
   ratingSystemParameters: Record<string, number>,
@@ -58,7 +57,6 @@ export async function createLeague(
       description,
       game,
       maxScorePerMatch,
-      allowDraws,
       ratingSystem,
       defaultRating,
       ratingSystemParameters,
@@ -199,6 +197,14 @@ export async function getLeagueTeamsForCurrentUser() {
     where: and(
       eq(teams.leagueId, user.selectedLeagueId),
       eq(teams.userId, user.id)
+    ),
+  });
+}
+
+export async function getLeagueTeams(leagueId: string) {
+  return db.query.teams.findMany({
+    where: and(
+      eq(teams.leagueId, leagueId),
     ),
   });
 }
