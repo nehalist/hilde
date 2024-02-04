@@ -6,6 +6,7 @@ import { Header } from "@/components/header";
 import { Providers } from "@/app/[locale]/providers";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider, useMessages } from "next-intl";
+import { Footer } from "@/components/footer";
 
 const locales = ["de", "en"];
 
@@ -34,6 +35,7 @@ export default function RootLayout({
           <Providers locale={locale}>
             <Header />
             <div>{children}</div>
+            <Footer />
           </Providers>
         </NextIntlClientProvider>
       </body>
