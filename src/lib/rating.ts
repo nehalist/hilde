@@ -2,7 +2,7 @@ import { League, Team } from "@/db/schema";
 
 export enum RatingSystem {
   Elo = "elo",
-  Glicko2 = "glicko2",
+  // Glicko2 = "glicko2",
 }
 
 export const ratingSystems = [
@@ -25,32 +25,32 @@ export const ratingSystems = [
       return team.rating + kFactor * (result - expectedRating);
     }
   },
-  {
-    id: RatingSystem.Glicko2,
-    name: "Glicko-2",
-    description:
-      "Glicko-2 is an extension of the Glicko rating system, which was itself an improvement of the Elo rating system.",
-    parameters: [
-      {
-        id: "tau",
-        name: "Tau",
-        defaultValue: 0.5,
-      },
-      {
-        id: "ratingDeviation",
-        name: "Rating Deviation",
-        defaultValue: 350,
-      },
-      {
-        id: "ratingVolatility",
-        name: "Rating Volatility",
-        defaultValue: 0.06,
-      },
-    ],
-    getNewRating: (league: League, team: Team, opponent: Team, score1: number, score2: number) => {
-      return 0;
-    }
-  },
+  // {
+  //   id: RatingSystem.Glicko2,
+  //   name: "Glicko-2",
+  //   description:
+  //     "Glicko-2 is an extension of the Glicko rating system, which was itself an improvement of the Elo rating system.",
+  //   parameters: [
+  //     {
+  //       id: "tau",
+  //       name: "Tau",
+  //       defaultValue: 0.5,
+  //     },
+  //     {
+  //       id: "ratingDeviation",
+  //       name: "Rating Deviation",
+  //       defaultValue: 350,
+  //     },
+  //     {
+  //       id: "ratingVolatility",
+  //       name: "Rating Volatility",
+  //       defaultValue: 0.06,
+  //     },
+  //   ],
+  //   getNewRating: (league: League, team: Team, opponent: Team, score1: number, score2: number) => {
+  //     return 0;
+  //   }
+  // },
 ] as const;
 
 export const getDefaultRatingSystemParameters = (

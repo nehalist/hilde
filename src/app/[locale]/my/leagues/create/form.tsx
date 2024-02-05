@@ -29,7 +29,6 @@ export interface CreateLeagueFormValues {
   name: string;
   description: string;
   game: string;
-  maxScorePerMatch: number;
   ratingSystem: string;
   defaultRating: number;
   ratingSystemParameters: string;
@@ -91,21 +90,6 @@ function CreateLeagueFormFields({
                     <SelectItem key={game.id}>{game.name}</SelectItem>
                   ))}
                 </Select>
-              )}
-            />
-            <Controller
-              control={form.control}
-              name="maxScorePerMatch"
-              render={({ field: { onChange, value } }) => (
-                <Input
-                  type="number"
-                  name="maxScorePerMatch"
-                  label={t("game.maxScorePerMatchLabel")}
-                  className="w-1/2"
-                  value={`${value}`}
-                  onChange={onChange}
-                  description={t("game.maxScorePerMatchDescription")}
-                />
               )}
             />
           </div>

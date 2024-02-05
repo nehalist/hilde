@@ -7,12 +7,10 @@ import {
   DropdownMenu,
   DropdownSection,
   DropdownTrigger,
-  Progress,
   Spinner,
   User,
 } from "@nextui-org/react";
 import { signOut, useSession } from "next-auth/react";
-import { UserIcon } from "lucide-react";
 import { FaUser } from "react-icons/fa";
 
 export function UserHeader() {
@@ -35,11 +33,6 @@ export function UserHeader() {
       key: "leagues",
       href: "/my/leagues",
       label: "Leagues",
-    },
-    {
-      key: "teams",
-      href: "/my/teams",
-      label: "Teams",
     },
   ];
 

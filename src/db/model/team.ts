@@ -1,5 +1,6 @@
 import { League, Team, teams } from "@/db/schema";
 import { db } from "@/db";
+import { and } from "drizzle-orm";
 
 export function getTeamSize(teamName: string) {
   return teamName.split(",").length;
@@ -11,7 +12,8 @@ export async function getOrCreateTeam(
   userId: string,
 ): Promise<Team> {
   const existingTeam = await db.query.teams.findFirst({
-    where: (team, { eq }) => eq(team.name, name),
+    where: (team, { eq }) =>
+      and(eq(team.name, name), eq(team.leagueId, league.id)),
   });
   if (existingTeam) {
     return existingTeam;

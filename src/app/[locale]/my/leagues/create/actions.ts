@@ -4,6 +4,8 @@ import { createAuthenticatedServerAction } from "@/utils/server-action-helper";
 import { leagueFormSchema } from "@/app/[locale]/my/leagues/validation";
 import { validateRatingSystemParameters } from "@/lib/rating";
 import { createLeague } from "@/db/model/league";
+import { revalidatePath } from "next/cache";
+import { updateUser } from "@/db/model/user";
 
 export const createLeagueAction = createAuthenticatedServerAction(
   leagueFormSchema,
@@ -20,22 +22,22 @@ export const createLeagueAction = createAuthenticatedServerAction(
       };
     }
 
-    await createLeague(
+    const league = await createLeague(
       user,
       data.name,
       data.game,
-      data.maxScorePerMatch,
       data.ratingSystem,
       data.defaultRating,
       data.ratingSystemParameters,
       data.description,
     );
 
+    await updateUser(user.id, {
+      selectedLeagueId: league.id
+    });
+
     return {
       status: "success",
-      data: {
-        foo: "bar",
-      },
     };
   },
 );

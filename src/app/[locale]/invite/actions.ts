@@ -7,6 +7,7 @@ import {
   getLeagueByInviteCode,
   userIsInLeague,
 } from "@/db/model/league";
+import { updateUser } from "@/db/model/user";
 
 export const joinLeagueAction = createAuthenticatedServerAction(
   zfd.formData({
@@ -35,6 +36,9 @@ export const joinLeagueAction = createAuthenticatedServerAction(
     }
 
     await createMembership(league, user);
+    await updateUser(user.id, {
+      selectedLeagueId: league.id
+    });
 
     return {
       status: "success",

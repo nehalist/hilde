@@ -15,6 +15,9 @@ export default async function Invite({
   }
   const user = await getCurrentUser();
   const [league] = await getLeagueByInviteCode(searchParams.code);
+  if (! league) {
+    return notFound();
+  }
   if (await userIsInLeague(league.id, user!)) {
     return redirect("/");
   }

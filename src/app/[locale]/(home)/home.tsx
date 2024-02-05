@@ -1,19 +1,22 @@
 import { MatchCreationForm } from "@/app/[locale]/(home)/match-creation-form";
-import { getLeagueTeamsForCurrentUser, getSelectedUserLeague } from "@/db/model/league";
+import { getLeagueTeams, getLeagueTeamsForCurrentUser, getSelectedUserLeague } from "@/db/model/league";
 import { RecentMatches } from "@/app/[locale]/(home)/recent-matches";
 import { getRecentLeagueMatches } from "@/db/model/match";
+import { RefreshOnFocus } from "@/components/refresh-on-focus";
 
 export async function Home() {
   const league = await getSelectedUserLeague();
-  const teams = await getLeagueTeamsForCurrentUser();
   const recentMatches = await getRecentLeagueMatches();
 
   if (! league) {
     return null;
   }
 
+  const teams = await getLeagueTeams(league.id);
+
   return (
     <>
+      <RefreshOnFocus />
       <MatchCreationForm teams={teams} />
       <RecentMatches matches={recentMatches} />
     </>

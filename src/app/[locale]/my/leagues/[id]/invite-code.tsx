@@ -1,7 +1,7 @@
 "use client";
 
-import { Card, CardBody } from "@nextui-org/card";
-import { Button, Snippet } from "@nextui-org/react";
+import { Card, CardBody, CardHeader } from "@nextui-org/card";
+import { Button, Divider, Snippet } from "@nextui-org/react";
 import { useLocale } from "next-intl";
 import { defaultLocale } from "@/i18n";
 import { League } from "@/db/schema";
@@ -53,8 +53,16 @@ export function InviteCode({ league }: { league: League }) {
 
   return (
     <Card>
+      <CardHeader>
+        <div className="flex flex-col">
+          <p className="text-md">Invite Code</p>
+          <p className="text-small text-default-500">
+            Send this link to invite users to your league.
+          </p>
+        </div>
+      </CardHeader>
+      <Divider />
       <CardBody>
-        <p>To add new users to this league, send them the following link:</p>
         <form action={formAction}>
           <input type="hidden" name="leagueId" value={league.id} />
           <div className="flex gap-2 my-2">

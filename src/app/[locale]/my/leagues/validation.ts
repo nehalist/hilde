@@ -6,8 +6,6 @@ export const leagueFormSchema = zfd.formData({
   name: zfd.text(z.string()),
   description: zfd.text(z.string().optional()),
   game: zfd.text(z.string()),
-  maxScorePerMatch: zfd.numeric(z.number()),
-  allowDraws: zfd.checkbox(),
   ratingSystem: zfd.text(z.nativeEnum(RatingSystem)),
   defaultRating: zfd.numeric(z.number()),
   ratingSystemParameters: zfd.text(

@@ -12,10 +12,6 @@ export default function MyLayout({ children }: { children: ReactNode }) {
       label: "Leagues",
       href: "/my/leagues",
     },
-    {
-      label: "Teams",
-      href: "/my/teams",
-    },
   ];
 
   return (

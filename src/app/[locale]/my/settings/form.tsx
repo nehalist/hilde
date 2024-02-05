@@ -92,7 +92,7 @@ export function SettingsForm({ user }: { user: User }) {
   }, [state]);
 
   return (
-    <form className="flex flex-col gap-3 w-4/6" action={formAction}>
+    <form className="flex flex-col gap-3" action={formAction}>
       <SettingsFormFields user={user} register={register} isValid={isValid} />
     </form>
   );
