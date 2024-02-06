@@ -2,7 +2,7 @@
 
 import { Controller, useForm, UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { leagueFormSchema } from "@/app/[locale]/my/leagues/validation";
+import { createLeagueFormSchema } from "@/app/[locale]/my/leagues/validation";
 import { useFormState, useFormStatus } from "react-dom";
 import { createLeagueAction } from "@/app/[locale]/my/leagues/create/actions";
 import { games } from "@/lib/games";
@@ -176,7 +176,7 @@ function CreateLeagueFormFields({
                       `rating.ratingSystemParameters.${parameter.id}Description`,
                       { default: parameter.defaultValue },
                     )}
-                    defaultValue={parameter.defaultValue}
+                    defaultValue={`${parameter.defaultValue}`}
                     onValueChange={value => {
                       form.setValue(
                         "ratingSystemParameters",
@@ -210,7 +210,7 @@ export function CreateLeagueForm() {
   const defaultRatingSystem = RatingSystem.Elo;
   const form = useForm<CreateLeagueFormValues>({
     mode: "all",
-    resolver: zodResolver(leagueFormSchema),
+    resolver: zodResolver(createLeagueFormSchema),
     defaultValues: {
       name: "",
       description: "",

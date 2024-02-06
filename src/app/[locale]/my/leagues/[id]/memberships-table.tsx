@@ -11,15 +11,31 @@ import {
   TableRow,
   User,
 } from "@nextui-org/react";
-import { Team, User as UserModel } from "@/db/schema";
+import { League, Membership, User as UserModel } from "@/db/schema";
 import { Card, CardHeader } from "@nextui-org/card";
 import { FaUser } from "react-icons/fa";
-import { TrashIcon } from "lucide-react";
+import { useFormState, useFormStatus } from "react-dom";
+import { removeMembershipAction } from "@/app/[locale]/my/leagues/[id]/actions";
+import { useServerActionState } from "@/hooks/use-server-action-state";
 
-export function UserTable({
-  user,
+function RemoveButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button type="submit" color="danger" size="sm" isLoading={pending}>
+      Remove
+    </Button>
+  );
+}
+
+export function MembershipsTable({
+  memberships,
+  currentUser,
+  league,
 }: {
-  user: (UserModel & { teams: Team[] })[];
+  league: League;
+  memberships: (Membership & { user: UserModel })[];
+  currentUser: UserModel;
 }) {
   const columns = [
     {
@@ -31,6 +47,15 @@ export function UserTable({
       label: "",
     },
   ];
+  const [state, formAction] = useFormState(removeMembershipAction, null);
+
+  useServerActionState(state, {
+    onSuccess: () => {
+      return {
+        message: "User removed",
+      };
+    },
+  });
 
   return (
     <Card>
@@ -47,9 +72,9 @@ export function UserTable({
         <TableHeader columns={columns}>
           {column => <TableColumn key={column.key}>{column.label}</TableColumn>}
         </TableHeader>
-        <TableBody items={user}>
+        <TableBody items={memberships}>
           {item => (
-            <TableRow key={item.id}>
+            <TableRow key={item.user.id}>
               <TableCell>
                 <User
                   as="button"
@@ -58,14 +83,17 @@ export function UserTable({
                     fallback: <FaUser />,
                   }}
                   className="transition-transform"
-                  name={item.name}
-                  description={<>{item.teams.map(t => t.name).join(", ")}</>}
+                  name={item.user.name}
                 />
               </TableCell>
               <TableCell className="text-right">
-                <Button color="danger" size="sm">
-                  Remove
-                </Button>
+                {currentUser.id !== item.user.id && (
+                  <form action={formAction}>
+                    <input type="hidden" name="userId" value={item.user.id} />
+                    <input type="hidden" name="leagueId" value={league.id} />
+                    <RemoveButton />
+                  </form>
+                )}
               </TableCell>
             </TableRow>
           )}

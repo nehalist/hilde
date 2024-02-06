@@ -4,15 +4,12 @@ import {
   matches,
   membershipRole,
   memberships,
-  Team,
   teams,
   User,
-  users,
 } from "@/db/schema";
 import { db } from "@/db";
 import { and, desc, eq, or, sql } from "drizzle-orm";
 import { RatingSystem } from "@/lib/rating";
-import { redirect } from "@/lib/navigation";
 import { getCurrentUser } from "@/lib/session";
 
 export async function getUserLeagues(user: User) {
@@ -82,13 +79,11 @@ export async function createMembership(
     })
     .returning();
 
-  await db
-    .insert(teams)
-    .values({
-      leagueId: league.id,
-      userId: user.id,
-      name: user.name || "Unknown",
-    });
+  await db.insert(teams).values({
+    leagueId: league.id,
+    userId: user.id,
+    name: user.name || "Unknown",
+  });
 
   return membership;
 }
@@ -97,42 +92,17 @@ export async function updateLeague(league: League, data: Partial<League>) {
   return db.update(leagues).set(data).where(eq(leagues.id, league.id));
 }
 
-export async function getLeagueWithUser(leagueId: string) {
-  const data = await db
-    .select()
-    .from(leagues)
-    .leftJoin(teams, eq(teams.leagueId, leagues.id))
-    .leftJoin(users, eq(users.id, teams.userId))
-    .where(eq(leagues.id, leagueId));
-
-  if (!data) {
-    redirect("/404");
-  }
-
-  const user: (User & { teams: Team[] })[] = [];
-  data.forEach(row => {
-    if (!row.user) {
-      return;
-    }
-    if (user.find(u => u.id === row.user?.id)) {
-      if (
-        row.team &&
-        !user.find(u => u.teams.find(t => t.id === row.team?.id))
-      ) {
-        user.find(u => u.id === row.user?.id)?.teams.push(row.team);
-      }
-      return;
-    }
-    user.push({
-      ...row.user,
-      teams: row.team ? [row.team] : [],
-    });
+export async function getLeagueWithMemberships(leagueId: string) {
+  return db.query.leagues.findFirst({
+    with: {
+      memberships: {
+        with: {
+          user: true,
+        },
+      },
+    },
+    where: eq(leagues.id, leagueId),
   });
-
-  return {
-    league: data[0]?.league,
-    user,
-  };
 }
 
 export async function getLeagueByInviteCode(code: string) {
@@ -169,6 +139,14 @@ export async function userIsInLeague(leagueId: string, user: User) {
   return !!membership;
 }
 
+export async function removeUserFromLeague(leagueId: string, user: User) {
+  return db
+    .delete(memberships)
+    .where(
+      and(eq(memberships.leagueId, leagueId), eq(memberships.userId, user.id)),
+    );
+}
+
 export async function getLeaguesForCurrentUser() {
   const user = await getCurrentUser();
   if (!user) {
@@ -194,16 +172,14 @@ export async function getLeagueTeamsForCurrentUser() {
   return db.query.teams.findMany({
     where: and(
       eq(teams.leagueId, user.selectedLeagueId),
-      eq(teams.userId, user.id)
+      eq(teams.userId, user.id),
     ),
   });
 }
 
 export async function getLeagueTeams(leagueId: string) {
   return db.query.teams.findMany({
-    where: and(
-      eq(teams.leagueId, leagueId),
-    ),
+    where: and(eq(teams.leagueId, leagueId)),
   });
 }
 
@@ -213,10 +189,10 @@ export async function getSelectedUserLeague() {
     return null;
   }
   const selectedLeagueId = user.selectedLeagueId;
-  if (! selectedLeagueId) {
+  if (!selectedLeagueId) {
     return null;
   }
   return db.query.leagues.findFirst({
-    where: (leagues, { eq }) => eq(leagues.id, selectedLeagueId)
-  })
+    where: (leagues, { eq }) => eq(leagues.id, selectedLeagueId),
+  });
 }

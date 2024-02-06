@@ -1,6 +1,8 @@
-import { getLeagueWithUser } from "@/db/model/league";
+import { getLeagueWithMemberships } from "@/db/model/league";
 import { MyHeader } from "@/app/[locale]/my/my-header";
 import { LeagueManagementContent } from "@/app/[locale]/my/leagues/[id]/content";
+import { getCurrentUser } from "@/lib/session";
+import { notFound } from "next/navigation";
 
 export default async function LeagueDetails({
   params: { id },
@@ -8,20 +10,20 @@ export default async function LeagueDetails({
   params: { id: string };
   pageUrl: string;
 }) {
-  const league = await getLeagueWithUser(id);
+  const league = await getLeagueWithMemberships(id);
+  const user = await getCurrentUser();
+
+  if (!league || league.ownerId !== user?.id) {
+    return notFound();
+  }
 
   return (
     <>
       <MyHeader
-        title={league.league.name}
-        description={league.league.description || "No description"}
+        title={league.name}
+        description={league.description || "No description"}
       />
-      <LeagueManagementContent data={league} />
-      {/*<div>settings: image, name, description</div>*/}
-      {/*<div>game settings</div>*/}
-      {/*<div>rating settings</div>*/}
-      {/*<UserTable data={league} />*/}
-      {/*<div>administrative controls: delete league</div>*/}
+      <LeagueManagementContent league={league} currentUser={user} />
     </>
   );
 }

@@ -10,25 +10,32 @@ import {
   SelectItem,
   Textarea,
 } from "@nextui-org/react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, UseFormReturn } from "react-hook-form";
 import { GameIcon } from "@/components/game-icon";
 import { games } from "@/lib/games";
 import { useTranslations } from "next-intl";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { leagueFormSchema } from "@/app/[locale]/my/leagues/validation";
-import { CreateLeagueFormValues } from "@/app/[locale]/my/leagues/create/form";
+import { updateLeagueFormSchema } from "@/app/[locale]/my/leagues/validation";
+import { ratingSystems } from "@/lib/rating";
+import { updateLeagueAction } from "@/app/[locale]/my/leagues/[id]/actions";
+import { useFormState, useFormStatus } from "react-dom";
+import { useServerActionState } from "@/hooks/use-server-action-state";
 
-export function LeagueSettings({ league }: { league: League }) {
+interface UpdateLeagueFormValues {
+  name: string;
+  description: string;
+  game: string;
+}
+
+function UpdateLeagueForm({
+  league,
+  form
+}: {
+  league: League;
+  form: UseFormReturn<UpdateLeagueFormValues>;
+}) {
   const t = useTranslations();
-  const form = useForm<CreateLeagueFormValues>({
-    mode: "all",
-    resolver: zodResolver(leagueFormSchema),
-    defaultValues: {
-      name: league.name,
-      description: league.description || "",
-      game: league.game,
-    },
-  });
+  const { pending } = useFormStatus();
 
   return (
     <Card>
@@ -75,16 +82,64 @@ export function LeagueSettings({ league }: { league: League }) {
             )}
           />
           <div>
-            Rating system: {league.ratingSystem} (
-            {JSON.stringify(league.ratingSystemParameters)})
+            <Select
+              label={t("rating.ratingSystemLabel")}
+              name="ratingSystem"
+              defaultSelectedKeys={[league.ratingSystem]}
+              isDisabled={true}
+              className="w-1/2"
+              description={Object.keys(
+                league.ratingSystemParameters as Record<string, number>,
+              ).map(
+                rsp =>
+                  `${rsp}: ${
+                    (league.ratingSystemParameters as Record<string, number>)[
+                      rsp as keyof typeof league.ratingSystemParameters
+                    ]
+                  }`,
+              )}
+            >
+              {ratingSystems.map(rs => (
+                <SelectItem key={rs.id}>{rs.name}</SelectItem>
+              ))}
+            </Select>
           </div>
         </div>
       </CardBody>
       <CardFooter>
-        <Button type="submit" color="primary" isLoading={false}>
+        <input type="hidden" name="leagueId" value={league.id} />
+        <Button type="submit" color="primary" isLoading={pending}>
           {t("saveButtonLabel")}
         </Button>
       </CardFooter>
     </Card>
+  );
+}
+
+export function LeagueSettings({ league }: { league: League }) {
+  const form = useForm<UpdateLeagueFormValues>({
+    mode: "all",
+    resolver: zodResolver(updateLeagueFormSchema),
+    defaultValues: {
+      name: league.name,
+      description: league.description || "",
+      game: league.game,
+    },
+  });
+  const [state, formAction] = useFormState(updateLeagueAction, null);
+
+  useServerActionState(state, {
+    onSuccess: () => {
+      return {
+        message: "League updated",
+        redirect: `/my/leagues`,
+      };
+    },
+  });
+
+  return (
+    <form action={formAction}>
+      <UpdateLeagueForm league={league} form={form} />
+    </form>
   );
 }

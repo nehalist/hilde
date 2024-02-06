@@ -2,7 +2,7 @@ import { zfd } from "zod-form-data";
 import { z } from "zod";
 import { RatingSystem } from "@/lib/rating";
 
-export const leagueFormSchema = zfd.formData({
+export const createLeagueFormSchema = zfd.formData({
   name: zfd.text(z.string()),
   description: zfd.text(z.string().optional()),
   game: zfd.text(z.string()),
@@ -17,4 +17,11 @@ export const leagueFormSchema = zfd.formData({
       }
     }),
   ),
+});
+
+export const updateLeagueFormSchema = zfd.formData({
+  name: zfd.text(z.string()),
+  description: zfd.text(z.string().optional()),
+  game: zfd.text(z.string()),
+  leagueId: zfd.text(),
 });

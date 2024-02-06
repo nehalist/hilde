@@ -1,10 +1,10 @@
 import {
-  boolean,
   integer,
-  json, numeric,
+  json,
   pgEnum,
   pgTable,
-  primaryKey, real,
+  primaryKey,
+  real,
   text,
   timestamp,
   unique,
@@ -21,7 +21,7 @@ export const gamesEnum = pgEnum("game", [
 export const ratingSystemsEnum = pgEnum("ratingSystem", [
   "unknown",
   "elo",
-  "glicko2"
+  "glicko2",
 ]);
 export const userRolesEnum = pgEnum("role", ["user", "admin"]);
 export const membershipRole = pgEnum("membershipRole", ["member", "admin"]);
@@ -46,6 +46,18 @@ export const leagues = pgTable("league", {
   createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
 });
 
+export const leaguesRelations = relations(leagues, ({ one, many }) => ({
+  owner: one(users, {
+    fields: [leagues.ownerId],
+    references: [users.id],
+  }),
+  teams: many(teams),
+  memberships: many(memberships),
+}));
+
+export type League = typeof leagues.$inferSelect;
+export type NewLeague = typeof leagues.$inferInsert;
+
 export const memberships = pgTable(
   "memberships",
   {
@@ -63,17 +75,18 @@ export const memberships = pgTable(
   }),
 );
 
-export type League = typeof leagues.$inferSelect;
-export type NewLeague = typeof leagues.$inferInsert;
-
-export const leaguesRelations = relations(leagues, ({ one, many }) => ({
-  owner: one(users, {
-    fields: [leagues.ownerId],
+export const membershipsRelations = relations(memberships, ({ one }) => ({
+  league: one(leagues, {
+    fields: [memberships.leagueId],
+    references: [leagues.id],
+  }),
+  user: one(users, {
+    fields: [memberships.userId],
     references: [users.id],
   }),
-  teams: many(teams),
-  users: many(memberships),
 }));
+
+export type Membership = typeof memberships.$inferSelect;
 
 export const teams = pgTable(
   "team",
@@ -86,9 +99,7 @@ export const teams = pgTable(
       .notNull()
       .references(() => leagues.id, { onDelete: "cascade" }),
     teamSize: integer("teamsize").notNull().default(1),
-    userId: text("userId")
-      .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
+    userId: text("userId").references(() => users.id, { onDelete: "set null" }),
     rating: real("rating").notNull().default(1000),
     createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
   },
@@ -179,7 +190,7 @@ export const usersRelations = relations(users, ({ one, many }) => ({
     fields: [users.selectedLeagueId],
     references: [leagues.id],
   }),
-  leagues: many(memberships),
+  memberships: many(memberships),
   teams: many(teams),
   matches: many(matches),
 }));
