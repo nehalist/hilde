@@ -1,6 +1,7 @@
 import { faker, simpleFaker } from "@faker-js/faker";
 import { db } from "@/db";
 import { League, leagues, memberships, NewTeam, teams, User, users } from "@/db/schema";
+import { eq } from "drizzle-orm";
 
 type TeamsSeedProps = {
   count: number | undefined,
@@ -22,7 +23,7 @@ async function seedUser(): Promise<User> {
   return user;
 }
 
-async function seedLeague({ user, role = "admin" }: { user: User; role: "admin" | "member"; }): Promise<League> {
+async function seedLeague({ user, role, setSelectedLeague }: { user: User; role: "admin" | "member"; setSelectedLeague: boolean }): Promise<League> {
   const [league] = await db.insert(leagues).values({
     name: faker.company.name(),
     ownerId: user.id,
@@ -35,6 +36,12 @@ async function seedLeague({ user, role = "admin" }: { user: User; role: "admin" 
       userId: user.id,
       role,
     });
+
+  if (setSelectedLeague) {
+    await db.update(users).set({
+      selectedLeagueId: league.id,
+    }).where(eq(users.id, user.id))
+  }
 
   return league;
 }
@@ -88,7 +95,7 @@ async function clear() {
 async function seed() {
   const teamCount = 20;
   const user = await seedUser();
-  const league = await seedLeague({ user, role: "admin" });
+  const league = await seedLeague({ user, role: "admin", setSelectedLeague: true });
   await seedTeams({ owner: user, league, count: teamCount });
 }
 
