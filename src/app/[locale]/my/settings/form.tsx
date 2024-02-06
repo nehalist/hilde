@@ -89,7 +89,7 @@ export function SettingsForm({ user }: { user: User }) {
           type: "error",
         });
     }
-  }, [state]);
+  }, [state, update]);
 
   return (
     <form className="flex flex-col gap-3" action={formAction}>

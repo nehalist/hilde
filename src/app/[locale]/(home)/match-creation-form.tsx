@@ -39,78 +39,78 @@ export function MatchCreationForm({ teams }: MatchCreationFormProps) {
     <Card className="overflow-visible">
       <form action={formAction}>
         <CardBody className="overflow-y-visible">
-            <div className="grid grid-cols-12">
-              <div className="col-span-5">
-                <div className="grid grid-cols-12 gap-3 items-start">
-                  <div className="col-span-8">
-                    <input type="hidden" name="team1" ref={team1Ref} />
-                    <Controller
-                      control={control}
-                      name="team1"
-                      render={({ field: { onChange } }) => (
-                        <MatchTeamSelector
-                          autoFocus={true}
-                          value={[]} // todo own team
-                          teams={teams}
-                          onChange={data => {
-                            onChange(data);
-                            if (!team1Ref.current) {
-                              return;
-                            }
-                            return (team1Ref.current.value = data.join(","));
-                          }}
-                        />
-                      )}
-                    />
-                  </div>
-                  <div className="col-span-4 flex items-end gap-1">
-                    <Input
-                      type="number"
-                      placeholder="2"
-                      label="Score"
-                      labelPlacement="outside"
-                      {...register("score1")}
-                    />
-                  </div>
+          <div className="grid grid-cols-12">
+            <div className="col-span-5">
+              <div className="grid grid-cols-12 gap-3 items-start">
+                <div className="col-span-8">
+                  <input type="hidden" name="team1" ref={team1Ref} />
+                  <Controller
+                    control={control}
+                    name="team1"
+                    render={({ field: { onChange } }) => (
+                      <MatchTeamSelector
+                        autoFocus={true}
+                        value={[]} // todo own team
+                        teams={teams}
+                        onChange={data => {
+                          onChange(data);
+                          if (!team1Ref.current) {
+                            return;
+                          }
+                          return (team1Ref.current.value = data.join(","));
+                        }}
+                      />
+                    )}
+                  />
                 </div>
-              </div>
-              <div className="col-span-2 text-center self-center">
-                <h3 className="font-bold text-3xl">vs</h3>
-              </div>
-              <div className="col-span-5">
-                <div className="grid grid-cols-12 gap-3 items-start">
-                  <div className="col-span-8">
-                    <input type="hidden" name="team2" ref={team2Ref} />
-                    <Controller
-                      control={control}
-                      name="team2"
-                      render={({ field: { onChange } }) => (
-                        <MatchTeamSelector
-                          value={[]}
-                          teams={teams}
-                          onChange={data => {
-                            onChange(data);
-                            if (!team2Ref.current) {
-                              return;
-                            }
-                            return (team2Ref.current.value = data.join(","));
-                          }}
-                        />
-                      )}
-                    />
-                  </div>
-                  <div className="col-span-4">
-                    <Input
-                      type="number"
-                      placeholder="3"
-                      label="Score"
-                      labelPlacement="outside"
-                      {...register("score2")}
-                    />
-                  </div>
+                <div className="col-span-4 flex items-end gap-1">
+                  <Input
+                    type="number"
+                    placeholder="2"
+                    label="Score"
+                    labelPlacement="outside"
+                    {...register("score1")}
+                  />
                 </div>
               </div>
             </div>
+            <div className="col-span-2 text-center self-center">
+              <h3 className="font-bold text-3xl">vs</h3>
+            </div>
+            <div className="col-span-5">
+              <div className="grid grid-cols-12 gap-3 items-start">
+                <div className="col-span-8">
+                  <input type="hidden" name="team2" ref={team2Ref} />
+                  <Controller
+                    control={control}
+                    name="team2"
+                    render={({ field: { onChange } }) => (
+                      <MatchTeamSelector
+                        value={[]}
+                        teams={teams}
+                        onChange={data => {
+                          onChange(data);
+                          if (!team2Ref.current) {
+                            return;
+                          }
+                          return (team2Ref.current.value = data.join(","));
+                        }}
+                      />
+                    )}
+                  />
+                </div>
+                <div className="col-span-4">
+                  <Input
+                    type="number"
+                    placeholder="3"
+                    label="Score"
+                    labelPlacement="outside"
+                    {...register("score2")}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
         </CardBody>
         <Divider />
         <CardFooter>

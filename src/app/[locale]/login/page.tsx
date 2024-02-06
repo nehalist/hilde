@@ -4,7 +4,7 @@ import { Container } from "@/components/container";
 import { Card, CardBody } from "@nextui-org/card";
 import { LoginForm } from "@/app/[locale]/login/form";
 
-export default async function Login() {
+export default function Login() {
   return (
     <Container>
       <div className="max-w-xl mx-auto my-24">

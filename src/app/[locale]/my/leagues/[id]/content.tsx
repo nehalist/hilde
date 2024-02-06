@@ -14,7 +14,7 @@ export function LeagueManagementContent({
   league: Awaited<ReturnType<typeof getLeagueWithMemberships>>;
   currentUser: User;
 }) {
-  if (! league) {
+  if (!league) {
     return null;
   }
 

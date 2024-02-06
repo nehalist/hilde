@@ -6,7 +6,7 @@ import { leagueStatusEnum } from "@/db/schema";
 export function LeagueStatusChip({
   status,
 }: {
-  status: typeof leagueStatusEnum.enumValues[number] | null;
+  status: (typeof leagueStatusEnum.enumValues)[number] | null;
 }) {
   if (!status) {
     return null;

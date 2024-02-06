@@ -31,7 +31,9 @@ export function InviteForm({ league, code }: InviteFormProps) {
           <span className="text-sm text-gray-500">{t("title")}</span>
           <h2 className="text-6xl font-bold">
             {league.name}
-            <span className="text-sm block font-normal italic">{league.description || "No description"}</span>
+            <span className="text-sm block font-normal italic">
+              {league.description || "No description"}
+            </span>
           </h2>
           <div className="flex justify-center gap-3 mt-6">
             <Button type="submit" color="primary" className="w-64">

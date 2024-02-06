@@ -29,7 +29,7 @@ interface UpdateLeagueFormValues {
 
 function UpdateLeagueForm({
   league,
-  form
+  form,
 }: {
   league: League;
   form: UseFormReturn<UpdateLeagueFormValues>;

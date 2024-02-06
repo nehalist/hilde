@@ -1,9 +1,7 @@
 "use client";
 
 import {
-  Avatar,
   Button,
-  Chip,
   Table,
   TableBody,
   TableCell,
@@ -78,8 +76,12 @@ export function LeagueTable({
                 </div>
               </div>
             </TableCell>
-            <TableCell><GameChip game={item.league.game} /></TableCell>
-            <TableCell><LeagueStatusChip status={item.league.status} /></TableCell>
+            <TableCell>
+              <GameChip game={item.league.game} />
+            </TableCell>
+            <TableCell>
+              <LeagueStatusChip status={item.league.status} />
+            </TableCell>
             <TableCell>
               {item.ownership ? (
                 <Button

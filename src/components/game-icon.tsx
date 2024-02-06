@@ -18,7 +18,7 @@ export function GameIcon({ game: game }: { game: Game["id"] }) {
       icon = <GiSoccerField />;
       break;
     case "badminton":
-      icon = <GiShuttlecock />
+      icon = <GiShuttlecock />;
       break;
     case "chess":
       icon = <GiChessPawn />;
@@ -27,7 +27,6 @@ export function GameIcon({ game: game }: { game: Game["id"] }) {
       icon = <FaTrophy />;
       break;
   }
-
 
   return icon;
 }

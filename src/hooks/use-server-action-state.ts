@@ -48,5 +48,5 @@ export function useServerActionState<TData = any>(
         }
         break;
     }
-  }, [state]);
+  }, [state, options, router]);
 }

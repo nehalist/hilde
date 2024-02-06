@@ -14,7 +14,7 @@ export function RefreshOnFocus() {
     return () => {
       window.removeEventListener("focus", onFocus);
     };
-  }, []);
+  }, [refresh]);
 
   return null;
 }

@@ -51,13 +51,13 @@ function Hero() {
           </div>
           <div className="mt-16 flow-root sm:mt-24">
             <div className="-m-2 rounded-xl bg-gray-900/5 p-2 ring-1 ring-inset ring-gray-900/10 lg:-m-4 lg:rounded-2xl lg:p-4">
-              <img
-                src="https://placehold.co/2432x1442"
-                alt="App screenshot"
-                width={2432}
-                height={1442}
-                className="rounded-md shadow-2xl ring-1 ring-gray-900/10"
-              />
+              {/*<img*/}
+              {/*  src="https://placehold.co/2432x1442"*/}
+              {/*  alt="App screenshot"*/}
+              {/*  width={2432}*/}
+              {/*  height={1442}*/}
+              {/*  className="rounded-md shadow-2xl ring-1 ring-gray-900/10"*/}
+              {/*/>*/}
             </div>
           </div>
         </div>
@@ -120,13 +120,13 @@ export function LandingPage({ providers }: LandingPageProps) {
                   <span className="mb-2 inline-block text-default-500 text-sm">
                     foobar...
                   </span>
-                  <img
-                    src={slide.image}
-                    alt="App screenshot"
-                    width={500}
-                    height={300}
-                    className="rounded-md shadow-lg ring-1 ring-gray-900/10"
-                  />
+                  {/*<img*/}
+                  {/*  src={slide.image}*/}
+                  {/*  alt="App screenshot"*/}
+                  {/*  width={500}*/}
+                  {/*  height={300}*/}
+                  {/*  className="rounded-md shadow-lg ring-1 ring-gray-900/10"*/}
+                  {/*/>*/}
                 </div>
               ))}
             </Slider>

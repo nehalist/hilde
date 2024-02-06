@@ -1,9 +1,7 @@
 "use server";
 
 import { createAuthenticatedServerAction } from "@/utils/server-action-helper";
-import {
-  settingsFormSchema,
-} from "@/app/[locale]/my/settings/validation";
+import { settingsFormSchema } from "@/app/[locale]/my/settings/validation";
 import { updateUser } from "@/db/model/user";
 
 export const updateUserProfileAction = createAuthenticatedServerAction(

@@ -21,15 +21,15 @@ export const authOptions: AuthOptions = {
   session: {
     strategy: "jwt",
   },
-  adapter: DrizzleAdapter(db),
+  adapter: DrizzleAdapter(db) as any,
   providers: [
     GithubProvider({
       clientId: "id",
-      clientSecret: "secret"
+      clientSecret: "secret",
     }),
     DiscordProvider({
       clientId: "id",
-      clientSecret: "secret"
+      clientSecret: "secret",
     }),
     EmailProvider({
       server: process.env.EMAIL_SERVER,
@@ -108,8 +108,6 @@ export const authOptions: AuthOptions = {
         dbUser,
         `${name}'s League`,
         customGameId,
-        0,
-        true,
         eloRating.id,
         1000,
         getDefaultRatingSystemParameters(eloRating.id),

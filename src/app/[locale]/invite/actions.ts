@@ -37,7 +37,7 @@ export const joinLeagueAction = createAuthenticatedServerAction(
 
     await createMembership(league, user);
     await updateUser(user.id, {
-      selectedLeagueId: league.id
+      selectedLeagueId: league.id,
     });
 
     return {

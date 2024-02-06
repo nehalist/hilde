@@ -46,8 +46,8 @@ export function Login({ providers }: LoginProps) {
                     Sign in with Email
                   </Button>
                   <p className="text-sm leading-6 text-gray-500 mx-auto">
-                    No password required. You'll receive an email with a sign in
-                    link.
+                    No password required. You&apos;ll receive an email with a
+                    sign in link.
                   </p>
                 </div>
               </form>
@@ -63,9 +63,9 @@ export function Login({ providers }: LoginProps) {
                         <div className="w-full border-t border-default-200" />
                       </div>
                       <div className="relative flex justify-center text-sm font-medium leading-6">
-                    <span className="bg-white dark:bg-default-50 px-6 text-default-200">
-                      Or continue with
-                    </span>
+                        <span className="bg-white dark:bg-default-50 px-6 text-default-200">
+                          Or continue with
+                        </span>
                       </div>
                     </div>
                   </div>

@@ -4,7 +4,6 @@ import { createAuthenticatedServerAction } from "@/utils/server-action-helper";
 import { createLeagueFormSchema } from "@/app/[locale]/my/leagues/validation";
 import { validateRatingSystemParameters } from "@/lib/rating";
 import { createLeague } from "@/db/model/league";
-import { revalidatePath } from "next/cache";
 import { updateUser } from "@/db/model/user";
 
 export const createLeagueAction = createAuthenticatedServerAction(
@@ -33,7 +32,7 @@ export const createLeagueAction = createAuthenticatedServerAction(
     );
 
     await updateUser(user.id, {
-      selectedLeagueId: league.id
+      selectedLeagueId: league.id,
     });
 
     return {

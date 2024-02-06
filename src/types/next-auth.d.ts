@@ -6,7 +6,7 @@ declare module "next-auth" {
   interface Session {
     user: {
       selectedLeagueId?: string;
-      role: typeof userRolesEnum.enumValues[number];
+      role: (typeof userRolesEnum.enumValues)[number];
     } & DefaultSession["user"];
   }
 

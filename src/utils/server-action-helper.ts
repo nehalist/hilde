@@ -5,7 +5,7 @@ import { User } from "@/db/schema";
 type StateError = {
   status: "error";
   message?: string;
-}
+};
 
 type StateSuccess<T> = {
   status: "success";

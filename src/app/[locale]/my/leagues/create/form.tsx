@@ -8,7 +8,6 @@ import { createLeagueAction } from "@/app/[locale]/my/leagues/create/actions";
 import { games } from "@/lib/games";
 import {
   Button,
-  Checkbox,
   Divider,
   Input,
   Select,
@@ -97,11 +96,13 @@ function CreateLeagueFormFields({
       </Card>
       <Card>
         <CardHeader>
-        <div className="flex flex-col">
+          <div className="flex flex-col">
             <p className="text-md">{t("rating.title")}</p>
             <p className="text-small text-default-500">
               {t.rich("rating.description", {
-                warning: text => <span className="text-red-600 font-bold">{text}</span>
+                warning: text => (
+                  <span className="text-red-600 font-bold">{text}</span>
+                ),
               })}
             </p>
           </div>

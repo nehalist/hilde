@@ -23,7 +23,8 @@ export function LoginForm() {
           Sign in with Email
         </Button>
         <p className="text-sm leading-6 text-gray-500 mx-auto">
-          No password required. You'll receive an email with a sign in link.
+          No password required. You&apos;ll receive an email with a sign in
+          link.
         </p>
       </div>
     </form>

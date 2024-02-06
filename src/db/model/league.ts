@@ -44,7 +44,6 @@ export async function createLeague(
   defaultRating: number,
   ratingSystemParameters: Record<string, number>,
   description?: string,
-  image?: string,
 ) {
   const [league] = await db
     .insert(leagues)
@@ -55,7 +54,6 @@ export async function createLeague(
       ratingSystem,
       defaultRating,
       ratingSystemParameters,
-      image,
       ownerId: owner.id,
     })
     .returning();
@@ -68,7 +66,7 @@ export async function createLeague(
 export async function createMembership(
   league: League,
   user: User,
-  role?: typeof membershipRole.enumValues[number],
+  role?: (typeof membershipRole.enumValues)[number],
 ) {
   const [membership] = await db
     .insert(memberships)

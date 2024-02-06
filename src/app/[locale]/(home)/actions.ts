@@ -47,8 +47,8 @@ export const createMatchAction = createAuthenticatedServerAction(
     const selectedUserLeague = await getSelectedUserLeague();
     if (!selectedUserLeague) {
       return {
-        status: "error"
-      }
+        status: "error",
+      };
     }
 
     const team1Entity = await getOrCreateTeam(

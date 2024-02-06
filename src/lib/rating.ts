@@ -18,12 +18,20 @@ export const ratingSystems = [
         defaultValue: 32,
       },
     ],
-    getNewRating: (league: League, team: Team, opponent: Team, score1: number, score2: number) => {
-      const kFactor = (league.ratingSystemParameters as Record<string, number>).kFactor || 32;
+    getNewRating: (
+      league: League,
+      team: Team,
+      opponent: Team,
+      score1: number,
+      score2: number,
+    ) => {
+      const kFactor =
+        (league.ratingSystemParameters as Record<string, number>).kFactor || 32;
       const result = score1 > score2 ? 1 : score1 < score2 ? 0 : 0.5;
-      const expectedRating = 1 / (1 + 10 ** ((opponent.rating - team.rating) / 400));
+      const expectedRating =
+        1 / (1 + 10 ** ((opponent.rating - team.rating) / 400));
       return team.rating + kFactor * (result - expectedRating);
-    }
+    },
   },
   // {
   //   id: RatingSystem.Glicko2,
