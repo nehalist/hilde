@@ -37,7 +37,7 @@ export default async function Admin() {
 
   return (
     <div>
-      <p>It's a very poor admin, but it's a start.</p>
+      <p>It&apos;s a very poor admin, but it&apos;s a start.</p>
       <div className="grid grid-cols-3 gap-3 mt-3">
         <Card>
           <CardHeader>Total users</CardHeader>
