@@ -1,33 +1,24 @@
 "use client";
 
-import { League } from "@/db/schema";
-import { Card, CardBody, CardHeader } from "@nextui-org/card";
-import { useTranslations } from "next-intl";
-import { Button, Divider } from "@nextui-org/react";
-import { useFormState, useFormStatus } from "react-dom";
 import {
   closeLeagueAction,
   reopenLeagueAction,
 } from "@/app/[locale]/my/leagues/[id]/actions";
-import { useServerActionState } from "@/hooks/use-server-action-state";
-
-function CloseLeagueButton() {
-  const { pending } = useFormStatus();
-  return (
-    <Button type="submit" color="danger" size="lg" isLoading={pending}>
-      Close League
-    </Button>
-  );
-}
+import { League } from "@/db/schema";
+import { Card, CardBody, CardHeader } from "@nextui-org/card";
+import { Button, Divider } from "@nextui-org/react";
+import { useTranslations } from "next-intl";
+import { useAction } from "next-safe-action/hooks";
+import { isExecuting } from "next-safe-action/status";
+import { toast } from "react-toastify";
 
 function CloseLeague({ league }: { league: League }) {
-  const [state, formAction] = useFormState(closeLeagueAction, null);
-
-  useServerActionState(state, {
+  const { execute, status } = useAction(closeLeagueAction, {
     onSuccess: () => {
-      return {
-        message: "League closed",
-      };
+      toast("League closed", { type: "success" });
+    },
+    onError: () => {
+      toast("Failed to closed league", { type: "error" });
     },
   });
 
@@ -37,57 +28,52 @@ function CloseLeague({ league }: { league: League }) {
         Here you can close the league. This will make it read-only and prevent
         any further changes. You can always re-open it.
       </p>
-      <form
-        action={formAction}
-        className="flex gap-3 mt-3"
-        onSubmit={e => {
+      <Button
+        type="submit"
+        color="danger"
+        size="lg"
+        isLoading={isExecuting(status)}
+        onClick={() => {
           if (!confirm(`Are you sure you want to CLOSE ${league.name}?`)) {
-            e.preventDefault();
+            return;
           }
+          execute({ leagueId: league.id });
         }}
       >
-        <input type="hidden" name="leagueId" value={league.id} />
-        <CloseLeagueButton />
-      </form>
+        Close League
+      </Button>
     </div>
   );
 }
 
-function ReopenLeagueButton() {
-  const { pending } = useFormStatus();
-  return (
-    <Button type="submit" color="warning" size="lg" isLoading={pending}>
-      Re-open League
-    </Button>
-  );
-}
-
 function ReopenLeague({ league }: { league: League }) {
-  const [state, formAction] = useFormState(reopenLeagueAction, null);
-
-  useServerActionState(state, {
+  const { execute, status } = useAction(reopenLeagueAction, {
     onSuccess: () => {
-      return {
-        message: "League re-opened",
-      };
+      toast("League re-opened", { type: "success" });
+    },
+    onError: () => {
+      toast("Failed to re-open league", { type: "error" });
     },
   });
 
   return (
     <div>
       <p>This league is currently closed.</p>
-      <form
-        action={formAction}
-        className="flex gap-3 mt-3"
-        onSubmit={e => {
+      <input type="hidden" name="leagueId" value={league.id} />
+      <Button
+        type="submit"
+        color="warning"
+        size="lg"
+        isLoading={isExecuting(status)}
+        onClick={() => {
           if (!confirm(`Are you sure you want to RE-OPEN ${league.name}?`)) {
-            e.preventDefault();
+            return;
           }
+          execute({ leagueId: league.id });
         }}
       >
-        <input type="hidden" name="leagueId" value={league.id} />
-        <ReopenLeagueButton />
-      </form>
+        Re-open League
+      </Button>
     </div>
   );
 }

@@ -1,5 +1,9 @@
 "use client";
 
+import { removeMembershipAction } from "@/app/[locale]/my/leagues/[id]/actions";
+import { TimeDistance } from "@/components/time-distance";
+import { League, Membership, User as UserModel } from "@/db/schema";
+import { Card, CardHeader } from "@nextui-org/card";
 import {
   Button,
   Divider,
@@ -11,22 +15,10 @@ import {
   TableRow,
   User,
 } from "@nextui-org/react";
-import { League, Membership, User as UserModel } from "@/db/schema";
-import { Card, CardHeader } from "@nextui-org/card";
+import { useAction } from "next-safe-action/hooks";
+import { isExecuting } from "next-safe-action/status";
 import { FaUser } from "react-icons/fa";
-import { useFormState, useFormStatus } from "react-dom";
-import { removeMembershipAction } from "@/app/[locale]/my/leagues/[id]/actions";
-import { useServerActionState } from "@/hooks/use-server-action-state";
-
-function RemoveButton() {
-  const { pending } = useFormStatus();
-
-  return (
-    <Button type="submit" color="danger" size="sm" isLoading={pending}>
-      Remove
-    </Button>
-  );
-}
+import { toast } from "react-toastify";
 
 export function MembershipsTable({
   memberships,
@@ -43,17 +35,20 @@ export function MembershipsTable({
       label: "Name",
     },
     {
+      key: "joined",
+      label: "Joined",
+    },
+    {
       key: "actions",
       label: "",
     },
   ];
-  const [state, formAction] = useFormState(removeMembershipAction, null);
-
-  useServerActionState(state, {
+  const { execute, status } = useAction(removeMembershipAction, {
     onSuccess: () => {
-      return {
-        message: "User removed",
-      };
+      toast("Member removed", { type: "success" });
+    },
+    onError: () => {
+      toast("Failed to remove member", { type: "error" });
     },
   });
 
@@ -84,15 +79,25 @@ export function MembershipsTable({
                   }}
                   className="transition-transform"
                   name={item.user.name}
+                  description={item.role}
                 />
+              </TableCell>
+              <TableCell>
+                <TimeDistance date={item.createdAt} />
               </TableCell>
               <TableCell className="text-right">
                 {currentUser.id !== item.user.id && (
-                  <form action={formAction}>
-                    <input type="hidden" name="userId" value={item.user.id} />
-                    <input type="hidden" name="leagueId" value={league.id} />
-                    <RemoveButton />
-                  </form>
+                  <Button
+                    type="submit"
+                    color="danger"
+                    size="sm"
+                    isLoading={isExecuting(status)}
+                    onClick={() =>
+                      execute({ leagueId: league.id, userId: item.user.id })
+                    }
+                  >
+                    Remove
+                  </Button>
                 )}
               </TableCell>
             </TableRow>

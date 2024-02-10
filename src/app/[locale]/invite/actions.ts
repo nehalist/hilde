@@ -1,16 +1,17 @@
 "use server";
 
-import { createAuthenticatedServerAction } from "@/utils/server-action-helper";
-import { zfd } from "zod-form-data";
 import {
   createMembership,
   getLeagueByInviteCode,
   userIsInLeague,
 } from "@/db/model/league";
 import { updateUser } from "@/db/model/user";
+import { authAction } from "@/lib/safe-action";
+import { z } from "zod";
+import { zfd } from "zod-form-data";
 
-export const joinLeagueAction = createAuthenticatedServerAction(
-  zfd.formData({
+export const joinLeagueAction = authAction(
+  z.object({
     leagueId: zfd.text(),
     code: zfd.text(),
   }),

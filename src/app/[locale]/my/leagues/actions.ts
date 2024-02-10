@@ -1,30 +1,37 @@
 "use server";
 
-import { createAuthenticatedServerAction } from "@/utils/server-action-helper";
-import { zfd } from "zod-form-data";
-import { z } from "zod";
 import { db } from "@/db";
-import { teams } from "@/db/schema";
+import { memberships } from "@/db/schema";
+import { authAction } from "@/lib/safe-action";
 import { and, eq } from "drizzle-orm";
+import { z } from "zod";
 
-export const leaveLeagueAction = createAuthenticatedServerAction(
-  zfd.formData({
-    leagueId: zfd.text(z.string()),
+export const leaveLeagueAction = authAction(
+  z.object({
+    leagueId: z.string(),
   }),
-  async (data, { user }) => {
-    // const memberships = await db
-    //   .select()
-    //   .from(teamMembers)
-    //   .leftJoin(teams, eq(teamMembers.teamId, teams.id))
-    //   .where(
-    //     and(eq(teams.leagueId, data.leagueId), eq(teamMembers.userId, user.id)),
-    //   );
-    //
-    // for await (const membership of memberships) {
-    //   if (membership.team && membership.team.id) {
-    //     await db.delete(teams).where(eq(teams.id, membership.team.id));
-    //   }
-    // }
+  async ({ leagueId }, { user }) => {
+    const membership = await db.query.memberships.findFirst({
+      where: and(
+        eq(memberships.leagueId, leagueId),
+        eq(memberships.userId, user.id),
+      ),
+    });
+
+    if (!membership) {
+      return {
+        error: "You are not in this league.",
+      };
+    }
+
+    await db
+      .delete(memberships)
+      .where(
+        and(
+          eq(memberships.leagueId, leagueId),
+          eq(memberships.userId, user.id),
+        ),
+      );
 
     return {
       status: "success",

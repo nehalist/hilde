@@ -1,5 +1,10 @@
 "use client";
 
+import { leaveLeagueAction } from "@/app/[locale]/my/leagues/actions";
+import { GameChip } from "@/components/game-chip";
+import { LeagueStatusChip } from "@/components/league-status-chip";
+import { getUserLeagues } from "@/db/model/league";
+import { Link } from "@/lib/navigation";
 import {
   Button,
   Table,
@@ -10,13 +15,10 @@ import {
   TableRow,
 } from "@nextui-org/react";
 import { EditIcon } from "@nextui-org/shared-icons";
-import { Link } from "@/lib/navigation";
-import { getUserLeagues } from "@/db/model/league";
+import { useAction } from "next-safe-action/hooks";
+import { isExecuting } from "next-safe-action/status";
 import { FaCrown } from "react-icons/fa6";
-import { leaveLeagueAction } from "@/app/[locale]/my/leagues/actions";
-import { useFormState } from "react-dom";
-import { GameChip } from "@/components/game-chip";
-import { LeagueStatusChip } from "@/components/league-status-chip";
+import { toast } from "react-toastify";
 
 const columns = [
   {
@@ -42,7 +44,14 @@ export function LeagueTable({
 }: {
   leagues: Awaited<ReturnType<typeof getUserLeagues>>;
 }) {
-  const [state, leaveFormAction] = useFormState(leaveLeagueAction, null);
+  const { execute, status } = useAction(leaveLeagueAction, {
+    onSuccess: () => {
+      toast("League left", { type: "success" });
+    },
+    onError: () => {
+      toast("Failed to leave league", { type: "error" });
+    },
+  });
 
   return (
     <Table aria-label="League table">
@@ -92,19 +101,19 @@ export function LeagueTable({
                   <EditIcon />
                 </Button>
               ) : (
-                <form
-                  action={leaveFormAction}
-                  onSubmit={e => {
+                <Button
+                  type="submit"
+                  color="danger"
+                  onClick={() => {
                     if (!confirm(`Are you sure to leave ${item.league.name}`)) {
-                      e.preventDefault();
+                      return;
                     }
+                    execute({ leagueId: item.league.id });
                   }}
+                  isLoading={isExecuting(status)}
                 >
-                  <input type="hidden" name="leagueId" value={item.league.id} />
-                  <Button type="submit" color="danger">
-                    Leave
-                  </Button>
-                </form>
+                  Leave
+                </Button>
               )}
             </TableCell>
           </TableRow>

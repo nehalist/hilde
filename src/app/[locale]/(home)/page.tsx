@@ -11,5 +11,5 @@ export default async function Page() {
     return <LandingPage providers={providers} />;
   }
 
-  return <Home />;
+  return <Home user={user} />;
 }

@@ -1,3 +1,4 @@
+import { db } from "@/db";
 import {
   League,
   leagues,
@@ -7,10 +8,9 @@ import {
   teams,
   User,
 } from "@/db/schema";
-import { db } from "@/db";
-import { and, desc, eq, or, sql } from "drizzle-orm";
 import { RatingSystem } from "@/lib/rating";
 import { getCurrentUser } from "@/lib/session";
+import { and, desc, eq, or, sql } from "drizzle-orm";
 
 export async function getUserLeagues(user: User) {
   return db
@@ -33,7 +33,7 @@ export async function getUserLeagues(user: User) {
     .leftJoin(matches, eq(leagues.id, matches.leagueId))
     .groupBy(leagues.id)
     .orderBy(desc(leagues.createdAt))
-    .where(or(eq(teams.userId, user.id), eq(leagues.ownerId, user.id)));
+    .where(or(eq(memberships.userId, user.id), eq(leagues.ownerId, user.id)));
 }
 
 export async function createLeague(
@@ -112,7 +112,7 @@ export async function getLeagueByInviteCode(code: string) {
 }
 
 export async function getLeagueById(id: string) {
-  return db.select().from(leagues).where(eq(leagues.id, id));
+  return db.query.leagues.findFirst({ where: eq(leagues.id, id) });
 }
 
 export async function regenerateInviteCodeForLeague(league: League) {

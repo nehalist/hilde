@@ -42,9 +42,7 @@ export function MatchTeamSelector({
             instanceId={instanceId}
             className="z-50 relatives"
             placeholder=""
-            defaultValue={options.filter(option =>
-              value.includes(option.value),
-            )}
+            value={options.filter(option => value.includes(option.value))}
             unstyled={true}
             autoFocus={autoFocus}
             components={animatedComponents}

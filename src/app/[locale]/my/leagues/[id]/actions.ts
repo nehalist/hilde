@@ -1,31 +1,33 @@
 "use server";
 
-import { createAuthenticatedServerAction } from "@/utils/server-action-helper";
-import { zfd } from "zod-form-data";
+import { updateLeagueFormSchema } from "@/app/[locale]/my/leagues/validation";
 import {
   getLeagueById,
   regenerateInviteCodeForLeague,
   removeUserFromLeague,
   updateLeague,
 } from "@/db/model/league";
-import { updateLeagueFormSchema } from "@/app/[locale]/my/leagues/validation";
 import { getUserById } from "@/db/model/user";
+import { authAction } from "@/lib/safe-action";
+import { revalidatePath } from "next/cache";
+import { z } from "zod";
 
-export const closeLeagueAction = createAuthenticatedServerAction(
-  zfd.formData({
-    leagueId: zfd.text(),
+export const closeLeagueAction = authAction(
+  z.object({
+    leagueId: z.string(),
   }),
   async ({ leagueId }, { user }) => {
-    const [league] = await getLeagueById(leagueId);
-    if (league.ownerId !== user.id) {
+    const league = await getLeagueById(leagueId);
+    if (!league || league.ownerId !== user.id) {
       return {
-        status: "error",
+        status: "invalid league",
       };
     }
 
     await updateLeague(league, {
       status: "finished",
     });
+    revalidatePath(`/my/leagues/[id]`);
 
     return {
       status: "success",
@@ -33,13 +35,13 @@ export const closeLeagueAction = createAuthenticatedServerAction(
   },
 );
 
-export const reopenLeagueAction = createAuthenticatedServerAction(
-  zfd.formData({
-    leagueId: zfd.text(),
+export const reopenLeagueAction = authAction(
+  z.object({
+    leagueId: z.string(),
   }),
   async ({ leagueId }, { user }) => {
-    const [league] = await getLeagueById(leagueId);
-    if (league.ownerId !== user.id) {
+    const league = await getLeagueById(leagueId);
+    if (!league || league.ownerId !== user.id) {
       return {
         status: "error",
       };
@@ -48,6 +50,7 @@ export const reopenLeagueAction = createAuthenticatedServerAction(
     await updateLeague(league, {
       status: "active",
     });
+    revalidatePath(`/my/leagues/[id]`);
 
     return {
       status: "success",
@@ -55,19 +58,20 @@ export const reopenLeagueAction = createAuthenticatedServerAction(
   },
 );
 
-export const regenerateInviteCodeAction = createAuthenticatedServerAction(
-  zfd.formData({
-    leagueId: zfd.text(),
+export const regenerateInviteCodeAction = authAction(
+  z.object({
+    leagueId: z.string(),
   }),
   async ({ leagueId }, { user }) => {
-    const [league] = await getLeagueById(leagueId);
-    if (league.ownerId !== user.id) {
+    const league = await getLeagueById(leagueId);
+    if (!league || league.ownerId !== user.id) {
       return {
         status: "error",
       };
     }
 
     await regenerateInviteCodeForLeague(league);
+    revalidatePath(`/my/leagues/[id]`);
 
     return {
       status: "success",
@@ -75,11 +79,11 @@ export const regenerateInviteCodeAction = createAuthenticatedServerAction(
   },
 );
 
-export const updateLeagueAction = createAuthenticatedServerAction(
+export const updateLeagueAction = authAction(
   updateLeagueFormSchema,
   async (data, { user }) => {
-    const [league] = await getLeagueById(data.leagueId);
-    if (league.ownerId !== user.id) {
+    const league = await getLeagueById(data.leagueId);
+    if (!league || league.ownerId !== user.id) {
       return {
         status: "error",
       };
@@ -90,6 +94,7 @@ export const updateLeagueAction = createAuthenticatedServerAction(
       description: data.description,
       game: data.game,
     });
+    revalidatePath(`/my/leagues/[id]`);
 
     return {
       status: "success",
@@ -97,22 +102,23 @@ export const updateLeagueAction = createAuthenticatedServerAction(
   },
 );
 
-export const removeMembershipAction = createAuthenticatedServerAction(
-  zfd.formData({
-    leagueId: zfd.text(),
-    userId: zfd.text(),
+export const removeMembershipAction = authAction(
+  z.object({
+    leagueId: z.string(),
+    userId: z.string(),
   }),
   async (data, { user }) => {
-    const [league] = await getLeagueById(data.leagueId);
+    const league = await getLeagueById(data.leagueId);
     const member = await getUserById(data.userId);
 
-    if (league.ownerId !== user.id || !member) {
+    if (!league || league.ownerId !== user.id || !member) {
       return {
         status: "error",
       };
     }
 
     await removeUserFromLeague(league.id, member);
+    revalidatePath(`/my/leagues/[id]`);
 
     return {
       status: "success",

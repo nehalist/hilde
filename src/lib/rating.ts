@@ -94,7 +94,7 @@ export const validateRatingSystemParameters = (
   }
 
   for (const parameter of ratingSystemData.parameters) {
-    if (typeof parameters[parameter.id] !== "number") {
+    if (isNaN(+parameters[parameter.id])) {
       return false;
     }
   }

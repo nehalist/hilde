@@ -48,18 +48,23 @@ export async function createMatch(
     })
     .where(eq(teams.id, team2.id));
 
-  return db.insert(matches).values({
-    leagueId: league.id,
-    team1Id: team1.id,
-    team2Id: team2.id,
-    score1,
-    score2,
-    userId: user.id,
-    team1RatingChange: team1NewRating - team1Rating,
-    team2RatingChange: team2NewRating - team2Rating,
-    team1Rating: team1NewRating,
-    team2Rating: team2NewRating,
-  });
+  const [match] = await db
+    .insert(matches)
+    .values({
+      leagueId: league.id,
+      team1Id: team1.id,
+      team2Id: team2.id,
+      score1,
+      score2,
+      userId: user.id,
+      team1RatingChange: team1NewRating - team1Rating,
+      team2RatingChange: team2NewRating - team2Rating,
+      team1Rating: team1NewRating,
+      team2Rating: team2NewRating,
+    })
+    .returning();
+
+  return match;
 }
 
 export async function getRecentLeagueMatches() {

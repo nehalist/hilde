@@ -1,27 +1,18 @@
-import { zfd } from "zod-form-data";
-import { z } from "zod";
 import { RatingSystem } from "@/lib/rating";
+import { z } from "zod";
 
-export const createLeagueFormSchema = zfd.formData({
-  name: zfd.text(z.string()),
-  description: zfd.text(z.string().optional()),
-  game: zfd.text(z.string()),
-  ratingSystem: zfd.text(z.nativeEnum(RatingSystem)),
-  defaultRating: zfd.numeric(z.number()),
-  ratingSystemParameters: zfd.text(
-    z.string().transform(value => {
-      try {
-        return JSON.parse(value);
-      } catch (e) {
-        return z.never();
-      }
-    }),
-  ),
+export const createLeagueFormSchema = z.object({
+  name: z.string(),
+  description: z.string().optional(),
+  game: z.string(),
+  ratingSystem: z.nativeEnum(RatingSystem),
+  defaultRating: z.coerce.number().gt(0),
+  ratingSystemParameters: z.record(z.any()),
 });
 
-export const updateLeagueFormSchema = zfd.formData({
-  name: zfd.text(z.string()),
-  description: zfd.text(z.string().optional()),
-  game: zfd.text(z.string()),
-  leagueId: zfd.text(),
+export const updateLeagueFormSchema = z.object({
+  name: z.string(),
+  description: z.string().optional(),
+  game: z.string(),
+  leagueId: z.string(),
 });

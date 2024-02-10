@@ -1,16 +1,21 @@
 "use client";
 
-import { Card, CardBody, CardFooter } from "@nextui-org/card";
-import { MatchTeamSelector } from "@/app/[locale]/(home)/match-team-selector";
-import { Button, Divider, Input } from "@nextui-org/react";
-import { getLeagueTeamsForCurrentUser } from "@/db/model/league";
-import { Controller, useForm } from "react-hook-form";
-import { useFormState } from "react-dom";
 import { createMatchAction } from "@/app/[locale]/(home)/actions";
-import { useRef } from "react";
+import { MatchTeamSelector } from "@/app/[locale]/(home)/match-team-selector";
+import { matchCreationSchema } from "@/app/[locale]/(home)/validation";
+import { getLeagueTeamsForCurrentUser } from "@/db/model/league";
+import { User } from "@/db/schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Card, CardBody, CardFooter } from "@nextui-org/card";
+import { Button, Divider, Input } from "@nextui-org/react";
+import { useAction } from "next-safe-action/hooks";
+import { isExecuting } from "next-safe-action/status";
+import { Controller, useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 
 interface MatchCreationFormProps {
   teams: Awaited<ReturnType<typeof getLeagueTeamsForCurrentUser>>;
+  user: User;
 }
 
 interface FormValues {
@@ -21,44 +26,62 @@ interface FormValues {
   comment: string;
 }
 
-export function MatchCreationForm({ teams }: MatchCreationFormProps) {
-  const { register, control } = useForm<FormValues>({
+export function MatchCreationForm({ teams, user }: MatchCreationFormProps) {
+  const userTeam = teams
+    .sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1))
+    .find(t => t.userId === user.id);
+  const {
+    handleSubmit,
+    register,
+    control,
+    reset,
+    formState: { isValid },
+  } = useForm<FormValues>({
+    resolver: zodResolver(matchCreationSchema),
     defaultValues: {
-      team1: ["foo", "bar", "foobar", "foozbar", "foobaz", "whahaah"],
+      team1: userTeam ? [userTeam.name] : [],
       score1: "",
       team2: [],
       score2: "",
       comment: "",
     },
   });
-  const [state, formAction] = useFormState(createMatchAction, null);
-  const team1Ref = useRef<HTMLInputElement>(null);
-  const team2Ref = useRef<HTMLInputElement>(null);
+  const { execute, status } = useAction(createMatchAction, {
+    onSuccess: () => {
+      toast("League joined", { type: "success" });
+      reset();
+    },
+    onError: () => {
+      toast("Failed to join league", { type: "error" });
+    },
+  });
 
   return (
     <Card className="overflow-visible">
-      <form action={formAction}>
+      <form
+        onSubmit={handleSubmit(data =>
+          execute({
+            team1: data.team1,
+            team2: data.team2,
+            score1: +data.score1,
+            score2: +data.score2,
+          }),
+        )}
+      >
         <CardBody className="overflow-y-visible">
           <div className="grid grid-cols-12">
             <div className="col-span-5">
               <div className="grid grid-cols-12 gap-3 items-start">
                 <div className="col-span-8">
-                  <input type="hidden" name="team1" ref={team1Ref} />
                   <Controller
                     control={control}
                     name="team1"
-                    render={({ field: { onChange } }) => (
+                    render={({ field: { onChange, value } }) => (
                       <MatchTeamSelector
                         autoFocus={true}
-                        value={[]} // todo own team
+                        value={value}
                         teams={teams}
-                        onChange={data => {
-                          onChange(data);
-                          if (!team1Ref.current) {
-                            return;
-                          }
-                          return (team1Ref.current.value = data.join(","));
-                        }}
+                        onChange={onChange}
                       />
                     )}
                   />
@@ -80,21 +103,14 @@ export function MatchCreationForm({ teams }: MatchCreationFormProps) {
             <div className="col-span-5">
               <div className="grid grid-cols-12 gap-3 items-start">
                 <div className="col-span-8">
-                  <input type="hidden" name="team2" ref={team2Ref} />
                   <Controller
                     control={control}
                     name="team2"
-                    render={({ field: { onChange } }) => (
+                    render={({ field: { onChange, value } }) => (
                       <MatchTeamSelector
-                        value={[]}
+                        value={value}
                         teams={teams}
-                        onChange={data => {
-                          onChange(data);
-                          if (!team2Ref.current) {
-                            return;
-                          }
-                          return (team2Ref.current.value = data.join(","));
-                        }}
+                        onChange={onChange}
                       />
                     )}
                   />
@@ -114,7 +130,12 @@ export function MatchCreationForm({ teams }: MatchCreationFormProps) {
         </CardBody>
         <Divider />
         <CardFooter>
-          <Button type="submit" color="primary">
+          <Button
+            type="submit"
+            color="primary"
+            isLoading={isExecuting(status)}
+            isDisabled={!isValid}
+          >
             Save
           </Button>
         </CardFooter>

@@ -1,19 +1,20 @@
+import { AnonHeader } from "@/components/anon-header";
+import { LocaleSwitcher } from "@/components/locale-switcher";
+import { ThemeSwitcher } from "@/components/theme-switcher";
+import { UserHeader } from "@/components/user-header";
+import { Link } from "@/lib/navigation";
+import { getCurrentUser } from "@/lib/session";
 import {
   Button,
-  Link as NextUILink,
-  Navbar as NextUINavbar,
   NavbarBrand,
   NavbarContent,
   NavbarItem,
+  Link as NextUILink,
+  Navbar as NextUINavbar,
 } from "@nextui-org/react";
-import { Link } from "@/lib/navigation";
-import { FaGithub } from "react-icons/fa";
-import { getCurrentUser } from "@/lib/session";
-import { UserHeader } from "@/components/user-header";
-import { AnonHeader } from "@/components/anon-header";
 import { getTranslations } from "next-intl/server";
-import { LocaleSwitcher } from "@/components/locale-switcher";
-import { ThemeSwitcher } from "@/components/theme-switcher";
+import { Suspense } from "react";
+import { FaGithub } from "react-icons/fa";
 
 export async function Header() {
   const user = await getCurrentUser();
@@ -31,21 +32,23 @@ export async function Header() {
           </Link>
         </h1>
       </NavbarBrand>
-      <NavbarContent className="hidden sm:flex gap-4" justify="start">
-        <NavbarItem>
-          <Link color="foreground" href="/">
-            {t("navigation.home")}
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link color="foreground" href="mailto:hello@hilde.gg">
-            {t("navigation.contact")}
-          </Link>
-        </NavbarItem>
-      </NavbarContent>
+      {/*<NavbarContent className="hidden sm:flex gap-4" justify="start">*/}
+      {/*  <NavbarItem>*/}
+      {/*    <Link color="foreground" href="/">*/}
+      {/*      {t("navigation.home")}*/}
+      {/*    </Link>*/}
+      {/*  </NavbarItem>*/}
+      {/*  <NavbarItem>*/}
+      {/*    <Link color="foreground" href="mailto:hello@hilde.gg">*/}
+      {/*      {t("navigation.contact")}*/}
+      {/*    </Link>*/}
+      {/*  </NavbarItem>*/}
+      {/*</NavbarContent>*/}
       <NavbarContent justify="end">
         <NavbarItem>
-          <LocaleSwitcher />
+          <Suspense>
+            <LocaleSwitcher />
+          </Suspense>
         </NavbarItem>
         <NavbarItem>
           <Button

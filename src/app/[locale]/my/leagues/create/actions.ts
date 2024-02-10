@@ -1,12 +1,13 @@
 "use server";
 
-import { createAuthenticatedServerAction } from "@/utils/server-action-helper";
 import { createLeagueFormSchema } from "@/app/[locale]/my/leagues/validation";
-import { validateRatingSystemParameters } from "@/lib/rating";
 import { createLeague } from "@/db/model/league";
 import { updateUser } from "@/db/model/user";
+import { validateRatingSystemParameters } from "@/lib/rating";
+import { authAction } from "@/lib/safe-action";
+import { revalidatePath } from "next/cache";
 
-export const createLeagueAction = createAuthenticatedServerAction(
+export const createLeagueAction = authAction(
   createLeagueFormSchema,
   async (data, { user }) => {
     // TODO: This should be part of the schema
@@ -16,9 +17,7 @@ export const createLeagueAction = createAuthenticatedServerAction(
         data.ratingSystemParameters,
       )
     ) {
-      return {
-        status: "error" as const,
-      };
+      throw new Error("invalid rating system parameters");
     }
 
     const league = await createLeague(
@@ -34,6 +33,8 @@ export const createLeagueAction = createAuthenticatedServerAction(
     await updateUser(user.id, {
       selectedLeagueId: league.id,
     });
+
+    revalidatePath("/my/leagues");
 
     return {
       status: "success",

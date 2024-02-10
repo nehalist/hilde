@@ -1,6 +1,9 @@
 "use client";
 
+import { switchLeagueAction } from "@/app/[locale]/(home)/actions";
+import { GameIcon } from "@/components/game-icon";
 import { League } from "@/db/schema";
+import { Link } from "@/lib/navigation";
 import {
   Button,
   Dropdown,
@@ -8,15 +11,13 @@ import {
   DropdownMenu,
   DropdownSection,
   DropdownTrigger,
+  Spinner,
   User,
 } from "@nextui-org/react";
-import { FaChevronDown } from "react-icons/fa";
-import { Link } from "@/lib/navigation";
-import { useFormState } from "react-dom";
-import { switchLeagueAction } from "@/app/[locale]/(home)/actions";
-import { useRef } from "react";
-import { GameIcon } from "@/components/game-icon";
 import { useTranslations } from "next-intl";
+import { useAction } from "next-safe-action/hooks";
+import { isExecuting } from "next-safe-action/status";
+import { FaChevronDown } from "react-icons/fa";
 
 interface LeagueHeaderProps {
   leagues: League[];
@@ -24,9 +25,7 @@ interface LeagueHeaderProps {
 }
 
 export function LeagueHeader({ leagues, selectedLeagueId }: LeagueHeaderProps) {
-  const [state, formAction] = useFormState(switchLeagueAction, null);
-  const formRef = useRef<HTMLFormElement>(null);
-  const leagueIdRef = useRef<HTMLInputElement>(null);
+  const { execute, status } = useAction(switchLeagueAction);
   const t = useTranslations();
 
   const selectedLeague = leagues.find(league => league.id === selectedLeagueId);
@@ -49,9 +48,15 @@ export function LeagueHeader({ leagues, selectedLeagueId }: LeagueHeaderProps) {
                 isBordered: true,
                 showFallback: true,
                 fallback: (
-                  <span className="text-xl">
-                    <GameIcon game={selectedLeague.game} />
-                  </span>
+                  <>
+                    {isExecuting(status) ? (
+                      <Spinner size="sm" className="absolute" />
+                    ) : (
+                      <span className="text-xl">
+                        <GameIcon game={selectedLeague.game} />
+                      </span>
+                    )}
+                  </>
                 ),
               }}
               className="transition-transform"
@@ -61,32 +66,28 @@ export function LeagueHeader({ leagues, selectedLeagueId }: LeagueHeaderProps) {
             <FaChevronDown />
           </Button>
         </DropdownTrigger>
-        <form action={formAction} ref={formRef}>
-          <input type="hidden" name="leagueId" ref={leagueIdRef} />
-          <DropdownMenu
-            aria-label="Leagues"
-            variant="flat"
-            selectedKeys={selectedLeagueId ? [selectedLeagueId] : []}
-            onAction={league => {
-              if (!formRef.current || !leagueIdRef.current) {
-                return;
-              }
-              leagueIdRef.current.value = `${league}`;
-              formRef.current.requestSubmit();
-            }}
-          >
-            <DropdownSection showDivider={true}>
-              {leagues.map(league => (
-                <DropdownItem key={league.id}>{league.name}</DropdownItem>
-              ))}
-            </DropdownSection>
-            <DropdownSection>
-              <DropdownItem key="settings" href="/my/leagues" as={Link}>
-                Manage leagues
-              </DropdownItem>
-            </DropdownSection>
-          </DropdownMenu>
-        </form>
+        <DropdownMenu
+          aria-label="Leagues"
+          variant="flat"
+          selectedKeys={selectedLeagueId ? [selectedLeagueId] : []}
+          onAction={key => {
+            if (key === "settings") {
+              return;
+            }
+            execute({ leagueId: `${key}` });
+          }}
+        >
+          <DropdownSection showDivider={true}>
+            {leagues.map(league => (
+              <DropdownItem key={league.id}>{league.name}</DropdownItem>
+            ))}
+          </DropdownSection>
+          <DropdownSection>
+            <DropdownItem key="settings" href="/my/leagues" as={Link}>
+              Manage leagues
+            </DropdownItem>
+          </DropdownSection>
+        </DropdownMenu>
       </Dropdown>
       <nav>
         <ul className="flex gap-6">

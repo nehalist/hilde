@@ -1,55 +1,31 @@
 "use client";
 
+import { regenerateInviteCodeAction } from "@/app/[locale]/my/leagues/[id]/actions";
+import { League } from "@/db/schema";
+import { defaultLocale } from "@/i18n";
 import { Card, CardBody, CardHeader } from "@nextui-org/card";
 import { Button, Divider, Snippet } from "@nextui-org/react";
 import { useLocale } from "next-intl";
-import { defaultLocale } from "@/i18n";
-import { League } from "@/db/schema";
-import { regenerateInviteCodeAction } from "@/app/[locale]/my/leagues/[id]/actions";
-import { useFormState, useFormStatus } from "react-dom";
-import { useServerActionState } from "@/hooks/use-server-action-state";
+import { useAction } from "next-safe-action/hooks";
+import { isExecuting } from "next-safe-action/status";
 import { useState } from "react";
-
-function RegenerateButton() {
-  const { pending } = useFormStatus();
-
-  return (
-    <Button
-      type="submit"
-      size="lg"
-      color="danger"
-      isLoading={pending}
-      onClick={e => {
-        if (
-          confirm(
-            "Are you sure you want to regenerate the invite code? This INVALIDATES all previous invite links.",
-          )
-        ) {
-          return true;
-        }
-        e.preventDefault();
-        return false;
-      }}
-    >
-      Regenerate
-    </Button>
-  );
-}
+import { toast } from "react-toastify";
 
 export function InviteCode({ league }: { league: League }) {
   const locale = useLocale();
   const inviteUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/${
     locale !== defaultLocale ? `${locale}/` : ``
   }invite?code=${league.inviteCode}`;
-  const [state, formAction] = useFormState(regenerateInviteCodeAction, null);
-  const [regenerated, setRegenerated] = useState(false);
-
-  useServerActionState(state, {
-    onSuccess: state => {
+  const { execute, status } = useAction(regenerateInviteCodeAction, {
+    onSuccess: () => {
+      toast("Code regenerated", { type: "success" });
       setRegenerated(true);
-      return state;
+    },
+    onError: () => {
+      toast("Failed to regenerate code", { type: "error" });
     },
   });
+  const [regenerated, setRegenerated] = useState(false);
 
   return (
     <Card>
@@ -63,23 +39,39 @@ export function InviteCode({ league }: { league: League }) {
       </CardHeader>
       <Divider />
       <CardBody>
-        <form action={formAction}>
-          <input type="hidden" name="leagueId" value={league.id} />
-          <div className="flex gap-2 my-2">
-            <Snippet
-              symbol=""
+        <div className="flex gap-2 my-2">
+          <Snippet
+            symbol=""
+            size="lg"
+            classNames={{
+              base: "flex-1",
+              content: "w-full",
+              pre: "w-full",
+            }}
+          >
+            {inviteUrl}
+          </Snippet>
+          {!regenerated && (
+            <Button
+              type="submit"
               size="lg"
-              classNames={{
-                base: "flex-1",
-                content: "w-full",
-                pre: "w-full",
+              color="danger"
+              isLoading={isExecuting(status)}
+              onClick={e => {
+                if (
+                  !confirm(
+                    "Are you sure you want to regenerate the invite code? This INVALIDATES all previous invite links.",
+                  )
+                ) {
+                  return false;
+                }
+                execute({ leagueId: league.id });
               }}
             >
-              {inviteUrl}
-            </Snippet>
-            {!regenerated && <RegenerateButton />}
-          </div>
-        </form>
+              Regenerate
+            </Button>
+          )}
+        </div>
       </CardBody>
     </Card>
   );
