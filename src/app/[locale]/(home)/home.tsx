@@ -1,8 +1,8 @@
-import { MatchCreationForm } from "@/app/[locale]/(home)/match-creation-form";
-import { getLeagueTeams, getSelectedUserLeague } from "@/db/model/league";
+import { MatchCreator } from "@/app/[locale]/(home)/match-creator";
 import { RecentMatches } from "@/app/[locale]/(home)/recent-matches";
-import { getRecentLeagueMatches } from "@/db/model/match";
 import { RefreshOnFocus } from "@/components/refresh-on-focus";
+import { getLeagueTeams, getSelectedUserLeague } from "@/db/model/league";
+import { getRecentLeagueMatches } from "@/db/model/match";
 import { User } from "@/db/schema";
 
 interface HomeProps {
@@ -22,7 +22,7 @@ export async function Home({ user }: HomeProps) {
   return (
     <>
       <RefreshOnFocus />
-      <MatchCreationForm teams={teams} user={user} />
+      <MatchCreator teams={teams} user={user} />
       <RecentMatches matches={recentMatches} />
     </>
   );

@@ -4,32 +4,43 @@
 // import { defaultRating } from "~/utils/elo";
 // import { differenceInDays } from "date-fns";
 //
-// export interface Achievement {
-//   id: string;
-//   condition: (
-//     team: TeamWithMeta,
-//     opponent: TeamWithMeta,
-//     match: Match,
-//   ) => boolean;
-//   title: string;
-//   description: string;
-//   points: number;
-// }
-//
-// enum Result {
-//   Loss,
-//   Win,
-// }
-//
-// function matchResult(team: Team, match: Match): Result {
-//   if (match.team1 === team.name && match.score1 < match.score2) {
-//     return Result.Loss;
-//   }
-//   if (match.team2 === team.name && match.score2 < match.score1) {
-//     return Result.Loss;
-//   }
-//   return Result.Win;
-// }
+import { Match, Team } from "@/db/schema";
+
+export interface Achievement {
+  id: string;
+  title: string;
+  condition: (team: Team, opponent: Team, match: Match) => boolean;
+  description: string;
+  points: number;
+}
+
+enum Result {
+  Loss,
+  Win,
+}
+
+function matchResult(team: Team, match: Match): Result {
+  if (match.team1Id === team.id && match.score1 < match.score2) {
+    return Result.Loss;
+  }
+  if (match.team2Id === team.id && match.score2 < match.score1) {
+    return Result.Loss;
+  }
+  return Result.Win;
+}
+
+export const achievements: Achievement[] = [
+  {
+    id: "wins-1",
+    condition: (team, opponent, match) => {
+      return false;
+    },
+    title: "First win",
+    description: "Win your first game",
+    points: 10,
+  },
+];
+
 //
 // export const achievements: Achievement[] = [
 //   {

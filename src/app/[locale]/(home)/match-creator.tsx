@@ -26,7 +26,7 @@ interface FormValues {
   comment: string;
 }
 
-export function MatchCreationForm({ teams, user }: MatchCreationFormProps) {
+export function MatchCreator({ teams, user }: MatchCreationFormProps) {
   const userTeam = teams
     .sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1))
     .find(t => t.userId === user.id);
@@ -35,6 +35,7 @@ export function MatchCreationForm({ teams, user }: MatchCreationFormProps) {
     register,
     control,
     reset,
+    getValues,
     formState: { isValid },
   } = useForm<FormValues>({
     resolver: zodResolver(matchCreationSchema),
@@ -48,11 +49,11 @@ export function MatchCreationForm({ teams, user }: MatchCreationFormProps) {
   });
   const { execute, status } = useAction(createMatchAction, {
     onSuccess: () => {
-      toast("League joined", { type: "success" });
+      toast("Match created", { type: "success" });
       reset();
     },
     onError: () => {
-      toast("Failed to join league", { type: "error" });
+      toast("Failed to create match", { type: "error" });
     },
   });
 
@@ -82,6 +83,7 @@ export function MatchCreationForm({ teams, user }: MatchCreationFormProps) {
                         value={value}
                         teams={teams}
                         onChange={onChange}
+                        label="Home"
                       />
                     )}
                   />
@@ -111,6 +113,7 @@ export function MatchCreationForm({ teams, user }: MatchCreationFormProps) {
                         value={value}
                         teams={teams}
                         onChange={onChange}
+                        label="Away"
                       />
                     )}
                   />
@@ -130,14 +133,24 @@ export function MatchCreationForm({ teams, user }: MatchCreationFormProps) {
         </CardBody>
         <Divider />
         <CardFooter>
-          <Button
-            type="submit"
-            color="primary"
-            isLoading={isExecuting(status)}
-            isDisabled={!isValid}
-          >
-            Save
-          </Button>
+          <div className="flex items-center justify-between w-full">
+            <Input
+              variant="underlined"
+              size="sm"
+              placeholder="Comment (Optional)"
+              labelPlacement="outside"
+              className="w-52"
+              {...register("comment")}
+            />
+            <Button
+              type="submit"
+              color="primary"
+              isLoading={isExecuting(status)}
+              isDisabled={!isValid}
+            >
+              Save
+            </Button>
+          </div>
         </CardFooter>
       </form>
     </Card>

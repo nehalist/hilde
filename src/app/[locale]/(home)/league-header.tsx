@@ -33,6 +33,13 @@ export function LeagueHeader({ leagues, selectedLeagueId }: LeagueHeaderProps) {
     return null;
   }
 
+  const links = [
+    { href: "/", label: "Dashboard" },
+    { href: "/matches", label: "Matches" },
+    { href: "/teams", label: "Teams" },
+    { href: "/leaderboards", label: "Leaderboards" },
+  ];
+
   return (
     <div className="flex items-center gap-10">
       <Dropdown placement="bottom-start" backdrop="blur">
@@ -91,18 +98,16 @@ export function LeagueHeader({ leagues, selectedLeagueId }: LeagueHeaderProps) {
       </Dropdown>
       <nav>
         <ul className="flex gap-6">
-          <li>
-            <Link href="/">Dashboard</Link>
-          </li>
-          <li>
-            <Link href="/matches">Matches</Link>
-          </li>
-          <li>
-            <Link href="/teams">Teams</Link>
-          </li>
-          <li>
-            <Link href="/leaderboards">Leaderboards</Link>
-          </li>
+          {links.map(link => (
+            <li key={link.href}>
+              <Link
+                className="font-medium hover:border-b border-green-600"
+                href={link.href}
+              >
+                {link.label}
+              </Link>
+            </li>
+          ))}
         </ul>
       </nav>
     </div>
