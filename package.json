@@ -10,6 +10,7 @@
     "test": "jest",
     "db:migrations:make": "drizzle-kit generate:pg",
     "db:migrations:execute": "tsx src/db/migrate.ts",
+    "db:seed": "tsx src/db/seed.ts",
     "email:dev": "email dev"
   },
   "homepage": "https://hilde.gg",
@@ -65,6 +66,7 @@
     "zod-form-data": "^2.0.2"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.4.0",
     "@tailwindcss/typography": "^0.5.10",
     "@types/jest": "^29.5.7",
     "@types/node": "^20.8.10",

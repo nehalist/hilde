@@ -102,6 +102,24 @@ export const teams = pgTable(
     userId: text("userId").references(() => users.id, { onDelete: "set null" }),
     rating: real("rating").notNull().default(1000),
     createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+    achievementPoints: integer("achievementPoints").notNull().default(0),
+    totalMatches: integer("totalMatches").notNull().default(0),
+    totalWins: integer("totalWins").notNull().default(0),
+    totalWinRate: real("totalWinRate").notNull().default(0),
+    totalScore: integer("totalScore").notNull().default(0),
+    totalAvgScore: real("totalAvgScore").notNull().default(0),
+    totalHighestRating: real("totalHighestRating").notNull().default(0),
+    totalLowestRating: real("totalLowestRating").notNull().default(0),
+    totalHighestWinStreak: integer("totalHighestWinStreak").notNull().default(0),
+    totalHighestLosingStreak: integer("totalHighestLosingStreak").notNull().default(0),
+    dailyMatches: integer("dailyMatches").notNull().default(0),
+    dailyWins: integer("dailyWins").notNull().default(0),
+    dailyLosses: integer("dailyLosses").notNull().default(0),
+    dailyWinRate: real("dailyWinRate").notNull().default(0),
+    dailyScore: integer("dailyScore").notNull().default(0),
+    dailyAvgScore: real("dailyAvgScore").notNull().default(0),
+    currentWinStreak: integer("currentWinStreak").notNull().default(0),
+    currentLosingStreak: integer("currentLosingStreak").notNull().default(0),
   },
   t => ({
     unq: unique().on(t.name, t.leagueId),
@@ -184,6 +202,7 @@ export const users = pgTable("user", {
 });
 
 export type User = typeof users.$inferSelect;
+export type NewUser = typeof users.$inferInsert;
 
 export const usersRelations = relations(users, ({ one, many }) => ({
   selectedLeague: one(leagues, {
