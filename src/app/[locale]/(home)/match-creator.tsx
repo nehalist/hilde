@@ -35,7 +35,6 @@ export function MatchCreator({ teams, user }: MatchCreationFormProps) {
     register,
     control,
     reset,
-    getValues,
     formState: { isValid },
   } = useForm<FormValues>({
     resolver: zodResolver(matchCreationSchema),
@@ -50,7 +49,7 @@ export function MatchCreator({ teams, user }: MatchCreationFormProps) {
   const { execute, status } = useAction(createMatchAction, {
     onSuccess: () => {
       toast("Match created", { type: "success" });
-      reset();
+      // reset();
     },
     onError: () => {
       toast("Failed to create match", { type: "error" });
@@ -66,6 +65,7 @@ export function MatchCreator({ teams, user }: MatchCreationFormProps) {
             team2: data.team2,
             score1: +data.score1,
             score2: +data.score2,
+            comment: data.comment,
           }),
         )}
       >

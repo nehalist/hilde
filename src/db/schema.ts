@@ -1,3 +1,6 @@
+import { games } from "@/lib/games";
+import { AdapterAccount } from "@auth/core/adapters";
+import { relations, sql } from "drizzle-orm";
 import {
   integer,
   json,
@@ -9,9 +12,6 @@ import {
   timestamp,
   unique,
 } from "drizzle-orm/pg-core";
-import { AdapterAccount } from "@auth/core/adapters";
-import { relations, sql } from "drizzle-orm";
-import { games } from "@/lib/games";
 
 export const leagueStatusEnum = pgEnum("leagueStatus", ["active", "finished"]);
 export const gamesEnum = pgEnum("game", [
@@ -31,7 +31,6 @@ export const leagues = pgTable("league", {
     .$defaultFn(() => crypto.randomUUID())
     .primaryKey(),
   name: text("name").notNull(),
-  image: text("image"),
   description: text("description"),
   game: gamesEnum("game").notNull().default("custom"),
   defaultRating: integer("defaultRating").notNull().default(1000),
@@ -102,16 +101,22 @@ export const teams = pgTable(
     userId: text("userId").references(() => users.id, { onDelete: "set null" }),
     rating: real("rating").notNull().default(1000),
     createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+    updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
     achievementPoints: integer("achievementPoints").notNull().default(0),
     totalMatches: integer("totalMatches").notNull().default(0),
+    totalLosses: integer("totalLosses").notNull().default(0),
     totalWins: integer("totalWins").notNull().default(0),
     totalWinRate: real("totalWinRate").notNull().default(0),
     totalScore: integer("totalScore").notNull().default(0),
     totalAvgScore: real("totalAvgScore").notNull().default(0),
-    totalHighestRating: real("totalHighestRating").notNull().default(0),
-    totalLowestRating: real("totalLowestRating").notNull().default(0),
-    totalHighestWinStreak: integer("totalHighestWinStreak").notNull().default(0),
-    totalHighestLosingStreak: integer("totalHighestLosingStreak").notNull().default(0),
+    totalHighestRating: real("totalHighestRating").notNull().default(1000),
+    totalLowestRating: real("totalLowestRating").notNull().default(1000),
+    totalHighestWinStreak: integer("totalHighestWinStreak")
+      .notNull()
+      .default(0),
+    totalHighestLosingStreak: integer("totalHighestLosingStreak")
+      .notNull()
+      .default(0),
     dailyMatches: integer("dailyMatches").notNull().default(0),
     dailyWins: integer("dailyWins").notNull().default(0),
     dailyLosses: integer("dailyLosses").notNull().default(0),
@@ -140,7 +145,42 @@ export const teamsRelations = relations(teams, ({ one, many }) => ({
   }),
   matchesTeam1: many(matches, { relationName: "team1" }),
   matchesTeam2: many(matches, { relationName: "team2" }),
+  achievements: many(achievements),
 }));
+
+export const achievements = pgTable(
+  "achievement",
+  {
+    id: text("id")
+      .$defaultFn(() => crypto.randomUUID())
+      .primaryKey(),
+    createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+    teamId: text("teamId")
+      .notNull()
+      .references(() => teams.id, { onDelete: "cascade" }),
+    matchId: text("matchId")
+      .notNull()
+      .references(() => matches.id, { onDelete: "cascade" }),
+    achievement: text("achievement").notNull(),
+  },
+  t => ({
+    unq: unique().on(t.achievement, t.teamId),
+  }),
+);
+
+export const achievementsRelations = relations(
+  achievements,
+  ({ one, many }) => ({
+    team: one(teams, {
+      fields: [achievements.teamId],
+      references: [teams.id],
+    }),
+    match: one(matches, {
+      fields: [achievements.matchId],
+      references: [matches.id],
+    }),
+  }),
+);
 
 export const matches = pgTable("matches", {
   id: text("id")
@@ -164,12 +204,13 @@ export const matches = pgTable("matches", {
   team2RatingChange: real("team2RatingChange").notNull().default(0),
   team1Rating: real("team1Rating").notNull().default(0),
   team2Rating: real("team2Rating").notNull().default(0),
+  comment: text("comment"),
   createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
 });
 
 export type Match = typeof matches.$inferSelect;
 
-export const matchesRelations = relations(matches, ({ one }) => ({
+export const matchesRelations = relations(matches, ({ one, many }) => ({
   league: one(leagues, {
     fields: [matches.leagueId],
     references: [leagues.id],
@@ -188,6 +229,7 @@ export const matchesRelations = relations(matches, ({ one }) => ({
     references: [teams.id],
     relationName: "team2",
   }),
+  achievements: many(achievements),
 }));
 
 export const users = pgTable("user", {

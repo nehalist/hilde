@@ -1,6 +1,6 @@
 {
-  "id": "9189b1d8-e768-40d0-bacc-92242b2b15f7",
-  "prevId": "88abe304-5db1-4028-9b57-f659ce9b57ea",
+  "id": "5b69da7f-30fe-491c-8801-2cec5044f09f",
+  "prevId": "9189b1d8-e768-40d0-bacc-92242b2b15f7",
   "version": "5",
   "dialect": "pg",
   "tables": {
@@ -136,13 +136,6 @@
           "primaryKey": false,
           "notNull": true,
           "default": "'custom'"
-        },
-        "maxScorePerMatch": {
-          "name": "maxScorePerMatch",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "default": 0
         },
         "defaultRating": {
           "name": "defaultRating",
@@ -295,6 +288,12 @@
           "primaryKey": false,
           "notNull": true,
           "default": 0
+        },
+        "comment": {
+          "name": "comment",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
         },
         "createdAt": {
           "name": "createdAt",
@@ -508,7 +507,7 @@
           "name": "userId",
           "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "rating": {
           "name": "rating",
@@ -676,7 +675,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
+          "onDelete": "set null",
           "onUpdate": "no action"
         }
       },
@@ -834,8 +833,8 @@
   },
   "schemas": {},
   "_meta": {
+    "columns": {},
     "schemas": {},
-    "tables": {},
-    "columns": {}
+    "tables": {}
   }
 }

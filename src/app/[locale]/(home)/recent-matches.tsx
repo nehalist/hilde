@@ -1,5 +1,8 @@
 "use client";
 
+import { RatingChange } from "@/components/rating-change";
+import { TimeDistance } from "@/components/time-distance";
+import { getRecentLeagueMatches } from "@/db/model/match";
 import {
   Table,
   TableBody,
@@ -8,9 +11,6 @@ import {
   TableHeader,
   TableRow,
 } from "@nextui-org/react";
-import { getRecentLeagueMatches } from "@/db/model/match";
-import { TimeDistance } from "@/components/time-distance";
-import { RatingChange } from "@/components/rating-change";
 
 interface RecentMatchesProps {
   matches: Awaited<ReturnType<typeof getRecentLeagueMatches>>;
@@ -30,6 +30,10 @@ export function RecentMatches({ matches }: RecentMatchesProps) {
           <TableRow key={match.id}>
             <TableCell>
               {match.team1.name}{" "}
+              {match.achievements
+                .filter(a => a.teamId === match.team1Id)
+                .map(a => a.achievement)
+                .join(", ")}
               <RatingChange change={match.team1RatingChange} />
             </TableCell>
             <TableCell>
@@ -37,6 +41,10 @@ export function RecentMatches({ matches }: RecentMatchesProps) {
             </TableCell>
             <TableCell>
               {match.team2.name}{" "}
+              {match.achievements
+                .filter(a => a.teamId === match.team2Id)
+                .map(a => a.achievement)
+                .join(", ")}
               <RatingChange change={match.team2RatingChange} />
             </TableCell>
             <TableCell>

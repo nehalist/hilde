@@ -1,14 +1,14 @@
 "use server";
 
-import { getSelectedUserLeague, userIsInLeague } from "@/db/model/league";
+import { matchCreationSchema } from "@/app/[locale]/(home)/validation";
 import { db } from "@/db";
+import { getSelectedUserLeague, userIsInLeague } from "@/db/model/league";
+import { createMatch } from "@/db/model/match";
+import { getOrCreateTeam } from "@/db/model/team";
 import { users } from "@/db/schema";
+import { authAction } from "@/lib/safe-action";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { getOrCreateTeam } from "@/db/model/team";
-import { createMatch } from "@/db/model/match";
-import { authAction } from "@/lib/safe-action";
-import { matchCreationSchema } from "@/app/[locale]/(home)/validation";
 import { z } from "zod";
 
 export const switchLeagueAction = authAction(
@@ -39,7 +39,7 @@ export const switchLeagueAction = authAction(
 
 export const createMatchAction = authAction(
   matchCreationSchema,
-  async ({ team1, score1, team2, score2 }, { user }) => {
+  async ({ team1, score1, team2, score2, comment }, { user }) => {
     const selectedUserLeague = await getSelectedUserLeague();
     if (!selectedUserLeague) {
       return {
@@ -67,6 +67,7 @@ export const createMatchAction = authAction(
       team2Entity,
       score1,
       score2,
+      comment,
     );
 
     revalidatePath("/");

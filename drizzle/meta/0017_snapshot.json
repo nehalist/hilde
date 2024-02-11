@@ -1,6 +1,6 @@
 {
-  "id": "9189b1d8-e768-40d0-bacc-92242b2b15f7",
-  "prevId": "88abe304-5db1-4028-9b57-f659ce9b57ea",
+  "id": "a9ddee07-ec33-442f-844b-900ef5cd838b",
+  "prevId": "fecd6442-ff92-4179-8c7b-857a0df33a90",
   "version": "5",
   "dialect": "pg",
   "tables": {
@@ -102,6 +102,83 @@
       },
       "uniqueConstraints": {}
     },
+    "achievement": {
+      "name": "achievement",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "teamId": {
+          "name": "teamId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "matchId": {
+          "name": "matchId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "achievement": {
+          "name": "achievement",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "achievement_teamId_team_id_fk": {
+          "name": "achievement_teamId_team_id_fk",
+          "tableFrom": "achievement",
+          "tableTo": "team",
+          "columnsFrom": [
+            "teamId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "achievement_matchId_matches_id_fk": {
+          "name": "achievement_matchId_matches_id_fk",
+          "tableFrom": "achievement",
+          "tableTo": "matches",
+          "columnsFrom": [
+            "matchId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "achievement_achievement_teamId_unique": {
+          "name": "achievement_achievement_teamId_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "achievement",
+            "teamId"
+          ]
+        }
+      }
+    },
     "league": {
       "name": "league",
       "schema": "",
@@ -136,13 +213,6 @@
           "primaryKey": false,
           "notNull": true,
           "default": "'custom'"
-        },
-        "maxScorePerMatch": {
-          "name": "maxScorePerMatch",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "default": 0
         },
         "defaultRating": {
           "name": "defaultRating",
@@ -295,6 +365,12 @@
           "primaryKey": false,
           "notNull": true,
           "default": 0
+        },
+        "comment": {
+          "name": "comment",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
         },
         "createdAt": {
           "name": "createdAt",
@@ -508,7 +584,7 @@
           "name": "userId",
           "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "rating": {
           "name": "rating",
@@ -524,6 +600,13 @@
           "notNull": true,
           "default": "now()"
         },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
         "achievementPoints": {
           "name": "achievementPoints",
           "type": "integer",
@@ -533,6 +616,13 @@
         },
         "totalMatches": {
           "name": "totalMatches",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "totalLosses": {
+          "name": "totalLosses",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
@@ -676,7 +766,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
+          "onDelete": "set null",
           "onUpdate": "no action"
         }
       },
@@ -834,8 +924,8 @@
   },
   "schemas": {},
   "_meta": {
+    "columns": {},
     "schemas": {},
-    "tables": {},
-    "columns": {}
+    "tables": {}
   }
 }

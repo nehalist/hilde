@@ -12,7 +12,7 @@ export const matchCreationSchema = z
       v => (v !== "" ? Number(v) : undefined),
       z.number().min(0),
     ),
-    comment: z.string().optional().default(""),
+    comment: z.string().optional(),
   })
   .refine(schema => {
     return (

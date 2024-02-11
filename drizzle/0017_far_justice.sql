@@ -1,0 +1,1 @@
+ALTER TABLE "team" ADD COLUMN "totalLosses" integer DEFAULT 0 NOT NULL;
