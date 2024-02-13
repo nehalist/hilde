@@ -168,6 +168,8 @@ export const achievements = pgTable(
   }),
 );
 
+export type Achievement = typeof achievements.$inferSelect;
+
 export const achievementsRelations = relations(
   achievements,
   ({ one, many }) => ({
