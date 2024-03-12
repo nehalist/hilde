@@ -53,12 +53,12 @@ function MatchTableTeam({
     <div className="flex gap-3 items-center">
       <div className="text-2xl min-w-8 text-center">{emoji}</div>
       <div>
-        <p>
+        <p className="font-semibold">
           <Link href={`/teams/${team.id}`}>{team.name}</Link>{" "}
         </p>
         <div className="text-default-400 flex gap-3 whitespace-nowrap overflow-hidden text-ellipsis w-64">
           <p>
-            <Rating rating={matchRating} />{" "}
+            <Rating rating={matchRating - matchRatingChange} />{" "}
             <RatingChange change={matchRatingChange} />
           </p>
           <p className="text-ellipsis overflow-hidden">

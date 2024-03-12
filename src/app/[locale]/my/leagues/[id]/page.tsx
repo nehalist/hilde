@@ -1,6 +1,6 @@
-import { getLeagueWithMemberships } from "@/db/model/league";
-import { MyHeader } from "@/app/[locale]/my/my-header";
 import { LeagueManagementContent } from "@/app/[locale]/my/leagues/[id]/content";
+import { MyHeader } from "@/app/[locale]/my/my-header";
+import { getLeagueWithMemberships } from "@/db/model/league";
 import { getCurrentUser } from "@/lib/session";
 import { notFound } from "next/navigation";
 
@@ -8,7 +8,6 @@ export default async function LeagueDetails({
   params: { id },
 }: {
   params: { id: string };
-  pageUrl: string;
 }) {
   const league = await getLeagueWithMemberships(id);
   const user = await getCurrentUser();

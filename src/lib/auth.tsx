@@ -1,21 +1,18 @@
-import { AuthOptions } from "next-auth";
-import EmailProvider from "next-auth/providers/email";
-import GithubProvider from "next-auth/providers/github";
-import DiscordProvider from "next-auth/providers/discord";
-import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { db } from "@/db";
-import { users } from "@/db/schema";
-import { eq } from "drizzle-orm";
-import { createTransport } from "nodemailer";
-import { render } from "@react-email/render";
-import VerificationRequest from "../../emails/verification-request";
 import { createLeague } from "@/db/model/league";
+import { users } from "@/db/schema";
 import { customGameId } from "@/lib/games";
 import {
   getDefaultRatingSystemParameters,
   RatingSystem,
   ratingSystems,
 } from "@/lib/rating";
+import { DrizzleAdapter } from "@auth/drizzle-adapter";
+import { eq } from "drizzle-orm";
+import { AuthOptions } from "next-auth";
+import DiscordProvider from "next-auth/providers/discord";
+import EmailProvider from "next-auth/providers/email";
+import GithubProvider from "next-auth/providers/github";
 
 export const authOptions: AuthOptions = {
   session: {
@@ -24,8 +21,8 @@ export const authOptions: AuthOptions = {
   adapter: DrizzleAdapter(db) as any,
   providers: [
     GithubProvider({
-      clientId: "id",
-      clientSecret: "secret",
+      clientId: process.env.GITHUB_CLIENT_ID as string,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
     }),
     DiscordProvider({
       clientId: "id",
@@ -34,26 +31,8 @@ export const authOptions: AuthOptions = {
     EmailProvider({
       server: process.env.EMAIL_SERVER,
       from: process.env.EMAIL_FROM,
-      sendVerificationRequest: async ({ identifier, url, provider, theme }) => {
-        const transport = createTransport(provider.server);
-        const html = render(<VerificationRequest url={url} />);
-        const result = await transport.sendMail({
-          to: identifier,
-          from: provider.from,
-          subject: `Sign in to Hilde`,
-          html,
-        });
-        const failed = result.rejected.concat(result.pending).filter(Boolean);
-        if (failed.length) {
-          throw new Error(`Email(s) (${failed.join(", ")}) could not be sent`);
-        }
-      },
     }),
   ],
-  pages: {
-    signIn: "/",
-    verifyRequest: "/?login=verify-request",
-  },
   callbacks: {
     async jwt({ token }) {
       if (!token.email) {

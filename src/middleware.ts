@@ -1,7 +1,6 @@
-import createMiddleware from "next-intl/middleware";
 import { defaultLocale, locales } from "@/i18n";
-import { withAuth } from "next-auth/middleware";
-import { NextRequestWithAuth } from "next-auth/src/next/middleware";
+import { NextRequestWithAuth, withAuth } from "next-auth/middleware";
+import createMiddleware from "next-intl/middleware";
 import { NextRequest } from "next/server";
 
 const publicPages = ["/", "/blog", "/blog/(.*)", "/about", "/login", "/faq"];

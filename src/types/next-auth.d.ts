@@ -1,6 +1,6 @@
-import { JWT as NextAuthJWT } from "next-auth/jwt";
-import { DefaultSession } from "next-auth";
 import { userRolesEnum } from "@/db/schema";
+import { DefaultSession } from "next-auth";
+import { JWT as NextAuthJWT } from "next-auth/jwt";
 
 declare module "next-auth" {
   interface Session {
