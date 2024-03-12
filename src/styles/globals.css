@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-body,
-html,
-#__next {
-  @apply h-full dark:bg-gray-900;
+.hilde {
+  @apply bg-gradient-to-r from-[#3DA693] to-[#C6DB6D] bg-clip-text inline-block text-transparent;
 }

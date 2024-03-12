@@ -1,0 +1,1 @@
+ALTER TABLE "team" ADD COLUMN "rating" integer DEFAULT 1000 NOT NULL;

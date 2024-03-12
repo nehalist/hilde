@@ -1,0 +1,129 @@
+{
+  "landingPage": {
+    "header": "<gradient>Hilde</gradient> is your score-keeping companion.",
+    "subheader": "Keep track of your scores, for games like table football, badminton or similar. Create unlimited leagues with different groups of friends, track your progress with rating systems like Elo, earn achievements and say goodbye to Spreadsheets!",
+    "subheader2": "Hilde is completely free and open source. <link>Check it out on GitHub!</link>"
+  },
+  "invite": {
+    "title": "You're about to join",
+    "joinButtonLabel": "Join"
+  },
+  "my": {
+    "leagues": {
+      "title": "Leagues",
+      "description": "...",
+      "createButtonLabel": "Create League",
+      "create": {
+        "title": "Create League",
+        "description": "...",
+        "settings": {
+          "title": "Settings",
+          "description": "General information regarding your new league",
+          "nameLabel": "Name",
+          "namePlaceholder": "My awesome league",
+          "descriptionLabel": "Description"
+        },
+        "optionalHint": "The following settings are optional.",
+        "game": {
+          "title": "Game",
+          "description": "The game you want to play in this league",
+          "gameLabel": "Game",
+          "maxScorePerMatchLabel": "Max. Score per Match",
+          "maxScorePerMatchDescription": "Set to 0 for no limit. You can still add matches with higher scores, it's just for convenience.",
+          "allowDrawsLabel": "Allow Draws"
+        },
+        "rating": {
+          "title": "Rating",
+          "description": "How to calculate the ratings for this league. <warning>This cannot be changed after the league has been created!</warning>",
+          "ratingSystemLabel": "Rating System",
+          "defaultRatingLabel": "Default Rating",
+          "ratingSystemParametersDescription": "Rating System Parameters. Keep the default values if you don't know what they mean.",
+          "ratingSystemParameters": {
+            "kFactor": "K-Factor",
+            "kFactorDescription": "The K-Factor determines how much a single match affects the rating. The higher the K-Factor, the more a single match affects the rating. The default value is {default}.",
+            "tau": "Tau",
+            "tauDescription": "The constraining factor on the change in volatility over time. Recommended: 0.01 - 1, default: {default}",
+            "ratingDeviation": "Rating Deviation",
+            "ratingDeviationDescription": "The initial rating deviation. Recommended: 10 - 1000, default: {default}",
+            "ratingVolatility": "Rating Volatility",
+            "ratingVolatilityDescription": "The initial rating volatility. Recommended: 0.001 - 1, default: {default}"
+          }
+        },
+        "toasts": {
+          "success": "League created"
+        },
+        "saveButtonLabel": "Save"
+      }
+    },
+    "settings": {
+      "title": "Settings",
+      "description": "Your Profile.",
+      "profileCardHeader": "Profile"
+    }
+  },
+  "layout": {
+    "navigation": {
+      "home": "Home",
+      "contact": "Contact"
+    },
+    "locales": {
+      "en": "English",
+      "de": "Deutsch"
+    }
+  },
+  "games": {
+    "custom": "Custom",
+    "chess": "Chess",
+    "badminton": "Badminton"
+  },
+  "achievements": {
+    "wins-1": "First Win",
+    "wins-10": "10 Wins",
+    "wins-50": "50 Wins",
+    "wins-100": "100 Wins",
+    "wins-500": "500 Wins",
+    "wins-1000": "1000 Wins",
+    "elo-range": "Exkarlibur",
+    "elo-minus300": "It's evolving, just backwards!",
+    "elo-100": "Getting better",
+    "elo-200": "Look mom, no hands!",
+    "elo-300": "Whenever I need expert advice, I talk to myself",
+    "elo-400": "Call me Magnus Carlsen",
+    "elo-500": "Kneel before me, mortals!",
+    "consecutive-wins-5": "I am inevitable",
+    "consecutive-wins-10": "Behold!",
+    "consecutive-losses-10": "Are you even trying?",
+    "matches-1": "First Match",
+    "matches-10": "10 Matches",
+    "matches-50": "50 Matches",
+    "matches-100": "100 Matches",
+    "matches-500": "500 Matches",
+    "matches-1000": "I haven't left this place for years",
+    "score-1": "First point",
+    "score-10": "10 Points",
+    "score-100": "100 Points",
+    "score-1000": "1000 Points",
+    "score-2500": "2500 Points",
+    "score-5000": "5000 Points",
+    "underdog": "Underdog",
+    "badday": "Bad days happen",
+    "david": "David",
+    "goliath": "Goliath",
+    "weekend-match": "Everyday is work day",
+    "night-match": "Night shift",
+    "xmas-match": "Merry Christmas",
+    "daily-matches-5": "No-stress-day",
+    "daily-matches-10": "Are you even working?",
+    "daily-wins-5": "Probably getting paid for this",
+    "daily-wins-10": "Suffering from success",
+    "hangover": "Berliner Luft",
+    "contributor": "I'm doing my part",
+    "daily-o-clock": "No daily today?",
+    "threesome": "Have a threesome",
+    "bad-threesome": "Bad threesome",
+    "leap-year": "Take a leap",
+    "trick-or-treat": "Trick or treat",
+    "diff-max": "Dominator",
+    "diff-min": "Das tapfere Schneiderlein"
+  }
+}

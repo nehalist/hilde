@@ -5,10 +5,9 @@ on:
     tags:
       - '*'
     branches:
-      - main
+      - '*'
   pull_request:
-    branches:
-      - main
+    types: [opened, reopened]
 
 jobs:
   build:
@@ -16,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [ 14.x ]
+        node-version: [ 20.x ]
 
     steps:
       - uses: actions/checkout@v2
